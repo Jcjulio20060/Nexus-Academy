@@ -1,59 +1,73 @@
 import { PrismaClient } from '@prisma/client';
-import fs from 'fs';
-import path from 'path';
 
-import 'dotenv/config'; // Load env vars
 const prisma = new PrismaClient();
 
 async function main() {
-    const dataPath = path.join(__dirname, '../src/data/db.json');
-    const rawData = fs.readFileSync(dataPath, 'utf-8');
-    const data = JSON.parse(rawData);
+    // 1. Matérias (Sequencial)
+    const subMat = await prisma.subject.upsert({
+        where: { name: 'Matemática Discreta' },
+        update: {},
+        create: { name: 'Matemática Discreta', code: 'MAT01' }
+    });
 
-    // Seed Classes
-    for (const cls of data.classes) {
-        await prisma.classSession.create({
-            data: {
-                day: cls.day,
-                period: cls.period,
-                start: cls.start,
-                end: cls.end,
-                subject: cls.subject,
-                room: cls.room,
-                professor: cls.professor
-            }
-        });
-    }
+    const subAlg = await prisma.subject.upsert({
+        where: { name: 'Algoritmos e Programação' },
+        update: {},
+        create: { name: 'Algoritmos e Programação', code: 'CC01' }
+    });
 
-    // Seed Events
-    for (const evt of data.events) {
-        await prisma.event.create({
-            data: {
-                title: evt.title,
-                date: evt.date,
-                type: evt.type
-            }
-        });
-    }
+    const subBd = await prisma.subject.upsert({
+        where: { name: 'Banco de Dados' },
+        update: {},
+        create: { name: 'Banco de Dados', code: 'BD01' }
+    });
 
-    // Seed Notices
-    for (const ntc of data.notices) {
-        await prisma.notice.create({
-            data: {
-                message: ntc.message,
-                active: ntc.active
-            }
-        });
-    }
+    // 2. Professores
+    const profCarlos = await prisma.professor.create({
+        data: { name: 'Carlos Silva', email: 'carlos@nexus.edu' }
+    });
 
-    // Seed Admin
+    const profAna = await prisma.professor.create({
+        data: { name: 'Ana Souza', email: 'ana@nexus.edu' }
+    });
+
+    // 3. Aulas (Classes)
+    await prisma.classSession.create({
+        data: {
+            day: 'Monday',
+            start: '08:00',
+            end: '10:00',
+            room: 'Sala 101',
+            subjectId: subMat.id,
+            professorId: profCarlos.id
+        }
+    });
+
+    await prisma.classSession.create({
+        data: {
+            day: 'Wednesday',
+            start: '14:00',
+            end: '16:00',
+            room: 'Lab 03',
+            subjectId: subAlg.id,
+            professorId: profAna.id
+        }
+    });
+
+    // 4. Recursos
+    await prisma.resource.create({
+        data: {
+            title: 'Lista de Exercícios 1',
+            url: 'https://google.com',
+            subjectId: subMat.id
+        }
+    });
+
+    // 5. Admin
     await prisma.adminUser.upsert({
         where: { username: 'admin' },
         update: {},
-        create: {
-            username: 'admin',
-            password: 'admin123' // Plaintext for now as per plan
-        }
+        create: { username: 'admin', password: 'admin123' }
     });
 
     console.log('Seed completed successfully');

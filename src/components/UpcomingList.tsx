@@ -1,6 +1,6 @@
-import { ClassSession } from '@/lib/data';
+import { ClassSessionWithRelations } from '@/lib/data';
 
-export default function UpcomingList({ classes }: { classes: ClassSession[] }) {
+export default function UpcomingList({ classes }: { classes: ClassSessionWithRelations[] }) {
     if (classes.length === 0) {
         return (
             <div style={{ marginTop: '2rem', opacity: 0.6, fontSize: '0.9rem' }}>
@@ -22,8 +22,8 @@ export default function UpcomingList({ classes }: { classes: ClassSession[] }) {
                         background: 'var(--surface-hover)'
                     }}>
                         <div>
-                            <p style={{ fontWeight: 600, fontSize: '1.1rem' }}>{cls.subject}</p>
-                            <p style={{ fontSize: '0.9rem', color: '#a1a1aa', marginTop: '0.2rem' }}>{cls.professor}</p>
+                            <p style={{ fontWeight: 600, fontSize: '1.1rem' }}>{cls.subject.name}</p>
+                            <p style={{ fontSize: '0.9rem', color: '#a1a1aa', marginTop: '0.2rem' }}>{cls.professor.name}</p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--foreground)' }}>{cls.start}</p>

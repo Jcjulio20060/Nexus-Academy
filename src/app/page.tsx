@@ -21,7 +21,7 @@ export default async function Home() {
       <div className="container">
         <header className={styles.header}>
           <p className={styles.subtitle} style={{ textTransform: 'capitalize', marginBottom: '0.5rem' }}>{dateStr}</p>
-          <h1 className={styles.title}>Nexus Academy</h1>
+          <h1 className={styles.title}>Café e Código</h1>
         </header>
 
         <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>

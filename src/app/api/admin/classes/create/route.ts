@@ -1,33 +1,32 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
-    const formData = await request.formData();
+export async function POST(req: NextRequest) {
+    const formData = await req.formData();
 
-    const subject = formData.get('subject') as string;
-    const professor = formData.get('professor') as string;
-    const room = formData.get('room') as string;
+    // Parse fields
     const day = formData.get('day') as string;
-    const start = formData.get('start') as string;
-    const end = formData.get('end') as string;
-    // Determine period based on existing logic or user input. For simplicity, we might let user input or auto-calc.
-    // Let's assume period is optional or calculated.
-    // For now, let's just default to 1 or parse if provided.
-    const period = Number(formData.get('period') || 1);
+    const start = formData.get('start') as string; // HH:MM
+    const end = formData.get('end') as string;     // HH:MM
+    const room = formData.get('room') as string;
 
-    if (subject && day && start && end) {
-        await prisma.classSession.create({
-            data: {
-                subject,
-                professor: professor || '',
-                room: room || '',
-                day,
-                start,
-                end,
-                period
-            }
-        });
-    }
+    // Relational IDs
+    const subjectId = parseInt(formData.get('subjectId') as string);
+    const professorId = parseInt(formData.get('professorId') as string);
 
-    return NextResponse.redirect(new URL('/admin/dashboard', request.url), 303);
+    // Calculate period (optional logic, can just be 1, 2, 3...)
+    // For MVP, we ignore period or auto-calc. Let's default to null as per schema change (Int?)
+
+    await prisma.classSession.create({
+        data: {
+            day,
+            start,
+            end,
+            room,
+            subjectId,
+            professorId
+        }
+    });
+
+    return NextResponse.json({ success: true });
 }

@@ -1,6 +1,6 @@
 {
-    "name": "Nexus Academy",
-    "short_name": "Nexus",
+    "name": "Café e Código",
+    "short_name": "CaféCode",
     "description": "Portal acadêmico da turma",
     "start_url": "/",
     "display": "standalone",

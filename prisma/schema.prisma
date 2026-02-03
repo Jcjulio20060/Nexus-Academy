@@ -11,16 +11,21 @@ datasource db {
 }
 
 model ClassSession {
-  id        Int      @id @default(autoincrement())
-  day       String   // Monday, Tuesday...
-  period    Int
-  start     String   // HH:MM
-  end       String   // HH:MM
-  subject   String
-  room      String
-  professor String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int       @id @default(autoincrement())
+  day         String    // Monday, Tuesday...
+  period      Int?
+  start       String    // HH:MM
+  end         String    // HH:MM
+  
+  subjectId   Int
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  
+  professorId Int
+  professor   Professor @relation(fields: [professorId], references: [id])
+  
+  room        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Event {
@@ -43,7 +48,7 @@ model Notice {
 model AdminUser {
   id        Int      @id @default(autoincrement())
   username  String   @unique
-  password  String   // In a real app this should be hashed
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -51,8 +56,34 @@ model AdminUser {
 model Resource {
   id        Int      @id @default(autoincrement())
   title     String
-  subject   String
   url       String
+  
+  subjectId Int
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  code      String?   // Optional code like "MAT01"
+  
+  classes   ClassSession[]
+  resources Resource[]
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Professor {
+  id        Int            @id @default(autoincrement())
+  name      String
+  email     String?
+  
+  classes   ClassSession[]
+  
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }

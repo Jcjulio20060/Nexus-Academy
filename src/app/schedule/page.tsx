@@ -40,8 +40,8 @@ export default async function Schedule() {
                                 {classes.map((cls, idx) => (
                                     <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <div>
-                                            <p style={{ fontWeight: 600 }}>{cls.subject}</p>
-                                            <p style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>{cls.professor}</p>
+                                            <p style={{ fontWeight: 600 }}>{cls.subject.name}</p>
+                                            <p style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>{cls.professor.name}</p>
                                         </div>
                                         <div style={{ textAlign: 'right', fontSize: '0.9rem' }}>
                                             <p>{cls.start} - {cls.end}</p>

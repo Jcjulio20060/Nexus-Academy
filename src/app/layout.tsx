@@ -5,7 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Nexus Academy',
+  title: 'Café e Código',
   description: 'Portal acadêmico da turma',
   manifest: '/manifest.json',
   icons: {

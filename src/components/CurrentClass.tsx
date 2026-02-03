@@ -1,6 +1,6 @@
-import { ClassSession } from '@/lib/data';
+import { ClassSessionWithRelations } from '@/lib/data';
 
-export default function CurrentClass({ currentClass }: { currentClass: ClassSession | null }) {
+export default function CurrentClass({ currentClass }: { currentClass: ClassSessionWithRelations | null }) {
     if (!currentClass) {
         return (
             <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', marginBottom: '2rem' }}>
@@ -25,7 +25,7 @@ export default function CurrentClass({ currentClass }: { currentClass: ClassSess
                 AGORA ({currentClass.start} - {currentClass.end})
             </span>
             <h2 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '0.5rem', lineHeight: 1.1 }}>
-                {currentClass.subject}
+                {currentClass.subject.name}
             </h2>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1.5rem', color: '#e5e5e5' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -34,7 +34,7 @@ export default function CurrentClass({ currentClass }: { currentClass: ClassSess
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                    <span style={{ fontSize: '1.1rem' }}>{currentClass.professor}</span>
+                    <span style={{ fontSize: '1.1rem' }}>{currentClass.professor.name}</span>
                 </div>
             </div>
         </div>

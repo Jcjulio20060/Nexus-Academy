@@ -15,47 +15,31 @@ export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // Re-export types for compatibility
-export type ClassSession = {
-    id: number;
-    day: string; // 'Monday', 'Tuesday', ...
-    period: number;
-    start: string; // "HH:MM" 24h
-    end: string;
-    subject: string;
-    room: string;
-    professor: string;
-}
+// Re-export Prisma types for frontend use
+import { Prisma } from '@prisma/client';
+export type { ClassSession, Event, Notice, Resource, Subject, Professor } from '@prisma/client';
 
-export type Event = {
-    id: number;
-    title: string;
-    date: string; // ISO YYYY-MM-DD
-    type: string; // 'exam' | 'assignment' | 'holiday' | 'other'
-}
+export type ClassSessionWithRelations = Prisma.ClassSessionGetPayload<{
+    include: { subject: true; professor: true }
+}>;
 
-export type Notice = {
-    id: number;
-    message: string;
-    active: boolean;
-}
-
-export type Resource = {
-    id: number;
-    title: string;
-    subject: string;
-    url: string;
-}
+export type ResourceWithRelations = Prisma.ResourceGetPayload<{
+    include: { subject: true }
+}>;
 
 export interface Database {
-    classes: ClassSession[];
+    classes: ClassSessionWithRelations[];
     events: Event[];
     notices: Notice[];
-    resources: Resource[];
+    resources: ResourceWithRelations[];
+    subjects: Subject[];
+    professors: Professor[];
 }
 
 export async function getDatabase() {
     const classes = await prisma.classSession.findMany({
-        orderBy: { start: 'asc' }
+        orderBy: { start: 'asc' },
+        include: { subject: true, professor: true }
     });
     const events = await prisma.event.findMany({
         orderBy: { date: 'asc' }
@@ -64,13 +48,16 @@ export async function getDatabase() {
         orderBy: { createdAt: 'desc' }
     });
     const resources = await prisma.resource.findMany({
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        include: { subject: true }
     });
+    const subjects = await prisma.subject.findMany({ orderBy: { name: 'asc' } });
+    const professors = await prisma.professor.findMany({ orderBy: { name: 'asc' } });
 
-    return { classes, events, notices, resources };
+    return { classes, events, notices, resources, subjects, professors };
 }
 
-export async function getCurrentClass(): Promise<ClassSession | null> {
+export async function getCurrentClass(): Promise<ClassSessionWithRelations | null> {
     const now = new Date();
     const currentTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -79,7 +66,8 @@ export async function getCurrentClass(): Promise<ClassSession | null> {
     // Prisma doesn't support complex time comparisons easily with just string columns in SQLite
     // So we fetch classes for the day and filter in JS
     const classesToday = await prisma.classSession.findMany({
-        where: { day: dayName }
+        where: { day: dayName },
+        include: { subject: true, professor: true }
     });
 
     return classesToday.find(c =>
@@ -88,7 +76,7 @@ export async function getCurrentClass(): Promise<ClassSession | null> {
     ) || null;
 }
 
-export async function getUpcomingClassesForDay(): Promise<ClassSession[]> {
+export async function getUpcomingClassesForDay(): Promise<ClassSessionWithRelations[]> {
     const now = new Date();
     const currentTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -96,7 +84,8 @@ export async function getUpcomingClassesForDay(): Promise<ClassSession[]> {
 
     const classesToday = await prisma.classSession.findMany({
         where: { day: dayName },
-        orderBy: { start: 'asc' }
+        orderBy: { start: 'asc' },
+        include: { subject: true, professor: true }
     });
 
     return classesToday.filter(c => c.start > currentTime);

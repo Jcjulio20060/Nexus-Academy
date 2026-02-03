@@ -3,16 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     const formData = await req.formData();
+    const name = formData.get('name') as string;
+    const code = formData.get('code') as string;
 
-    const title = formData.get('title') as string;
-    const url = formData.get('url') as string;
-    const subjectId = parseInt(formData.get('subjectId') as string);
-
-    await prisma.resource.create({
+    await prisma.subject.create({
         data: {
-            title,
-            url,
-            subjectId
+            name,
+            code
         }
     });
 

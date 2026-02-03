@@ -6,10 +6,11 @@ export default async function ResourcesPage() {
 
     // Group by subject
     const groupedResources = resources.reduce((acc, curr) => {
-        if (!acc[curr.subject]) {
-            acc[curr.subject] = [];
+        const subName = curr.subject.name;
+        if (!acc[subName]) {
+            acc[subName] = [];
         }
-        acc[curr.subject].push(curr);
+        acc[subName].push(curr);
         return acc;
     }, {} as Record<string, typeof resources>);
 
