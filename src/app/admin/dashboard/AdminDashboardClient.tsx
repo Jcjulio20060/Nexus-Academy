@@ -72,14 +72,29 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
         });
     };
 
+    const handleLogout = async () => {
+        const res = await fetch('/api/auth/logout', { method: 'POST' });
+        if (res.ok) {
+            window.location.href = '/admin/login';
+        } else {
+            toast.error('Erro ao sair');
+        }
+    };
+
     return (
         <main className="container" style={{ padding: '2rem 1rem' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                 <h1 style={{ fontSize: '2rem', color: 'var(--foreground)' }}>Admin - Café e Código</h1>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <Link href="/" target="_blank" style={{ padding: '0.5rem 1rem', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--surface-border)' }}>
+                    <Link href="/" target="_blank" style={{ padding: '0.5rem 1rem', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--surface-border)', color: 'var(--foreground)', textDecoration: 'none' }}>
                         Ver Site
                     </Link>
+                    <button
+                        onClick={handleLogout}
+                        style={{ padding: '0.5rem 1rem', background: 'var(--error)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+                    >
+                        Sair
+                    </button>
                 </div>
             </header>
 
