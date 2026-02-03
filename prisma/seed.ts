@@ -66,8 +66,8 @@ async function main() {
     // 5. Admin
     await prisma.adminUser.upsert({
         where: { username: 'admin' },
-        update: {},
-        create: { username: 'admin', password: 'admin123' }
+        update: { password: process.env.ADMIN_PASSWORD || 'admin123' },
+        create: { username: 'admin', password: process.env.ADMIN_PASSWORD || 'admin123' }
     });
 
     console.log('Seed completed successfully');
