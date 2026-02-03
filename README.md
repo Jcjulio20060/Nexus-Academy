@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nexus Academy - Portal de Estudos ☕📖
 
-## Getting Started
+Um portal acadêmico premium projetado para facilitar a vida do estudante modernizando a visualização de grades, materiais e prazos em um "Console Unificado" fluido e responsivo.
 
-First, run the development server:
+## ✨ Funcionalidades
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Console do Aluno**: Interface de página única (SPA) para acesso rápido.
+- **Grade Horária Inteligente**: Visualização em tempo real da aula atual e próximas sessões.
+- **Central de Materiais**: Organização por matéria com filtros de busca instantâneos.
+- **Painel de Prazos**: Calendário cronológico de provas, trabalhos e projetos.
+- **Dashboard Administrativo**: Gestão completa de matérias, professores, aulas e avisos.
+- **Foco em UI/UX**: Design premium com suporte total a Light e Dark Mode e Glassmorphism.
+
+## 🛠️ Stack Tecnológico
+
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Database**: [SQLite](https://www.sqlite.org/) (Local) ou [Postgres](https://www.postgresql.org/) (Nuvem) via [Prisma](https://www.prisma.io/)
+- **Linguagem**: TypeScript
+- **Estilização**: Vanilla CSS com variáveis dinâmicas e Glassmorphism
+- **PWA**: Instalável via `next-pwa`
+
+## ⚙️ Configuração (.env)
+
+O projeto depende de um arquivo `.env` na raiz. Use o `.env.example` como base:
+
+```env
+DATABASE_URL="file:./dev.db"
+ADMIN_PASSWORD="sua_senha_aqui"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> [!IMPORTANT]
+> O arquivo `dev.db` na raiz contém todo o seu banco de dados SQLite local. **Nunca delete** se quiser manter seus dados.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Como Executar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Prepare o Banco de Dados**:
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma db seed
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Inicie o Modo de Desenvolvimento**:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Acesse o Portal**:
+   - Aluno: `http://localhost:3000`
+   - Admin: `http://localhost:3000/admin/login`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔐 Acesso Administrativo
 
-## Deploy on Vercel
+Para acessar o painel de administrador:
+- **URL**: `/admin/login`
+- **Senha**: Definida no seu arquivo `.env`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Estrutura de Pastas Importante
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/public`: Contém ícones, manifesto PWA e o **favicon oficial**. (Não remover!)
+- `/prisma`: Esquema do banco de dados e arquivos de migração.
+- `dev.db`: Seu banco de dados local (gerado automaticamente).
+
+---
+*Desenvolvido com foco na excelência acadêmica e experiência do usuário.*

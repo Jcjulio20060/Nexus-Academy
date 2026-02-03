@@ -16,8 +16,9 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // Re-export types for compatibility
 // Re-export Prisma types for frontend use
-import { Prisma } from '@prisma/client';
-export type { ClassSession, Event, Notice, Resource, Subject, Professor } from '@prisma/client';
+import { Prisma, ClassSession, Notice, Resource, Subject, Professor, Event as PrismaEvent } from '@prisma/client';
+export type { ClassSession, Notice, Resource, Subject, Professor };
+export type AcademicEvent = PrismaEvent;
 
 export type ClassSessionWithRelations = Prisma.ClassSessionGetPayload<{
     include: { subject: true; professor: true }
@@ -29,7 +30,7 @@ export type ResourceWithRelations = Prisma.ResourceGetPayload<{
 
 export interface Database {
     classes: ClassSessionWithRelations[];
-    events: Event[];
+    events: AcademicEvent[];
     notices: Notice[];
     resources: ResourceWithRelations[];
     subjects: Subject[];

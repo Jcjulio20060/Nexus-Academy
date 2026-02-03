@@ -14,7 +14,7 @@
 .title {
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(to right, #fff, #ccc);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
@@ -23,7 +23,7 @@
 
 .subtitle {
   font-size: 1.25rem;
-  color: #a1a1aa;
+  color: var(--foreground-muted);
 }
 
 @keyframes fadeIn {

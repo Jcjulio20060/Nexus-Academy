@@ -11,7 +11,7 @@ export default function UpcomingList({ classes }: { classes: ClassSessionWithRel
 
     return (
         <div style={{ marginTop: '2rem' }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#d4d4d8' }}>A Seguir</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--foreground-muted)' }}>A Seguir</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {classes.map((cls, idx) => (
                     <div key={idx} className="glass-panel" style={{
@@ -23,7 +23,7 @@ export default function UpcomingList({ classes }: { classes: ClassSessionWithRel
                     }}>
                         <div>
                             <p style={{ fontWeight: 600, fontSize: '1.1rem' }}>{cls.subject.name}</p>
-                            <p style={{ fontSize: '0.9rem', color: '#a1a1aa', marginTop: '0.2rem' }}>{cls.professor.name}</p>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--foreground-muted)', marginTop: '0.2rem' }}>{cls.professor.name}</p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--foreground)' }}>{cls.start}</p>

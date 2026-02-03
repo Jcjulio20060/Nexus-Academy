@@ -58,8 +58,9 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                     maxWidth: '500px',
                     maxHeight: '90vh',
                     overflowY: 'auto',
-                    background: '#0a0a0c', // Solid background for legibility over blurry overlay
-                    border: '1px solid var(--surface-border)'
+                    background: 'var(--background)',
+                    border: '1px solid var(--surface-border)',
+                    color: 'var(--foreground)'
                 }}
             >
                 <div style={{
@@ -75,7 +76,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                         style={{
                             background: 'none',
                             border: 'none',
-                            color: '#a1a1aa',
+                            color: 'var(--foreground-muted)',
                             fontSize: '1.5rem',
                             cursor: 'pointer',
                             lineHeight: 1

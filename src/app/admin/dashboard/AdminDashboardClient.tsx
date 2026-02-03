@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Modal from '@/components/Modal';
-import { Database } from '@/lib/data';
+import { Database, AcademicEvent } from '@/lib/data';
 import { toast } from 'sonner';
 
 interface AdminDashboardClientProps {
@@ -198,6 +198,30 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                         </div>
                     ))}
                 </section>
+
+                {/* Deadlines (Datas e Prazos) */}
+                <section className="glass-panel" style={{ padding: '2rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h2 style={{ fontSize: '1.5rem', color: 'var(--accent)' }}>Datas e Prazos</h2>
+                        <button onClick={() => setIsEventModalOpen(true)} style={{ padding: '0.5rem 1rem', background: 'var(--primary)', border: 'none', borderRadius: '6px', color: 'white', cursor: 'pointer' }}>+ Nova Data</button>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+                        {initialData.events.map(event => (
+                            <div key={event.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--surface-card)', borderRadius: '8px', border: '1px solid var(--surface-border)' }}>
+                                <div>
+                                    <p style={{ fontWeight: 600, color: 'var(--foreground)' }}>{event.title}</p>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)' }}>
+                                        {new Date(event.date + 'T12:00:00').toLocaleDateString('pt-BR')} • {event.type === 'exam' ? 'Prova' : event.type === 'project' ? 'Projeto' : 'Trabalho'}
+                                    </p>
+                                </div>
+                                <form onSubmit={(e) => handleDelete(e, '/api/admin/events/delete')}>
+                                    <input type="hidden" name="id" value={event.id} />
+                                    <button type="submit" style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer' }}>Excluir</button>
+                                </form>
+                            </div>
+                        ))}
+                    </div>
+                </section>
             </div>
 
             {/* MODALS */}
@@ -258,17 +282,26 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                 </form>
             </Modal>
 
-            {/* Event Modal (Simplificado - mantendo lógica anterior) */}
-            <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)} title="Novo Evento">
+            {/* Event Modal (Datas e Prazos) */}
+            <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)} title="Nova Data/Prazo">
                 <form onSubmit={(e) => handleSubmit(e, '/api/admin/events/create', 'Evento criado!', setIsEventModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <input name="title" required placeholder="Título" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)' }} />
+                    <input name="title" required placeholder="Título (ex: Prova de Cálculo)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)' }} />
                     <input name="date" type="date" required style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)' }} />
                     <select name="type" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)' }}>
                         <option value="exam">Prova</option>
                         <option value="assignment">Trabalho</option>
+                        <option value="project">Projeto</option>
                         <option value="other">Outro</option>
                     </select>
-                    <button type="submit" style={{ padding: '0.75rem', background: 'var(--secondary)', border: 'none', borderRadius: '8px', color: 'white', cursor: 'pointer' }}>Salvar Evento</button>
+                    <button type="submit" style={{ padding: '0.75rem', background: 'var(--secondary)', border: 'none', borderRadius: '8px', color: 'white', cursor: 'pointer' }}>Salvar Prazo</button>
+                </form>
+            </Modal>
+
+            {/* Notice Modal */}
+            <Modal isOpen={isNoticeModalOpen} onClose={() => setIsNoticeModalOpen(false)} title="Novo Aviso">
+                <form onSubmit={(e) => handleSubmit(e, '/api/admin/notices/create', 'Aviso criado!', setIsNoticeModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <input name="message" required placeholder="Ex: Aula amanhã será no Lab 02" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)' }} />
+                    <button type="submit" style={{ padding: '0.75rem', background: 'var(--primary)', border: 'none', borderRadius: '8px', color: 'white', cursor: 'pointer' }}>Salvar Aviso</button>
                 </form>
             </Modal>
 

@@ -1,21 +1,32 @@
-import { Event, Notice } from '@/lib/data';
+import { AcademicEvent, Notice } from '@/lib/data';
 
-export default function ImportantDates({ events, notices }: { events: Event[], notices: Notice[] }) {
+export default function ImportantDates({ events, notices }: { events: AcademicEvent[], notices: Notice[] }) {
     if (events.length === 0 && notices.length === 0) return null;
 
     return (
         <div style={{ marginTop: '3rem' }}>
             {notices.length > 0 && (
                 <div style={{ marginBottom: '2rem' }}>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#d4d4d8' }}>Avisos Rápidos</h3>
+                    <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--foreground-muted)' }}>Avisos Rápidos</h3>
                     {notices.map(notice => (
                         <div key={notice.id} className="glass-panel" style={{
                             padding: '1rem',
-                            background: 'rgba(239, 68, 68, 0.1)',
-                            borderColor: 'rgba(239, 68, 68, 0.3)',
-                            color: '#fca5a5'
+                            background: 'var(--secondary-glow)',
+                            borderColor: 'var(--secondary)',
+                            color: 'var(--foreground)',
+                            position: 'relative'
                         }}>
-                            <p>⚠️ {notice.message}</p>
+                            <span style={{
+                                position: 'absolute',
+                                top: '0.5rem',
+                                right: '0.75rem',
+                                fontSize: '0.7rem',
+                                opacity: 0.6,
+                                fontWeight: 500
+                            }}>
+                                {new Date(notice.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                            </span>
+                            <p style={{ paddingRight: '3rem' }}>⚠️ {notice.message}</p>
                         </div>
                     ))}
                 </div>
@@ -23,12 +34,12 @@ export default function ImportantDates({ events, notices }: { events: Event[], n
 
             {events.length > 0 && (
                 <div>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#d4d4d8' }}>Datas Importantes</h3>
+                    <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--foreground-muted)' }}>Datas Importantes</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
                         {events.map(event => (
                             <div key={event.id} className="glass-panel" style={{ padding: '1.5rem', position: 'relative', overflow: 'hidden' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: event.type === 'exam' ? 'var(--secondary)' : 'var(--accent)' }}></div>
-                                <p style={{ fontSize: '0.875rem', color: '#a1a1aa', marginBottom: '0.25rem' }}>
+                                <p style={{ fontSize: '0.875rem', color: 'var(--foreground-muted)', marginBottom: '0.25rem' }}>
                                     {new Date(event.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
                                 </p>
                                 <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>{event.title}</p>
@@ -38,8 +49,9 @@ export default function ImportantDates({ events, notices }: { events: Event[], n
                                     letterSpacing: '0.05em',
                                     padding: '0.1rem 0.5rem',
                                     borderRadius: '4px',
-                                    background: 'var(--surface)',
-                                    color: '#d4d4d8'
+                                    background: 'var(--surface-card)',
+                                    color: 'var(--foreground-muted)',
+                                    border: '1px solid var(--surface-border)'
                                 }}>
                                     {event.type === 'exam' ? 'Prova' : 'Trabalho'}
                                 </span>
