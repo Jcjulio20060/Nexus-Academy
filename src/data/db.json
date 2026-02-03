@@ -1,0 +1,61 @@
+{
+    "classes": [
+        {
+            "day": "Monday",
+            "period": 1,
+            "start": "08:00",
+            "end": "09:40",
+            "subject": "Desenvolvimento Web",
+            "room": "Lab 03",
+            "professor": "Carlos Silva"
+        },
+        {
+            "day": "Monday",
+            "period": 2,
+            "start": "10:00",
+            "end": "11:40",
+            "subject": "Banco de Dados",
+            "room": "Sala 302",
+            "professor": "Ana Souza"
+        },
+        {
+            "day": "Monday",
+            "period": 3,
+            "start": "19:00",
+            "end": "22:00",
+            "subject": "Algoritmos Avançados",
+            "room": "Lab 01",
+            "professor": "Roberto K."
+        },
+        {
+            "day": "Tuesday",
+            "period": 1,
+            "start": "19:00",
+            "end": "20:40",
+            "subject": "Engenharia de Software",
+            "room": "Sala 101",
+            "professor": "Marcos Oliveira"
+        }
+    ],
+    "events": [
+        {
+            "id": 1,
+            "title": "Entrega do Projeto Web",
+            "date": "2026-02-15",
+            "type": "assignment"
+        },
+        {
+            "id": 2,
+            "title": "Prova de Banco de Dados",
+            "date": "2026-02-20",
+            "type": "exam"
+        }
+    ],
+    "notices": [
+        {
+            "id": 1,
+            "message": "A aula de hoje (02/02) será no Lab 05 excepcionalmente.",
+            "active": true
+        }
+    ]
+}
