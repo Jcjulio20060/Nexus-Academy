@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Database, ClassSessionWithRelations, ResourceWithRelations, AcademicEvent } from '@/lib/data';
 import CurrentClass from '@/components/CurrentClass';
 import UpcomingList from '@/components/UpcomingList';
@@ -70,13 +70,35 @@ function ResourcesView({ resources, subjects }: { resources: ResourceWithRelatio
 
 
 interface HomeClientProps {
-    currentClass: ClassSessionWithRelations | null;
-    upcomingClasses: ClassSessionWithRelations[];
+    classesToday: ClassSessionWithRelations[];
     db: Database;
 }
 
-export default function HomeClient({ currentClass, upcomingClasses, db }: HomeClientProps) {
+export default function HomeClient({ classesToday, db }: HomeClientProps) {
     const [activeTab, setActiveTab] = useState<'home' | 'schedule' | 'resources' | 'calendar'>('home');
+    const [currentClass, setCurrentClass] = useState<ClassSessionWithRelations | null>(null);
+    const [upcomingClasses, setUpcomingClasses] = useState<ClassSessionWithRelations[]>([]);
+
+    useEffect(() => {
+        const updateClasses = () => {
+            const now = new Date();
+            const currentTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            const current = classesToday.find(c =>
+                currentTime >= c.start && currentTime <= c.end
+            ) || null;
+
+            const upcoming = classesToday.filter(c => c.start > currentTime);
+
+            setCurrentClass(current);
+            setUpcomingClasses(upcoming);
+        };
+
+        updateClasses();
+        const interval = setInterval(updateClasses, 60000); // Update every minute
+
+        return () => clearInterval(interval);
+    }, [classesToday]);
 
     const dayLabels: Record<string, string> = {
         'Monday': 'Segunda-feira',

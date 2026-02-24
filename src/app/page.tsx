@@ -1,13 +1,12 @@
 import styles from './page.module.css';
 import Link from 'next/link';
-import { getCurrentClass, getUpcomingClassesForDay, getDatabase } from '@/lib/data';
+import { getClassesForToday, getDatabase } from '@/lib/data';
 import HomeClient from './HomeClient';
 
 export const revalidate = 0; // Disable cache for student console to ensure freshness during tab switches
 
 export default async function Home() {
-  const currentClass = await getCurrentClass();
-  const upcomingClasses = await getUpcomingClassesForDay();
+  const classesToday = await getClassesForToday();
   const db = await getDatabase();
 
   const today = new Date();
@@ -36,8 +35,7 @@ export default async function Home() {
         </header>
 
         <HomeClient
-          currentClass={currentClass}
-          upcomingClasses={upcomingClasses}
+          classesToday={classesToday}
           db={db}
         />
       </div>

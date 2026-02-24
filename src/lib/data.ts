@@ -77,17 +77,14 @@ export async function getCurrentClass(): Promise<ClassSessionWithRelations | nul
     ) || null;
 }
 
-export async function getUpcomingClassesForDay(): Promise<ClassSessionWithRelations[]> {
+export async function getClassesForToday(): Promise<ClassSessionWithRelations[]> {
     const now = new Date();
-    const currentTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const dayName = days[now.getDay()];
 
-    const classesToday = await prisma.classSession.findMany({
+    return await prisma.classSession.findMany({
         where: { day: dayName },
         orderBy: { start: 'asc' },
         include: { subject: true, professor: true }
     });
-
-    return classesToday.filter(c => c.start > currentTime);
 }
