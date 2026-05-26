@@ -2,6 +2,7 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import { getClassesForToday, getDatabase } from '@/lib/data';
 import HomeClient from './HomeClient';
+import WeatherWidget from '@/components/WeatherWidget';
 
 export const revalidate = 0; // Disable cache for student console to ensure freshness during tab switches
 
@@ -15,23 +16,44 @@ export default async function Home() {
   return (
     <main className={styles.main}>
       <div className="container">
-        <header className={styles.header} style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', top: 0, right: 0 }}>
+        <header className={styles.header} style={{ marginBottom: '2.5rem' }}>
+          <div className="header-top-row" style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '1.5rem',
+            width: '100%'
+          }}>
+            <WeatherWidget />
             <Link href="/admin/login" style={{
               fontSize: '0.8rem',
               color: 'var(--foreground-muted)',
               textDecoration: 'none',
-              padding: '0.4rem 0.8rem',
+              padding: '0.5rem 1rem',
               border: '1px solid var(--surface-border)',
-              borderRadius: '8px',
+              borderRadius: '10px',
               background: 'var(--surface)',
-              fontWeight: 500
+              fontWeight: 600,
+              backdropFilter: 'blur(8px)'
             }}>
               Admin
             </Link>
           </div>
-          <p className={styles.subtitle} style={{ textTransform: 'capitalize', marginBottom: '0.5rem' }}>{dateStr}</p>
-          <h1 className={styles.title}>Café e Código</h1>
+          
+          <div className="header-content-row" style={{ textAlign: 'center' }}>
+            <p className={styles.subtitle} style={{ 
+              textTransform: 'capitalize', 
+              marginBottom: '0.4rem',
+              fontSize: '0.9rem',
+              color: 'var(--foreground-muted)',
+              fontWeight: 500
+            }}>
+              {dateStr}
+            </p>
+            <h1 className={styles.title} style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+              Café e Código
+            </h1>
+          </div>
         </header>
 
         <HomeClient

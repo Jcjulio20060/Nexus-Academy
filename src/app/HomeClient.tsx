@@ -5,6 +5,8 @@ import { Database, ClassSessionWithRelations, ResourceWithRelations, AcademicEve
 import CurrentClass from '@/components/CurrentClass';
 import UpcomingList from '@/components/UpcomingList';
 import ImportantDates from '@/components/ImportantDates';
+import Link from 'next/link';
+
 // Sub-component for Material Filtering
 function ResourcesView({ resources, subjects }: { resources: ResourceWithRelations[], subjects: string[] }) {
     const [selectedSubject, setSelectedSubject] = useState<string>('all');
@@ -75,7 +77,7 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ classesToday, db }: HomeClientProps) {
-    const [activeTab, setActiveTab] = useState<'home' | 'schedule' | 'resources' | 'calendar'>('home');
+    const [activeTab, setActiveTab] = useState<'home' | 'schedule' | 'resources' | 'calendar' | 'faq'>('home');
     const [currentClass, setCurrentClass] = useState<ClassSessionWithRelations | null>(null);
     const [upcomingClasses, setUpcomingClasses] = useState<ClassSessionWithRelations[]>([]);
 
@@ -123,7 +125,8 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
             { id: 'home', label: '🏠 Início' },
             { id: 'schedule', label: '📅 Grade' },
             { id: 'resources', label: '📚 Materiais' },
-            { id: 'calendar', label: '🏁 Prazos' }
+            { id: 'calendar', label: '🏁 Prazos' },
+            { id: 'faq', label: '❓ FAQ' }
         ] as const;
 
         return (
@@ -136,15 +139,17 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                 borderRadius: '16px',
                 border: '1px solid var(--surface-border)',
                 overflowX: 'auto',
-                scrollbarWidth: 'none'
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                width: '100%',
+                boxSizing: 'border-box'
             }}>
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={() => setActiveTab(tab.id as any)}
                         style={{
-                            flex: 1,
-                            minWidth: '100px',
+                            flex: '1 0 auto',
                             padding: '0.75rem 1rem',
                             border: 'none',
                             borderRadius: '12px',
@@ -154,7 +159,8 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                             cursor: 'pointer',
                             transition: 'all 0.2s',
                             fontSize: '0.9rem',
-                            whiteSpace: 'nowrap'
+                            whiteSpace: 'nowrap',
+                            textAlign: 'center'
                         }}
                     >
                         {tab.label}
@@ -165,14 +171,32 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
     };
 
     return (
-        <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', paddingBottom: '6rem' }}>
             {renderHeader()}
 
             {activeTab === 'home' && (
                 <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                    {/* Notices at the top */}
+                    <ImportantDates events={[]} notices={db.notices} />
+                    
                     <CurrentClass currentClass={currentClass} />
                     <UpcomingList classes={upcomingClasses} />
-                    <ImportantDates events={db.events} notices={db.notices} />
+                    
+                    {/* Events at the bottom of Home */}
+                    <ImportantDates events={db.events} notices={[]} />
+
+                    {/* Talk to Representative Button at the bottom of Home */}
+                    <div style={{ marginTop: '3rem', textAlign: 'center' }}>
+                        <Link href="/comunicacao" className="glass-panel" style={{ 
+                            display: 'inline-flex', alignItems: 'center', gap: '1rem',
+                            padding: '1rem 2rem', background: 'var(--primary)', color: 'white',
+                            fontWeight: 700, borderRadius: '16px', boxShadow: '0 8px 20px var(--primary-glow)',
+                            textDecoration: 'none', transition: 'transform 0.2s'
+                        }}>
+                            <span style={{ fontSize: '1.5rem' }}>💬</span>
+                            Falar com o Representante
+                        </Link>
+                    </div>
                 </div>
             )}
 
@@ -252,6 +276,22 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                         );
                     })}
                     {db.events.length === 0 && <p style={{ textAlign: 'center', color: 'var(--foreground-muted)' }}>Nenhum prazo cadastrado.</p>}
+                </div>
+            )}
+
+            {activeTab === 'faq' && (
+                <div className="animate-fade-in" style={{ display: 'grid', gap: '1rem', maxWidth: '700px', margin: '0 auto' }}>
+                    {db.faqs.map(faq => (
+                        <details key={faq.id} className="glass-panel" style={{ padding: '1rem', cursor: 'pointer' }}>
+                            <summary style={{ fontWeight: 600, fontSize: '1.05rem', color: 'var(--foreground)' }}>
+                                {faq.question}
+                            </summary>
+                            <div style={{ marginTop: '1rem', color: 'var(--foreground-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                                {faq.answer}
+                            </div>
+                        </details>
+                    ))}
+                    {db.faqs.length === 0 && <p style={{ textAlign: 'center', color: 'var(--foreground-muted)' }}>Nenhuma dúvida cadastrada.</p>}
                 </div>
             )}
         </div>

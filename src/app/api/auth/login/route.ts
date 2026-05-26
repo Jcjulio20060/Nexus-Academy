@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/data';
+import * as bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
     const body = await request.json();
@@ -14,9 +15,7 @@ export async function POST(request: Request) {
         where: { username }
     });
 
-    // In a real app, use bcrypt to compare hashed password. 
-    // For this prototype/MVP, we are doing plain text comparison as agreed in plan.
-    if (user && user.password === password) {
+    if (user && await bcrypt.compare(password, user.password)) {
         (await cookies()).set('admin_session', 'true', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

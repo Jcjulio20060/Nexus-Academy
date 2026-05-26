@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import * as dotenv from 'dotenv';
-import * as path from 'path';
+import * as bcrypt from 'bcryptjs';
 
 // Load .env from root
 dotenv.config();
@@ -8,20 +8,22 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 async function main() {
-    const newPassword = process.env.ADMIN_PASSWORD;
+    const rawPassword = process.env.ADMIN_PASSWORD;
 
-    if (!newPassword) {
+    if (!rawPassword) {
         console.error('❌ ERRO: ADMIN_PASSWORD não definido no arquivo .env');
         process.exit(1);
     }
 
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
     const user = await prisma.adminUser.upsert({
         where: { username: 'admin' },
-        update: { password: newPassword },
-        create: { username: 'admin', password: newPassword }
+        update: { password: hashedPassword },
+        create: { username: 'admin', password: hashedPassword }
     });
 
-    console.log(`✅ Sucesso! Senha do usuário "${user.username}" atualizada para o valor definido no .env.`);
+    console.log(`✅ Sucesso! Senha do usuário "${user.username}" atualizada e criptografada.`);
 }
 
 main()

@@ -87,6 +87,26 @@ a {
   padding: 0 1rem;
 }
 
+/* Responsiveness Utilities */
+@media (max-width: 768px) {
+  .header-top-row {
+    margin-bottom: 2rem !important;
+  }
+
+  .header-content-row h1 {
+    font-size: 2rem !important;
+  }
+
+  .container {
+    padding: 0 1.25rem;
+  }
+...
+  .glass-panel {
+    padding: 1.25rem !important;
+    border-radius: 12px;
+  }
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {

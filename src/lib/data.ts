@@ -16,8 +16,8 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // Re-export types for compatibility
 // Re-export Prisma types for frontend use
-import { Prisma, ClassSession, Notice, Resource, Subject, Professor, Event as PrismaEvent } from '@prisma/client';
-export type { ClassSession, Notice, Resource, Subject, Professor };
+import { Prisma, ClassSession, Notice, Resource, Subject, Professor, Event as PrismaEvent, Representative, Faq, CommunicationPost } from '@prisma/client';
+export type { ClassSession, Notice, Resource, Subject, Professor, Representative, Faq, CommunicationPost };
 export type AcademicEvent = PrismaEvent;
 
 export type ClassSessionWithRelations = Prisma.ClassSessionGetPayload<{
@@ -35,6 +35,9 @@ export interface Database {
     resources: ResourceWithRelations[];
     subjects: Subject[];
     professors: Professor[];
+    representatives: Representative[];
+    faqs: Faq[];
+    communicationPosts: CommunicationPost[];
 }
 
 export async function getDatabase() {
@@ -54,8 +57,13 @@ export async function getDatabase() {
     });
     const subjects = await prisma.subject.findMany({ orderBy: { name: 'asc' } });
     const professors = await prisma.professor.findMany({ orderBy: { name: 'asc' } });
+    const representatives = await prisma.representative.findMany({ orderBy: { role: 'asc' } });
+    const faqs = await prisma.faq.findMany({ orderBy: { order: 'asc' } });
+    const communicationPosts = await prisma.communicationPost.findMany({
+        orderBy: { createdAt: 'desc' }
+    });
 
-    return { classes, events, notices, resources, subjects, professors };
+    return { classes, events, notices, resources, subjects, professors, representatives, faqs, communicationPosts };
 }
 
 export async function getCurrentClass(): Promise<ClassSessionWithRelations | null> {
