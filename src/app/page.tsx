@@ -43,14 +43,15 @@ export default async function Home() {
           <div className="header-content-row" style={{ textAlign: 'center' }}>
             <p className={styles.subtitle} style={{ 
               textTransform: 'capitalize', 
-              marginBottom: '0.4rem',
-              fontSize: '0.9rem',
+              marginBottom: '0.6rem',
+              fontSize: '1.1rem',
               color: 'var(--foreground-muted)',
-              fontWeight: 500
+              fontWeight: 500,
+              letterSpacing: '0.05em'
             }}>
               {dateStr}
             </p>
-            <h1 className={styles.title} style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+            <h1 className={styles.title} style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Café e Código
             </h1>
           </div>
