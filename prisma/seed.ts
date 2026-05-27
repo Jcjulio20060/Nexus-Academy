@@ -1,4 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+import * as dotenv from 'dotenv';
+
+// Load .env
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -64,10 +69,13 @@ async function main() {
     });
 
     // 5. Admin
+    const rawPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
     await prisma.adminUser.upsert({
         where: { username: 'admin' },
-        update: { password: process.env.ADMIN_PASSWORD || 'admin123' },
-        create: { username: 'admin', password: process.env.ADMIN_PASSWORD || 'admin123' }
+        update: { password: hashedPassword },
+        create: { username: 'admin', password: hashedPassword }
     });
 
     console.log('Seed completed successfully');
