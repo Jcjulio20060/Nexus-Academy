@@ -27,10 +27,15 @@ export function notFound(message = 'Not Found') {
 }
 
 export async function getCurrentUser(req: NextRequest) {
-  const authorization = req.headers.get('authorization');
-  if (!authorization?.startsWith('Bearer ')) return null;
+  let token: string | null = null;
 
-  const token = authorization.slice(7).trim();
+  const authorization = req.headers.get('authorization');
+  if (authorization?.startsWith('Bearer ')) {
+    token = authorization.slice(7).trim();
+  } else {
+    token = req.cookies.get('nexus_token')?.value ?? null;
+  }
+
   if (!token) return null;
 
   let payload: Record<string, unknown>;

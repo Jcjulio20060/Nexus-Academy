@@ -24,7 +24,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   if (error) return error;
 
   const messages = await db.orm.public.TicketMessage.where({ ticketId }).orderBy((m) => m.createdAt.asc()).all();
-  return json({ messages });
+
+  const withNames = await Promise.all(
+    messages.map(async (message) => {
+      const sender = await db.orm.public.User.where({ id: message.senderId }).first();
+      return {
+        ...message,
+        senderName: sender?.name ?? sender?.username ?? `Usuário #${message.senderId}`,
+      };
+    })
+  );
+
+  return json({ messages: withNames });
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

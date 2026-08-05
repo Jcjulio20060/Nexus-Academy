@@ -1,10 +1,39 @@
 import { NextRequest } from 'next/server';
 import { db } from '@/prisma/db';
-import { json, badRequest, notFound, unauthorized, requireRole, parseId } from '@/lib/server';
+import { json, badRequest, forbidden, notFound, unauthorized, requireRole, parseId } from '@/lib/server';
 import { getCurrentUser } from '@/lib/server';
 
 type TicketStatus = 'OPEN' | 'PENDING' | 'RESOLVED' | 'CLOSED';
 type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser(req);
+  if (!user) return unauthorized();
+
+  const { id } = await params;
+  const ticketId = parseId(id);
+  if (ticketId === null) return badRequest('Invalid ticket id');
+
+  const ticket = await db.orm.public.Ticket.where({ id: ticketId }).first();
+  if (!ticket) return notFound('Ticket not found');
+
+  const staffRoles = ['ADMIN', 'STAFF', 'TEACHER'];
+  const involved = ticket.requesterId === user.id || ticket.assignedToId === user.id;
+  if (!involved && !staffRoles.includes(user.role)) return forbidden();
+
+  const requester = await db.orm.public.User.where({ id: ticket.requesterId }).first();
+  const assigned = ticket.assignedToId
+    ? await db.orm.public.User.where({ id: ticket.assignedToId }).first()
+    : null;
+
+  return json({
+    ticket: {
+      ...ticket,
+      requesterName: requester?.name ?? requester?.username ?? null,
+      assignedName: assigned?.name ?? assigned?.username ?? null,
+    },
+  });
+}
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser(req);

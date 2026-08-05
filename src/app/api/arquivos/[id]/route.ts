@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { del } from '@vercel/blob';
 import { db } from '@/prisma/db';
 import { json, badRequest, forbidden, notFound, unauthorized, parseId } from '@/lib/server';
 import { getCurrentUser } from '@/lib/server';
@@ -17,6 +18,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const isOwner = arquivo.uploadedById === user.id;
   const isAdmin = user.role === 'ADMIN';
   if (!isOwner && !isAdmin) return forbidden();
+
+  if (arquivo.url.includes('.blob.vercel-storage.com')) {
+    await del(arquivo.url);
+  }
 
   await db.orm.public.Arquivo.where({ id: arquivoId }).delete();
   return json({ ok: true });

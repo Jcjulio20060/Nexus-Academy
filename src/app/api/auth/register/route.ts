@@ -1,7 +1,8 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/prisma/db';
-import { json, badRequest, conflict } from '@/lib/server';
+import { badRequest, conflict } from '@/lib/server';
 import { hashPassword } from '@/lib/auth';
+import { signToken } from '@/lib/jwt';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,8 +31,20 @@ export async function POST(req: NextRequest) {
     role: 'STUDENT',
   });
 
-  return json(
+  const token = signToken({ userId: user.id, role: user.role, email: user.email });
+
+  const res = NextResponse.json(
     { user: { id: user.id, email: user.email, username: user.username, name: user.name, role: user.role } },
-    201
+    { status: 201 }
   );
+
+  res.cookies.set('nexus_token', token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  return res;
 }

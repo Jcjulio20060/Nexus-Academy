@@ -3,13 +3,24 @@ import { db } from '@/prisma/db';
 import { json, badRequest, notFound, requireAdmin } from '@/lib/server';
 import { getCurrentUser } from '@/lib/server';
 
-export async function GET(req: NextRequest) {
-  const user = await getCurrentUser(req);
-  const guard = requireAdmin(user);
-  if (guard) return guard;
-
+export async function GET() {
   const professores = await db.orm.public.Professor.all();
-  return json({ professores });
+
+  const publicList = await Promise.all(
+    professores.map(async (professor) => {
+      const user = await db.orm.public.User.where({ id: professor.userId }).first();
+      return {
+        id: professor.id,
+        userId: professor.userId,
+        name: user?.name ?? null,
+        department: professor.department,
+        bio: professor.bio,
+        active: professor.active,
+      };
+    })
+  );
+
+  return json({ professores: publicList });
 }
 
 export async function POST(req: NextRequest) {
