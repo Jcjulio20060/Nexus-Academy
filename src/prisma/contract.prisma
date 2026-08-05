@@ -68,6 +68,12 @@ enum NoticeAudience {
   STAFF
 }
 
+enum AbsenceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id         Int        @id @default(autoincrement())
   email      String     @unique
@@ -86,6 +92,7 @@ model User {
   ticketMessages   TicketMessage[]
   notices          Notice[]
   importantDates   ImportantDate[]
+  reviewedAbsences AbsenceJustification[] @relation("ReviewedAbsences")
 }
 
 model Aluno {
@@ -232,4 +239,30 @@ model Notice {
   expiresAt    DateTime?
   createdBy    User?           @relation(fields: [createdById], references: [id])
   createdById  Int?
+}
+
+model FAQ {
+  id          Int      @id @default(autoincrement())
+  question    String
+  answer      String
+  category    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model AbsenceJustification {
+  id             Int           @id @default(autoincrement())
+  aluno          Aluno         @relation(fields: [alunoId], references: [id])
+  alunoId        Int
+  submittedAt    DateTime      @default(now())
+  startDate      DateTime
+  endDate        DateTime
+  reason         String
+  proofUrl       String?
+  status         AbsenceStatus @default(PENDING)
+  reviewedBy     User?         @relation("ReviewedAbsences", fields: [reviewedById], references: [id])
+  reviewedById   Int?
+  reviewedAt     DateTime?
+  response       String?
 }
