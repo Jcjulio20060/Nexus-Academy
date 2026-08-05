@@ -1,21 +1,135 @@
 // use prisma-next
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String?
-  name      String?
-  posts     Post[]
-  createdAt DateTime @default(now())
-  updatedAt temporal.updatedAt()
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+  STAFF
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  createdAt DateTime @default(now())
-  updatedAt temporal.updatedAt()
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum EnrollmentStatus {
+  ENROLLED
+  WAITLISTED
+  DROPPED
+  COMPLETED
+}
+
+enum FileCategory {
+  MATERIAL
+  DOCUMENT
+  ANNOUNCEMENT
+  OTHER
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  username   String?    @unique
+  name       String?
+  role       UserRole   @default(STUDENT)
+  phone      String?
+  createdAt  DateTime   @default(now())
+  updatedAt  temporal.updatedAt()
+
+  aluno      Aluno?
+  professor  Professor?
+  arquivos   Arquivo[]  @relation("UploadedFiles")
+}
+
+model Aluno {
+  id                 Int          @id @default(autoincrement())
+  user               User         @relation(fields: [userId], references: [id])
+  userId             Int          @unique
+  registrationNumber String       @unique
+  course             String
+  year               Int
+  active             Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+
+  matriculas         Matricula[]
+  documentos         Arquivo[]    @relation("AlunoArquivos")
+}
+
+model Professor {
+  id             Int          @id @default(autoincrement())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int          @unique
+  employeeNumber String       @unique
+  department     String
+  bio            String?
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+
+  cadeiras       Cadeira[]
+  horarios       Horario[]
+  documentos     Arquivo[]    @relation("ProfessorArquivos")
+}
+
+model Cadeira {
+  id          Int          @id @default(autoincrement())
+  code        String       @unique
+  title       String
+  description String?
+  credits     Int?
+  teacher     Professor?   @relation(fields: [teacherId], references: [id])
+  teacherId   Int?
+  createdAt   DateTime     @default(now())
+
+  horarios    Horario[]
+  matriculas  Matricula[]
+  arquivos    Arquivo[]    @relation("CadeiraArquivos")
+}
+
+model Horario {
+  id          Int        @id @default(autoincrement())
+  cadeira     Cadeira    @relation(fields: [cadeiraId], references: [id])
+  cadeiraId   Int
+  professor   Professor? @relation(fields: [professorId], references: [id])
+  professorId Int?
+  day         Weekday
+  startTime   String
+  endTime     String
+  location    String?
+  createdAt   DateTime   @default(now())
+}
+
+model Matricula {
+  id            Int             @id @default(autoincrement())
+  aluno         Aluno           @relation(fields: [alunoId], references: [id])
+  alunoId       Int
+  cadeira       Cadeira         @relation(fields: [cadeiraId], references: [id])
+  cadeiraId     Int
+  status        EnrollmentStatus @default(ENROLLED)
+  enrolledAt    DateTime         @default(now())
+  grade         Float?
+
+  @@unique([alunoId, cadeiraId])
+}
+
+model Arquivo {
+  id            Int          @id @default(autoincrement())
+  title         String
+  description   String?
+  url           String
+  category      FileCategory @default(MATERIAL)
+  visible       Boolean      @default(true)
+  uploadedAt    DateTime     @default(now())
+  uploadedBy    User?        @relation("UploadedFiles", fields: [uploadedById], references: [id])
+  uploadedById  Int?
+  aluno         Aluno?       @relation("AlunoArquivos", fields: [alunoId], references: [id])
+  alunoId       Int?
+  professor     Professor?   @relation("ProfessorArquivos", fields: [professorId], references: [id])
+  professorId   Int?
+  cadeira       Cadeira?     @relation("CadeiraArquivos", fields: [cadeiraId], references: [id])
+  cadeiraId     Int?
 }
