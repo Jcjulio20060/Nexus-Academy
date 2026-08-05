@@ -31,6 +31,43 @@ enum FileCategory {
   OTHER
 }
 
+enum TicketStatus {
+  OPEN
+  PENDING
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ImportantDateCategory {
+  EXAM
+  PROJECT
+  ACTIVITY
+  DEADLINE
+  EVENT
+  OTHER
+}
+
+enum NoticeCategory {
+  GENERAL
+  ALERT
+  MAINTENANCE
+  REMINDER
+}
+
+enum NoticeAudience {
+  ALL
+  STUDENTS
+  TEACHERS
+  STAFF
+}
+
 model User {
   id         Int        @id @default(autoincrement())
   email      String     @unique
@@ -44,6 +81,11 @@ model User {
   aluno      Aluno?
   professor  Professor?
   arquivos   Arquivo[]  @relation("UploadedFiles")
+  ticketsRequested Ticket[]       @relation("RequesterTickets")
+  ticketsAssigned  Ticket[]       @relation("AssignedTickets")
+  ticketMessages   TicketMessage[]
+  notices          Notice[]
+  importantDates   ImportantDate[]
 }
 
 model Aluno {
@@ -132,4 +174,62 @@ model Arquivo {
   professorId   Int?
   cadeira       Cadeira?     @relation("CadeiraArquivos", fields: [cadeiraId], references: [id])
   cadeiraId     Int?
+}
+
+model Ticket {
+  id            Int            @id @default(autoincrement())
+  subject       String
+  description   String?
+  requester     User           @relation("RequesterTickets", fields: [requesterId], references: [id])
+  requesterId   Int
+  assignedTo    User?          @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  assignedToId  Int?
+  status        TicketStatus   @default(OPEN)
+  priority      TicketPriority @default(MEDIUM)
+  createdAt     DateTime       @default(now())
+  updatedAt     temporal.updatedAt()
+
+  messages      TicketMessage[]
+}
+
+model TicketMessage {
+  id         Int      @id @default(autoincrement())
+  ticket     Ticket   @relation(fields: [ticketId], references: [id])
+  ticketId   Int
+  sender     User     @relation(fields: [senderId], references: [id])
+  senderId   Int
+  body       String
+  internal   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model ImportantDate {
+  id                Int                    @id @default(autoincrement())
+  title             String
+  description       String?
+  category          ImportantDateCategory @default(OTHER)
+  date              DateTime
+  endDate           DateTime?
+  allDay            Boolean               @default(true)
+  location          String?
+  relatedCadeira    Cadeira?              @relation(fields: [relatedCadeiraId], references: [id])
+  relatedCadeiraId  Int?
+  createdBy         User?                 @relation(fields: [createdById], references: [id])
+  createdById       Int?
+  createdAt         DateTime              @default(now())
+  visible           Boolean               @default(true)
+}
+
+model Notice {
+  id           Int             @id @default(autoincrement())
+  title        String
+  content      String
+  category     NoticeCategory  @default(GENERAL)
+  audience     NoticeAudience  @default(ALL)
+  isPinned     Boolean         @default(false)
+  visible      Boolean         @default(true)
+  publishedAt  DateTime        @default(now())
+  expiresAt    DateTime?
+  createdBy    User?           @relation(fields: [createdById], references: [id])
+  createdById  Int?
 }
