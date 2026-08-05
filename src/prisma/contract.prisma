@@ -75,13 +75,14 @@ enum AbsenceStatus {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  username   String?    @unique
-  name       String?
-  role       UserRole   @default(STUDENT)
-  phone      String?
-  createdAt  DateTime   @default(now())
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  username     String?    @unique
+  passwordHash String?
+  name         String?
+  role         UserRole   @default(STUDENT)
+  phone        String?
+  createdAt    DateTime   @default(now())
   updatedAt  temporal.updatedAt()
 
   aluno      Aluno?
@@ -130,6 +131,7 @@ model Cadeira {
   title       String
   description String?
   credits     Int?
+  semester    Int?
   teacher     Professor?   @relation(fields: [teacherId], references: [id])
   teacherId   Int?
   createdAt   DateTime     @default(now())
