@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { db } from '@/prisma/db';
-import { json, badRequest, unauthorized } from '@/lib/server';
+import { json, badRequest, unauthorized, requireRole } from '@/lib/server';
 import { getCurrentUser } from '@/lib/server';
 
 export async function GET() {
@@ -10,6 +10,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser(req);
+  const guard = requireRole(user, ['ADMIN', 'STAFF', 'TEACHER']);
+  if (guard) return guard;
   if (!user) return unauthorized();
 
   const body = await req.json();

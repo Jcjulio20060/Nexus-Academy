@@ -1,0 +1,167 @@
+[
+  {
+    "id": "column.public.absenceJustification.cadeiraId",
+    "label": "Add column \"cadeiraId\" to \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "cadeiraId",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"cadeiraId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "absenceJustification",
+          "cadeiraId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"cadeiraId\"",
+        "sql": "ALTER TABLE \"public\".\"absenceJustification\" ADD COLUMN \"cadeiraId\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"cadeiraId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "absenceJustification",
+          "cadeiraId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.cadeira.semester",
+    "label": "Add column \"semester\" to \"cadeira\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "semester",
+        "table": "cadeira"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"semester\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "cadeira",
+          "semester"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"semester\"",
+        "sql": "ALTER TABLE \"public\".\"cadeira\" ADD COLUMN \"semester\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"semester\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "cadeira",
+          "semester"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.absenceJustification.absenceJustification_cadeiraId_idx_5b4025a7",
+    "label": "Create index \"absenceJustification_cadeiraId_idx_5b4025a7\" on \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "absenceJustification_cadeiraId_idx_5b4025a7",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"absenceJustification_cadeiraId_idx_5b4025a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"absenceJustification_cadeiraId_idx_5b4025a7\"",
+        "sql": "CREATE INDEX \"absenceJustification_cadeiraId_idx_5b4025a7\" ON \"public\".\"absenceJustification\" (\"cadeiraId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"absenceJustification_cadeiraId_idx_5b4025a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.absenceJustification.absenceJustification_cadeiraId_fkey",
+    "label": "Add foreign key \"absenceJustification_cadeiraId_fkey\" on \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "absenceJustification_cadeiraId_fkey",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"absenceJustification_cadeiraId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_cadeiraId_fkey",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"absenceJustification_cadeiraId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"absenceJustification\"\nADD CONSTRAINT \"absenceJustification_cadeiraId_fkey\"\nFOREIGN KEY (\"cadeiraId\")\nREFERENCES \"public\".\"cadeira\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"absenceJustification_cadeiraId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_cadeiraId_fkey",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ]
+  }
+]

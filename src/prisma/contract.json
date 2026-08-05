@@ -298,6 +298,13 @@
                   "kind": "scalar"
                 }
               },
+              "cadeiraId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "endDate": {
                 "nullable": false,
                 "type": {
@@ -391,6 +398,21 @@
                   "namespace": "public"
                 }
               },
+              "cadeira": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "cadeiraId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Cadeira",
+                  "namespace": "public"
+                }
+              },
               "reviewedBy": {
                 "cardinality": "N:1",
                 "on": {
@@ -411,6 +433,9 @@
               "fields": {
                 "alunoId": {
                   "column": "alunoId"
+                },
+                "cadeiraId": {
+                  "column": "cadeiraId"
                 },
                 "endDate": {
                   "column": "endDate"
@@ -799,6 +824,13 @@
                   "kind": "scalar"
                 }
               },
+              "semester": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "teacherId": {
                 "nullable": true,
                 "type": {
@@ -815,6 +847,21 @@
               }
             },
             "relations": {
+              "absences": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "cadeiraId"
+                  ]
+                },
+                "to": {
+                  "model": "AbsenceJustification",
+                  "namespace": "public"
+                }
+              },
               "arquivos": {
                 "cardinality": "1:N",
                 "on": {
@@ -892,6 +939,9 @@
                 },
                 "id": {
                   "column": "id"
+                },
+                "semester": {
+                  "column": "semester"
                 },
                 "teacherId": {
                   "column": "teacherId"
@@ -2202,6 +2252,11 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "cadeiraId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
+                },
                 "endDate": {
                   "codecId": "pg/timestamptz@1",
                   "nativeType": "timestamptz",
@@ -2291,6 +2346,22 @@
                 {
                   "source": {
                     "columns": [
+                      "cadeiraId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "absenceJustification"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "cadeira"
+                  }
+                },
+                {
+                  "source": {
+                    "columns": [
                       "reviewedById"
                     ],
                     "namespaceId": "public",
@@ -2312,6 +2383,14 @@
                   ],
                   "name": "absenceJustification_alunoId_idx_61a7e8dd",
                   "prefix": "absenceJustification_alunoId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "cadeiraId"
+                  ],
+                  "name": "absenceJustification_cadeiraId_idx_5b4025a7",
+                  "prefix": "absenceJustification_cadeiraId_idx",
                   "unique": false
                 },
                 {
@@ -2650,6 +2729,11 @@
                   },
                   "nativeType": "int4",
                   "nullable": false
+                },
+                "semester": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
                 },
                 "teacherId": {
                   "codecId": "pg/int4@1",
@@ -3877,7 +3961,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "015991fe7889faae04a08dc94e4d74c98008c3950aeb00ba2e3c2bad618e79dc"
+    "storageHash": "6613c0bd668b83d6745f2fca52de245b11cc4c4c385dd6da4923860503e0c734"
   },
   "execution": {
     "executionHash": "421e0926d68ff70be5f0c5afc1ab1bbbca2e6f6c06947d4d7ebaab1b2be8010b",

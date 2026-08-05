@@ -51,10 +51,27 @@ export function requireAuth(user: Awaited<ReturnType<typeof getCurrentUser>>) {
   return null;
 }
 
+export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'STAFF';
+
+export function requireRole(
+  user: Awaited<ReturnType<typeof getCurrentUser>>,
+  roles: readonly UserRole[]
+) {
+  if (!user) return unauthorized();
+  if (!roles.includes(user.role)) return forbidden('Insufficient privileges');
+  return null;
+}
+
 export function requireAdmin(user: Awaited<ReturnType<typeof getCurrentUser>>) {
   if (!user) return unauthorized();
   if (user.role !== 'ADMIN') return forbidden('Admin privileges required');
   return null;
+}
+
+export function parseId(value: string | undefined) {
+  if (value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
 export async function parseJsonRequest(req: NextRequest) {

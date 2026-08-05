@@ -1,0 +1,2824 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.absenceJustification",
+    "label": "Create table \"absenceJustification\"",
+    "summary": "Creates table \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"absenceJustification\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"absenceJustification\"",
+        "sql": "CREATE TABLE \"public\".\"absenceJustification\" (\n  \"alunoId\" int4 NOT NULL,\n  \"endDate\" timestamptz NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"proofUrl\" text,\n  \"reason\" text NOT NULL,\n  \"response\" text,\n  \"reviewedAt\" timestamptz,\n  \"reviewedById\" int4,\n  \"startDate\" timestamptz NOT NULL,\n  \"status\" text DEFAULT 'PENDING' NOT NULL,\n  \"submittedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"absenceJustification\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.aluno",
+    "label": "Create table \"aluno\"",
+    "summary": "Creates table \"aluno\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aluno"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aluno\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aluno\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aluno\"",
+        "sql": "CREATE TABLE \"public\".\"aluno\" (\n  \"active\" bool DEFAULT true NOT NULL,\n  \"course\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"registrationNumber\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  \"year\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aluno\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aluno\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.arquivo",
+    "label": "Create table \"arquivo\"",
+    "summary": "Creates table \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"arquivo\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"arquivo\"",
+        "sql": "CREATE TABLE \"public\".\"arquivo\" (\n  \"alunoId\" int4,\n  \"cadeiraId\" int4,\n  \"category\" text DEFAULT 'MATERIAL' NOT NULL,\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"professorId\" int4,\n  \"title\" text NOT NULL,\n  \"uploadedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"uploadedById\" int4,\n  \"url\" text NOT NULL,\n  \"visible\" bool DEFAULT true NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"arquivo\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.cadeira",
+    "label": "Create table \"cadeira\"",
+    "summary": "Creates table \"cadeira\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "cadeira"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"cadeira\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cadeira\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"cadeira\"",
+        "sql": "CREATE TABLE \"public\".\"cadeira\" (\n  \"code\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"credits\" int4,\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"teacherId\" int4,\n  \"title\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"cadeira\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cadeira\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.fAQ",
+    "label": "Create table \"fAQ\"",
+    "summary": "Creates table \"fAQ\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "fAQ"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"fAQ\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fAQ\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"fAQ\"",
+        "sql": "CREATE TABLE \"public\".\"fAQ\" (\n  \"answer\" text NOT NULL,\n  \"category\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"question\" text NOT NULL,\n  \"updatedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"fAQ\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fAQ\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.horario",
+    "label": "Create table \"horario\"",
+    "summary": "Creates table \"horario\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "horario"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"horario\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"horario\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"horario\"",
+        "sql": "CREATE TABLE \"public\".\"horario\" (\n  \"cadeiraId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"day\" text NOT NULL,\n  \"endTime\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"location\" text,\n  \"professorId\" int4,\n  \"startTime\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"horario\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"horario\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.importantDate",
+    "label": "Create table \"importantDate\"",
+    "summary": "Creates table \"importantDate\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "importantDate"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"importantDate\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"importantDate\"",
+        "sql": "CREATE TABLE \"public\".\"importantDate\" (\n  \"allDay\" bool DEFAULT true NOT NULL,\n  \"category\" text DEFAULT 'OTHER' NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"createdById\" int4,\n  \"date\" timestamptz NOT NULL,\n  \"description\" text,\n  \"endDate\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"location\" text,\n  \"relatedCadeiraId\" int4,\n  \"title\" text NOT NULL,\n  \"visible\" bool DEFAULT true NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"importantDate\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.matricula",
+    "label": "Create table \"matricula\"",
+    "summary": "Creates table \"matricula\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"matricula\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"matricula\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"matricula\"",
+        "sql": "CREATE TABLE \"public\".\"matricula\" (\n  \"alunoId\" int4 NOT NULL,\n  \"cadeiraId\" int4 NOT NULL,\n  \"enrolledAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"grade\" float8,\n  \"id\" SERIAL NOT NULL,\n  \"status\" text DEFAULT 'ENROLLED' NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"matricula\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"matricula\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.notice",
+    "label": "Create table \"notice\"",
+    "summary": "Creates table \"notice\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "notice"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"notice\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notice\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"notice\"",
+        "sql": "CREATE TABLE \"public\".\"notice\" (\n  \"audience\" text DEFAULT 'ALL' NOT NULL,\n  \"category\" text DEFAULT 'GENERAL' NOT NULL,\n  \"content\" text NOT NULL,\n  \"createdById\" int4,\n  \"expiresAt\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"isPinned\" bool DEFAULT false NOT NULL,\n  \"publishedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"title\" text NOT NULL,\n  \"visible\" bool DEFAULT true NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"notice\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notice\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.professor",
+    "label": "Create table \"professor\"",
+    "summary": "Creates table \"professor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "professor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"professor\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"professor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"professor\"",
+        "sql": "CREATE TABLE \"public\".\"professor\" (\n  \"active\" bool DEFAULT true NOT NULL,\n  \"bio\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"department\" text NOT NULL,\n  \"employeeNumber\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"professor\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"professor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ticket",
+    "label": "Create table \"ticket\"",
+    "summary": "Creates table \"ticket\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ticket\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticket\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ticket\"",
+        "sql": "CREATE TABLE \"public\".\"ticket\" (\n  \"assignedToId\" int4,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"priority\" text DEFAULT 'MEDIUM' NOT NULL,\n  \"requesterId\" int4 NOT NULL,\n  \"status\" text DEFAULT 'OPEN' NOT NULL,\n  \"subject\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ticket\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticket\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ticketMessage",
+    "label": "Create table \"ticketMessage\"",
+    "summary": "Creates table \"ticketMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ticketMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ticketMessage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticketMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ticketMessage\"",
+        "sql": "CREATE TABLE \"public\".\"ticketMessage\" (\n  \"body\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"internal\" bool DEFAULT false NOT NULL,\n  \"senderId\" int4 NOT NULL,\n  \"ticketId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ticketMessage\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticketMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.user",
+    "label": "Create table \"user\"",
+    "summary": "Creates table \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"user\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"user\"",
+        "sql": "CREATE TABLE \"public\".\"user\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text,\n  \"passwordHash\" text,\n  \"phone\" text,\n  \"role\" text DEFAULT 'STUDENT' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"username\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"user\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aluno.aluno_userId_key",
+    "label": "Add unique constraint on \"aluno\" (userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aluno_userId_key",
+        "table": "aluno"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aluno_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aluno_userId_key",
+          "public",
+          "\"public\".\"aluno\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aluno_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"aluno\" ADD CONSTRAINT \"aluno_userId_key\" UNIQUE (\"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aluno_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aluno_userId_key",
+          "public",
+          "\"public\".\"aluno\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aluno.aluno_registrationNumber_key",
+    "label": "Add unique constraint on \"aluno\" (registrationNumber)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aluno_registrationNumber_key",
+        "table": "aluno"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aluno_registrationNumber_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aluno_registrationNumber_key",
+          "public",
+          "\"public\".\"aluno\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aluno_registrationNumber_key\"",
+        "sql": "ALTER TABLE \"public\".\"aluno\" ADD CONSTRAINT \"aluno_registrationNumber_key\" UNIQUE (\"registrationNumber\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aluno_registrationNumber_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aluno_registrationNumber_key",
+          "public",
+          "\"public\".\"aluno\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.cadeira.cadeira_code_key",
+    "label": "Add unique constraint on \"cadeira\" (code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "cadeira_code_key",
+        "table": "cadeira"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"cadeira_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cadeira_code_key",
+          "public",
+          "\"public\".\"cadeira\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"cadeira_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"cadeira\" ADD CONSTRAINT \"cadeira_code_key\" UNIQUE (\"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"cadeira_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cadeira_code_key",
+          "public",
+          "\"public\".\"cadeira\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.matricula.matricula_alunoId_cadeiraId_key",
+    "label": "Add unique constraint on \"matricula\" (alunoId, cadeiraId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "matricula_alunoId_cadeiraId_key",
+        "table": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"matricula_alunoId_cadeiraId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_alunoId_cadeiraId_key",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"matricula_alunoId_cadeiraId_key\"",
+        "sql": "ALTER TABLE \"public\".\"matricula\" ADD CONSTRAINT \"matricula_alunoId_cadeiraId_key\" UNIQUE (\"alunoId\", \"cadeiraId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"matricula_alunoId_cadeiraId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_alunoId_cadeiraId_key",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.professor.professor_userId_key",
+    "label": "Add unique constraint on \"professor\" (userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "professor_userId_key",
+        "table": "professor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"professor_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "professor_userId_key",
+          "public",
+          "\"public\".\"professor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"professor_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"professor\" ADD CONSTRAINT \"professor_userId_key\" UNIQUE (\"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"professor_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "professor_userId_key",
+          "public",
+          "\"public\".\"professor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.professor.professor_employeeNumber_key",
+    "label": "Add unique constraint on \"professor\" (employeeNumber)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "professor_employeeNumber_key",
+        "table": "professor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"professor_employeeNumber_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "professor_employeeNumber_key",
+          "public",
+          "\"public\".\"professor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"professor_employeeNumber_key\"",
+        "sql": "ALTER TABLE \"public\".\"professor\" ADD CONSTRAINT \"professor_employeeNumber_key\" UNIQUE (\"employeeNumber\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"professor_employeeNumber_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "professor_employeeNumber_key",
+          "public",
+          "\"public\".\"professor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.user.user_email_key",
+    "label": "Add unique constraint on \"user\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "user_email_key",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"user_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_email_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"user_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD CONSTRAINT \"user_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"user_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_email_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.user.user_username_key",
+    "label": "Add unique constraint on \"user\" (username)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "user_username_key",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"user_username_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_username_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"user_username_key\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD CONSTRAINT \"user_username_key\" UNIQUE (\"username\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"user_username_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_username_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.absenceJustification.absenceJustification_status_check",
+    "label": "Add check constraint \"absenceJustification_status_check\" on \"absenceJustification\".\"status\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "absenceJustification_status_check",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"absenceJustification_status_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_status_check",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"absenceJustification_status_check\"",
+        "sql": "ALTER TABLE \"public\".\"absenceJustification\" ADD CONSTRAINT \"absenceJustification_status_check\" CHECK (\"status\" IN ('PENDING', 'APPROVED', 'REJECTED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"absenceJustification_status_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_status_check",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.arquivo.arquivo_category_check",
+    "label": "Add check constraint \"arquivo_category_check\" on \"arquivo\".\"category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "arquivo_category_check",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"arquivo_category_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_category_check",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"arquivo_category_check\"",
+        "sql": "ALTER TABLE \"public\".\"arquivo\" ADD CONSTRAINT \"arquivo_category_check\" CHECK (\"category\" IN ('MATERIAL', 'DOCUMENT', 'ANNOUNCEMENT', 'OTHER'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"arquivo_category_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_category_check",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.horario.horario_day_check",
+    "label": "Add check constraint \"horario_day_check\" on \"horario\".\"day\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "horario_day_check",
+        "table": "horario"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"horario_day_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "horario_day_check",
+          "public",
+          "\"public\".\"horario\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"horario_day_check\"",
+        "sql": "ALTER TABLE \"public\".\"horario\" ADD CONSTRAINT \"horario_day_check\" CHECK (\"day\" IN ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"horario_day_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "horario_day_check",
+          "public",
+          "\"public\".\"horario\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.importantDate.importantDate_category_check",
+    "label": "Add check constraint \"importantDate_category_check\" on \"importantDate\".\"category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "importantDate_category_check",
+        "table": "importantDate"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"importantDate_category_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "importantDate_category_check",
+          "public",
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"importantDate_category_check\"",
+        "sql": "ALTER TABLE \"public\".\"importantDate\" ADD CONSTRAINT \"importantDate_category_check\" CHECK (\"category\" IN ('EXAM', 'PROJECT', 'ACTIVITY', 'DEADLINE', 'EVENT', 'OTHER'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"importantDate_category_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "importantDate_category_check",
+          "public",
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.matricula.matricula_status_check",
+    "label": "Add check constraint \"matricula_status_check\" on \"matricula\".\"status\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "matricula_status_check",
+        "table": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"matricula_status_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_status_check",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"matricula_status_check\"",
+        "sql": "ALTER TABLE \"public\".\"matricula\" ADD CONSTRAINT \"matricula_status_check\" CHECK (\"status\" IN ('ENROLLED', 'WAITLISTED', 'DROPPED', 'COMPLETED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"matricula_status_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_status_check",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.notice.notice_category_check",
+    "label": "Add check constraint \"notice_category_check\" on \"notice\".\"category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "notice_category_check",
+        "table": "notice"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"notice_category_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notice_category_check",
+          "public",
+          "\"public\".\"notice\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"notice_category_check\"",
+        "sql": "ALTER TABLE \"public\".\"notice\" ADD CONSTRAINT \"notice_category_check\" CHECK (\"category\" IN ('GENERAL', 'ALERT', 'MAINTENANCE', 'REMINDER'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"notice_category_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notice_category_check",
+          "public",
+          "\"public\".\"notice\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.notice.notice_audience_check",
+    "label": "Add check constraint \"notice_audience_check\" on \"notice\".\"audience\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "notice_audience_check",
+        "table": "notice"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"notice_audience_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notice_audience_check",
+          "public",
+          "\"public\".\"notice\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"notice_audience_check\"",
+        "sql": "ALTER TABLE \"public\".\"notice\" ADD CONSTRAINT \"notice_audience_check\" CHECK (\"audience\" IN ('ALL', 'STUDENTS', 'TEACHERS', 'STAFF'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"notice_audience_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notice_audience_check",
+          "public",
+          "\"public\".\"notice\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.ticket.ticket_status_check",
+    "label": "Add check constraint \"ticket_status_check\" on \"ticket\".\"status\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "ticket_status_check",
+        "table": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ticket_status_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_status_check",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"ticket_status_check\"",
+        "sql": "ALTER TABLE \"public\".\"ticket\" ADD CONSTRAINT \"ticket_status_check\" CHECK (\"status\" IN ('OPEN', 'PENDING', 'RESOLVED', 'CLOSED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ticket_status_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_status_check",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.ticket.ticket_priority_check",
+    "label": "Add check constraint \"ticket_priority_check\" on \"ticket\".\"priority\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "ticket_priority_check",
+        "table": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ticket_priority_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_priority_check",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"ticket_priority_check\"",
+        "sql": "ALTER TABLE \"public\".\"ticket\" ADD CONSTRAINT \"ticket_priority_check\" CHECK (\"priority\" IN ('LOW', 'MEDIUM', 'HIGH', 'URGENT'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ticket_priority_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_priority_check",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.user.user_role_check",
+    "label": "Add check constraint \"user_role_check\" on \"user\".\"role\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "user_role_check",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"user_role_check\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_role_check",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"user_role_check\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD CONSTRAINT \"user_role_check\" CHECK (\"role\" IN ('STUDENT', 'TEACHER', 'ADMIN', 'STAFF'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"user_role_check\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_role_check",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.absenceJustification.absenceJustification_alunoId_idx_61a7e8dd",
+    "label": "Create index \"absenceJustification_alunoId_idx_61a7e8dd\" on \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "absenceJustification_alunoId_idx_61a7e8dd",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"absenceJustification_alunoId_idx_61a7e8dd\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification_alunoId_idx_61a7e8dd\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"absenceJustification_alunoId_idx_61a7e8dd\"",
+        "sql": "CREATE INDEX \"absenceJustification_alunoId_idx_61a7e8dd\" ON \"public\".\"absenceJustification\" (\"alunoId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"absenceJustification_alunoId_idx_61a7e8dd\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification_alunoId_idx_61a7e8dd\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.absenceJustification.absenceJustification_reviewedById_idx_e2835478",
+    "label": "Create index \"absenceJustification_reviewedById_idx_e2835478\" on \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "absenceJustification_reviewedById_idx_e2835478",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"absenceJustification_reviewedById_idx_e2835478\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification_reviewedById_idx_e2835478\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"absenceJustification_reviewedById_idx_e2835478\"",
+        "sql": "CREATE INDEX \"absenceJustification_reviewedById_idx_e2835478\" ON \"public\".\"absenceJustification\" (\"reviewedById\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"absenceJustification_reviewedById_idx_e2835478\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"absenceJustification_reviewedById_idx_e2835478\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.arquivo.arquivo_alunoId_idx_61a7e8dd",
+    "label": "Create index \"arquivo_alunoId_idx_61a7e8dd\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "arquivo_alunoId_idx_61a7e8dd",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"arquivo_alunoId_idx_61a7e8dd\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_alunoId_idx_61a7e8dd\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"arquivo_alunoId_idx_61a7e8dd\"",
+        "sql": "CREATE INDEX \"arquivo_alunoId_idx_61a7e8dd\" ON \"public\".\"arquivo\" (\"alunoId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"arquivo_alunoId_idx_61a7e8dd\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_alunoId_idx_61a7e8dd\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.arquivo.arquivo_cadeiraId_idx_5b4025a7",
+    "label": "Create index \"arquivo_cadeiraId_idx_5b4025a7\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "arquivo_cadeiraId_idx_5b4025a7",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"arquivo_cadeiraId_idx_5b4025a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"arquivo_cadeiraId_idx_5b4025a7\"",
+        "sql": "CREATE INDEX \"arquivo_cadeiraId_idx_5b4025a7\" ON \"public\".\"arquivo\" (\"cadeiraId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"arquivo_cadeiraId_idx_5b4025a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.arquivo.arquivo_professorId_idx_f17aa655",
+    "label": "Create index \"arquivo_professorId_idx_f17aa655\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "arquivo_professorId_idx_f17aa655",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"arquivo_professorId_idx_f17aa655\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_professorId_idx_f17aa655\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"arquivo_professorId_idx_f17aa655\"",
+        "sql": "CREATE INDEX \"arquivo_professorId_idx_f17aa655\" ON \"public\".\"arquivo\" (\"professorId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"arquivo_professorId_idx_f17aa655\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_professorId_idx_f17aa655\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.arquivo.arquivo_uploadedById_idx_b92fad21",
+    "label": "Create index \"arquivo_uploadedById_idx_b92fad21\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "arquivo_uploadedById_idx_b92fad21",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"arquivo_uploadedById_idx_b92fad21\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_uploadedById_idx_b92fad21\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"arquivo_uploadedById_idx_b92fad21\"",
+        "sql": "CREATE INDEX \"arquivo_uploadedById_idx_b92fad21\" ON \"public\".\"arquivo\" (\"uploadedById\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"arquivo_uploadedById_idx_b92fad21\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"arquivo_uploadedById_idx_b92fad21\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.cadeira.cadeira_teacherId_idx_bc266660",
+    "label": "Create index \"cadeira_teacherId_idx_bc266660\" on \"cadeira\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "cadeira_teacherId_idx_bc266660",
+        "table": "cadeira"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"cadeira_teacherId_idx_bc266660\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cadeira_teacherId_idx_bc266660\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"cadeira_teacherId_idx_bc266660\"",
+        "sql": "CREATE INDEX \"cadeira_teacherId_idx_bc266660\" ON \"public\".\"cadeira\" (\"teacherId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"cadeira_teacherId_idx_bc266660\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cadeira_teacherId_idx_bc266660\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.horario.horario_cadeiraId_idx_5b4025a7",
+    "label": "Create index \"horario_cadeiraId_idx_5b4025a7\" on \"horario\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "horario_cadeiraId_idx_5b4025a7",
+        "table": "horario"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"horario_cadeiraId_idx_5b4025a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"horario_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"horario_cadeiraId_idx_5b4025a7\"",
+        "sql": "CREATE INDEX \"horario_cadeiraId_idx_5b4025a7\" ON \"public\".\"horario\" (\"cadeiraId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"horario_cadeiraId_idx_5b4025a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"horario_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.horario.horario_professorId_idx_f17aa655",
+    "label": "Create index \"horario_professorId_idx_f17aa655\" on \"horario\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "horario_professorId_idx_f17aa655",
+        "table": "horario"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"horario_professorId_idx_f17aa655\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"horario_professorId_idx_f17aa655\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"horario_professorId_idx_f17aa655\"",
+        "sql": "CREATE INDEX \"horario_professorId_idx_f17aa655\" ON \"public\".\"horario\" (\"professorId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"horario_professorId_idx_f17aa655\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"horario_professorId_idx_f17aa655\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.importantDate.importantDate_createdById_idx_8bf640ed",
+    "label": "Create index \"importantDate_createdById_idx_8bf640ed\" on \"importantDate\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "importantDate_createdById_idx_8bf640ed",
+        "table": "importantDate"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"importantDate_createdById_idx_8bf640ed\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"importantDate_createdById_idx_8bf640ed\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"importantDate_createdById_idx_8bf640ed\"",
+        "sql": "CREATE INDEX \"importantDate_createdById_idx_8bf640ed\" ON \"public\".\"importantDate\" (\"createdById\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"importantDate_createdById_idx_8bf640ed\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"importantDate_createdById_idx_8bf640ed\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.importantDate.importantDate_relatedCadeiraId_idx_9eb78e1f",
+    "label": "Create index \"importantDate_relatedCadeiraId_idx_9eb78e1f\" on \"importantDate\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "importantDate_relatedCadeiraId_idx_9eb78e1f",
+        "table": "importantDate"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"importantDate_relatedCadeiraId_idx_9eb78e1f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"importantDate_relatedCadeiraId_idx_9eb78e1f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"importantDate_relatedCadeiraId_idx_9eb78e1f\"",
+        "sql": "CREATE INDEX \"importantDate_relatedCadeiraId_idx_9eb78e1f\" ON \"public\".\"importantDate\" (\"relatedCadeiraId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"importantDate_relatedCadeiraId_idx_9eb78e1f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"importantDate_relatedCadeiraId_idx_9eb78e1f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.matricula.matricula_alunoId_idx_61a7e8dd",
+    "label": "Create index \"matricula_alunoId_idx_61a7e8dd\" on \"matricula\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "matricula_alunoId_idx_61a7e8dd",
+        "table": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"matricula_alunoId_idx_61a7e8dd\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"matricula_alunoId_idx_61a7e8dd\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"matricula_alunoId_idx_61a7e8dd\"",
+        "sql": "CREATE INDEX \"matricula_alunoId_idx_61a7e8dd\" ON \"public\".\"matricula\" (\"alunoId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"matricula_alunoId_idx_61a7e8dd\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"matricula_alunoId_idx_61a7e8dd\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.matricula.matricula_cadeiraId_idx_5b4025a7",
+    "label": "Create index \"matricula_cadeiraId_idx_5b4025a7\" on \"matricula\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "matricula_cadeiraId_idx_5b4025a7",
+        "table": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"matricula_cadeiraId_idx_5b4025a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"matricula_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"matricula_cadeiraId_idx_5b4025a7\"",
+        "sql": "CREATE INDEX \"matricula_cadeiraId_idx_5b4025a7\" ON \"public\".\"matricula\" (\"cadeiraId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"matricula_cadeiraId_idx_5b4025a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"matricula_cadeiraId_idx_5b4025a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.notice.notice_createdById_idx_8bf640ed",
+    "label": "Create index \"notice_createdById_idx_8bf640ed\" on \"notice\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "notice_createdById_idx_8bf640ed",
+        "table": "notice"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"notice_createdById_idx_8bf640ed\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notice_createdById_idx_8bf640ed\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"notice_createdById_idx_8bf640ed\"",
+        "sql": "CREATE INDEX \"notice_createdById_idx_8bf640ed\" ON \"public\".\"notice\" (\"createdById\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"notice_createdById_idx_8bf640ed\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notice_createdById_idx_8bf640ed\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ticket.ticket_assignedToId_idx_45a131c2",
+    "label": "Create index \"ticket_assignedToId_idx_45a131c2\" on \"ticket\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ticket_assignedToId_idx_45a131c2",
+        "table": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ticket_assignedToId_idx_45a131c2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticket_assignedToId_idx_45a131c2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ticket_assignedToId_idx_45a131c2\"",
+        "sql": "CREATE INDEX \"ticket_assignedToId_idx_45a131c2\" ON \"public\".\"ticket\" (\"assignedToId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ticket_assignedToId_idx_45a131c2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticket_assignedToId_idx_45a131c2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ticket.ticket_requesterId_idx_a5f4af92",
+    "label": "Create index \"ticket_requesterId_idx_a5f4af92\" on \"ticket\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ticket_requesterId_idx_a5f4af92",
+        "table": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ticket_requesterId_idx_a5f4af92\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticket_requesterId_idx_a5f4af92\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ticket_requesterId_idx_a5f4af92\"",
+        "sql": "CREATE INDEX \"ticket_requesterId_idx_a5f4af92\" ON \"public\".\"ticket\" (\"requesterId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ticket_requesterId_idx_a5f4af92\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticket_requesterId_idx_a5f4af92\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ticketMessage.ticketMessage_senderId_idx_4689c490",
+    "label": "Create index \"ticketMessage_senderId_idx_4689c490\" on \"ticketMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ticketMessage_senderId_idx_4689c490",
+        "table": "ticketMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ticketMessage_senderId_idx_4689c490\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticketMessage_senderId_idx_4689c490\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ticketMessage_senderId_idx_4689c490\"",
+        "sql": "CREATE INDEX \"ticketMessage_senderId_idx_4689c490\" ON \"public\".\"ticketMessage\" (\"senderId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ticketMessage_senderId_idx_4689c490\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticketMessage_senderId_idx_4689c490\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ticketMessage.ticketMessage_ticketId_idx_2fe526c3",
+    "label": "Create index \"ticketMessage_ticketId_idx_2fe526c3\" on \"ticketMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ticketMessage_ticketId_idx_2fe526c3",
+        "table": "ticketMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ticketMessage_ticketId_idx_2fe526c3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticketMessage_ticketId_idx_2fe526c3\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ticketMessage_ticketId_idx_2fe526c3\"",
+        "sql": "CREATE INDEX \"ticketMessage_ticketId_idx_2fe526c3\" ON \"public\".\"ticketMessage\" (\"ticketId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ticketMessage_ticketId_idx_2fe526c3\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ticketMessage_ticketId_idx_2fe526c3\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.absenceJustification.absenceJustification_alunoId_fkey",
+    "label": "Add foreign key \"absenceJustification_alunoId_fkey\" on \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "absenceJustification_alunoId_fkey",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"absenceJustification_alunoId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_alunoId_fkey",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"absenceJustification_alunoId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"absenceJustification\"\nADD CONSTRAINT \"absenceJustification_alunoId_fkey\"\nFOREIGN KEY (\"alunoId\")\nREFERENCES \"public\".\"aluno\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"absenceJustification_alunoId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_alunoId_fkey",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.absenceJustification.absenceJustification_reviewedById_fkey",
+    "label": "Add foreign key \"absenceJustification_reviewedById_fkey\" on \"absenceJustification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "absenceJustification_reviewedById_fkey",
+        "table": "absenceJustification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"absenceJustification_reviewedById_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_reviewedById_fkey",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"absenceJustification_reviewedById_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"absenceJustification\"\nADD CONSTRAINT \"absenceJustification_reviewedById_fkey\"\nFOREIGN KEY (\"reviewedById\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"absenceJustification_reviewedById_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "absenceJustification_reviewedById_fkey",
+          "public",
+          "\"public\".\"absenceJustification\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aluno.aluno_userId_fkey",
+    "label": "Add foreign key \"aluno_userId_fkey\" on \"aluno\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aluno_userId_fkey",
+        "table": "aluno"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aluno_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aluno_userId_fkey",
+          "public",
+          "\"public\".\"aluno\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aluno_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aluno\"\nADD CONSTRAINT \"aluno_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aluno_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aluno_userId_fkey",
+          "public",
+          "\"public\".\"aluno\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.arquivo.arquivo_uploadedById_fkey",
+    "label": "Add foreign key \"arquivo_uploadedById_fkey\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "arquivo_uploadedById_fkey",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"arquivo_uploadedById_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_uploadedById_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"arquivo_uploadedById_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"arquivo\"\nADD CONSTRAINT \"arquivo_uploadedById_fkey\"\nFOREIGN KEY (\"uploadedById\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"arquivo_uploadedById_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_uploadedById_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.arquivo.arquivo_alunoId_fkey",
+    "label": "Add foreign key \"arquivo_alunoId_fkey\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "arquivo_alunoId_fkey",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"arquivo_alunoId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_alunoId_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"arquivo_alunoId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"arquivo\"\nADD CONSTRAINT \"arquivo_alunoId_fkey\"\nFOREIGN KEY (\"alunoId\")\nREFERENCES \"public\".\"aluno\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"arquivo_alunoId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_alunoId_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.arquivo.arquivo_professorId_fkey",
+    "label": "Add foreign key \"arquivo_professorId_fkey\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "arquivo_professorId_fkey",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"arquivo_professorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_professorId_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"arquivo_professorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"arquivo\"\nADD CONSTRAINT \"arquivo_professorId_fkey\"\nFOREIGN KEY (\"professorId\")\nREFERENCES \"public\".\"professor\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"arquivo_professorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_professorId_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.arquivo.arquivo_cadeiraId_fkey",
+    "label": "Add foreign key \"arquivo_cadeiraId_fkey\" on \"arquivo\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "arquivo_cadeiraId_fkey",
+        "table": "arquivo"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"arquivo_cadeiraId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_cadeiraId_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"arquivo_cadeiraId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"arquivo\"\nADD CONSTRAINT \"arquivo_cadeiraId_fkey\"\nFOREIGN KEY (\"cadeiraId\")\nREFERENCES \"public\".\"cadeira\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"arquivo_cadeiraId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "arquivo_cadeiraId_fkey",
+          "public",
+          "\"public\".\"arquivo\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.cadeira.cadeira_teacherId_fkey",
+    "label": "Add foreign key \"cadeira_teacherId_fkey\" on \"cadeira\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "cadeira_teacherId_fkey",
+        "table": "cadeira"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"cadeira_teacherId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cadeira_teacherId_fkey",
+          "public",
+          "\"public\".\"cadeira\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"cadeira_teacherId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"cadeira\"\nADD CONSTRAINT \"cadeira_teacherId_fkey\"\nFOREIGN KEY (\"teacherId\")\nREFERENCES \"public\".\"professor\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"cadeira_teacherId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cadeira_teacherId_fkey",
+          "public",
+          "\"public\".\"cadeira\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.horario.horario_cadeiraId_fkey",
+    "label": "Add foreign key \"horario_cadeiraId_fkey\" on \"horario\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "horario_cadeiraId_fkey",
+        "table": "horario"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"horario_cadeiraId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "horario_cadeiraId_fkey",
+          "public",
+          "\"public\".\"horario\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"horario_cadeiraId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"horario\"\nADD CONSTRAINT \"horario_cadeiraId_fkey\"\nFOREIGN KEY (\"cadeiraId\")\nREFERENCES \"public\".\"cadeira\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"horario_cadeiraId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "horario_cadeiraId_fkey",
+          "public",
+          "\"public\".\"horario\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.horario.horario_professorId_fkey",
+    "label": "Add foreign key \"horario_professorId_fkey\" on \"horario\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "horario_professorId_fkey",
+        "table": "horario"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"horario_professorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "horario_professorId_fkey",
+          "public",
+          "\"public\".\"horario\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"horario_professorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"horario\"\nADD CONSTRAINT \"horario_professorId_fkey\"\nFOREIGN KEY (\"professorId\")\nREFERENCES \"public\".\"professor\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"horario_professorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "horario_professorId_fkey",
+          "public",
+          "\"public\".\"horario\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.importantDate.importantDate_relatedCadeiraId_fkey",
+    "label": "Add foreign key \"importantDate_relatedCadeiraId_fkey\" on \"importantDate\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "importantDate_relatedCadeiraId_fkey",
+        "table": "importantDate"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"importantDate_relatedCadeiraId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "importantDate_relatedCadeiraId_fkey",
+          "public",
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"importantDate_relatedCadeiraId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"importantDate\"\nADD CONSTRAINT \"importantDate_relatedCadeiraId_fkey\"\nFOREIGN KEY (\"relatedCadeiraId\")\nREFERENCES \"public\".\"cadeira\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"importantDate_relatedCadeiraId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "importantDate_relatedCadeiraId_fkey",
+          "public",
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.importantDate.importantDate_createdById_fkey",
+    "label": "Add foreign key \"importantDate_createdById_fkey\" on \"importantDate\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "importantDate_createdById_fkey",
+        "table": "importantDate"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"importantDate_createdById_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "importantDate_createdById_fkey",
+          "public",
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"importantDate_createdById_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"importantDate\"\nADD CONSTRAINT \"importantDate_createdById_fkey\"\nFOREIGN KEY (\"createdById\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"importantDate_createdById_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "importantDate_createdById_fkey",
+          "public",
+          "\"public\".\"importantDate\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.matricula.matricula_alunoId_fkey",
+    "label": "Add foreign key \"matricula_alunoId_fkey\" on \"matricula\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "matricula_alunoId_fkey",
+        "table": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"matricula_alunoId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_alunoId_fkey",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"matricula_alunoId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"matricula\"\nADD CONSTRAINT \"matricula_alunoId_fkey\"\nFOREIGN KEY (\"alunoId\")\nREFERENCES \"public\".\"aluno\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"matricula_alunoId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_alunoId_fkey",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.matricula.matricula_cadeiraId_fkey",
+    "label": "Add foreign key \"matricula_cadeiraId_fkey\" on \"matricula\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "matricula_cadeiraId_fkey",
+        "table": "matricula"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"matricula_cadeiraId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_cadeiraId_fkey",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"matricula_cadeiraId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"matricula\"\nADD CONSTRAINT \"matricula_cadeiraId_fkey\"\nFOREIGN KEY (\"cadeiraId\")\nREFERENCES \"public\".\"cadeira\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"matricula_cadeiraId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "matricula_cadeiraId_fkey",
+          "public",
+          "\"public\".\"matricula\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.notice.notice_createdById_fkey",
+    "label": "Add foreign key \"notice_createdById_fkey\" on \"notice\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "notice_createdById_fkey",
+        "table": "notice"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"notice_createdById_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notice_createdById_fkey",
+          "public",
+          "\"public\".\"notice\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"notice_createdById_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"notice\"\nADD CONSTRAINT \"notice_createdById_fkey\"\nFOREIGN KEY (\"createdById\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"notice_createdById_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notice_createdById_fkey",
+          "public",
+          "\"public\".\"notice\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.professor.professor_userId_fkey",
+    "label": "Add foreign key \"professor_userId_fkey\" on \"professor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "professor_userId_fkey",
+        "table": "professor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"professor_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "professor_userId_fkey",
+          "public",
+          "\"public\".\"professor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"professor_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"professor\"\nADD CONSTRAINT \"professor_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"professor_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "professor_userId_fkey",
+          "public",
+          "\"public\".\"professor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ticket.ticket_requesterId_fkey",
+    "label": "Add foreign key \"ticket_requesterId_fkey\" on \"ticket\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ticket_requesterId_fkey",
+        "table": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ticket_requesterId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_requesterId_fkey",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ticket_requesterId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ticket\"\nADD CONSTRAINT \"ticket_requesterId_fkey\"\nFOREIGN KEY (\"requesterId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ticket_requesterId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_requesterId_fkey",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ticket.ticket_assignedToId_fkey",
+    "label": "Add foreign key \"ticket_assignedToId_fkey\" on \"ticket\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ticket_assignedToId_fkey",
+        "table": "ticket"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ticket_assignedToId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_assignedToId_fkey",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ticket_assignedToId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ticket\"\nADD CONSTRAINT \"ticket_assignedToId_fkey\"\nFOREIGN KEY (\"assignedToId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ticket_assignedToId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticket_assignedToId_fkey",
+          "public",
+          "\"public\".\"ticket\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ticketMessage.ticketMessage_ticketId_fkey",
+    "label": "Add foreign key \"ticketMessage_ticketId_fkey\" on \"ticketMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ticketMessage_ticketId_fkey",
+        "table": "ticketMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ticketMessage_ticketId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticketMessage_ticketId_fkey",
+          "public",
+          "\"public\".\"ticketMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ticketMessage_ticketId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ticketMessage\"\nADD CONSTRAINT \"ticketMessage_ticketId_fkey\"\nFOREIGN KEY (\"ticketId\")\nREFERENCES \"public\".\"ticket\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ticketMessage_ticketId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticketMessage_ticketId_fkey",
+          "public",
+          "\"public\".\"ticketMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ticketMessage.ticketMessage_senderId_fkey",
+    "label": "Add foreign key \"ticketMessage_senderId_fkey\" on \"ticketMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ticketMessage_senderId_fkey",
+        "table": "ticketMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ticketMessage_senderId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticketMessage_senderId_fkey",
+          "public",
+          "\"public\".\"ticketMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ticketMessage_senderId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ticketMessage\"\nADD CONSTRAINT \"ticketMessage_senderId_fkey\"\nFOREIGN KEY (\"senderId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ticketMessage_senderId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ticketMessage_senderId_fkey",
+          "public",
+          "\"public\".\"ticketMessage\""
+        ]
+      }
+    ]
+  }
+]

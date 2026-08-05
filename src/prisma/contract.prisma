@@ -139,6 +139,7 @@ model Cadeira {
   horarios    Horario[]
   matriculas  Matricula[]
   arquivos    Arquivo[]    @relation("CadeiraArquivos")
+  absences    AbsenceJustification[]
 }
 
 model Horario {
@@ -257,6 +258,8 @@ model AbsenceJustification {
   id             Int           @id @default(autoincrement())
   aluno          Aluno         @relation(fields: [alunoId], references: [id])
   alunoId        Int
+  cadeira        Cadeira?      @relation(fields: [cadeiraId], references: [id])
+  cadeiraId      Int?
   submittedAt    DateTime      @default(now())
   startDate      DateTime
   endDate        DateTime
@@ -267,4 +270,6 @@ model AbsenceJustification {
   reviewedById   Int?
   reviewedAt     DateTime?
   response       String?
+
+  @@index([cadeiraId])
 }
