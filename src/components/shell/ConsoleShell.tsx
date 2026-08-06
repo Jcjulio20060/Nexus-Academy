@@ -12,38 +12,42 @@ import StudentBadge from '../StudentBadge';
 import PushNotificationManager from '../PushNotificationManager';
 import Icon, { IconName } from '../ui/Icon';
 
-const NAV: { href: string; label: string; icon: IconName }[] = [
+const RAIL_NAV: { href: string; label: string; icon: IconName }[] = [
     { href: '/', label: 'Início', icon: 'home' },
+    { href: '/grade', label: 'Grade', icon: 'calendar' },
     { href: '/tickets', label: 'Tickets', icon: 'ticket' },
-    { href: '/justificativas', label: 'Faltas', icon: 'clipboard' }
+    { href: '/justificativas', label: 'Faltas', icon: 'clipboard' },
+    { href: '/materiais', label: 'Materiais', icon: 'book' },
+    { href: '/prazos', label: 'Prazos', icon: 'flag' },
+    { href: '/faq', label: 'FAQ', icon: 'help' }
 ];
+
+const TAB_NAV: { href: string; label: string; icon: IconName }[] = [
+    { href: '/', label: 'Início', icon: 'home' },
+    { href: '/grade', label: 'Grade', icon: 'calendar' },
+    { href: '/tickets', label: 'Tickets', icon: 'ticket' },
+    { href: '/justificativas', label: 'Faltas', icon: 'clipboard' },
+    { href: '/materiais', label: 'Materiais', icon: 'book' }
+];
+
+const ADMIN_LINK = { href: '/admin/login', label: 'Admin', icon: 'building' as IconName };
 
 export default function ConsoleShell({ children }: { children: ReactNode }) {
     const pathname = usePathname();
 
     const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
-    const navItems = NAV.map(item => (
+    const renderLink = ({ href, label, icon }: { href: string; label: string; icon: IconName }, style?: React.CSSProperties) => (
         <Link
-            key={item.href}
-            href={item.href}
-            title={item.label}
-            className={`console-rail-link ${isActive(item.href) ? 'console-rail-link-active' : ''}`}
+            key={href}
+            href={href}
+            title={label}
+            style={style}
+            className={`console-rail-link ${isActive(href) ? 'console-rail-link-active' : ''}`}
         >
-            <Icon name={item.icon} size={19} />
+            <Icon name={icon} size={19} />
         </Link>
-    ));
-
-    const tabItems = NAV.map(item => (
-        <Link
-            key={item.href}
-            href={item.href}
-            className={`console-tab-link ${isActive(item.href) ? 'console-tab-link-active' : ''}`}
-        >
-            <Icon name={item.icon} size={20} />
-            {item.label}
-        </Link>
-    ));
+    );
 
     return (
         <div className="console-shell">
@@ -67,11 +71,26 @@ export default function ConsoleShell({ children }: { children: ReactNode }) {
                 </div>
             </header>
 
-            <nav className="console-rail">{navItems}</nav>
+            <nav className="console-rail">
+                {RAIL_NAV.map(item => renderLink(item))}
+                <div style={{ flex: 1 }} />
+                {renderLink(ADMIN_LINK)}
+            </nav>
 
             <main className="console-main">{children}</main>
 
-            <nav className="console-tabbar">{tabItems}</nav>
+            <nav className="console-tabbar">
+                {TAB_NAV.map(item => (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`console-tab-link ${isActive(item.href) ? 'console-tab-link-active' : ''}`}
+                    >
+                        <Icon name={item.icon} size={20} />
+                        {item.label}
+                    </Link>
+                ))}
+            </nav>
         </div>
     );
 }

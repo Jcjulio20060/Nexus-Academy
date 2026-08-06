@@ -98,6 +98,48 @@ const paths: Record<string, React.ReactNode> = {
     'chevron-down': (
         <polyline points="6 9 12 15 18 9" />
     ),
+    'chevron-up': (
+        <polyline points="18 15 12 9 6 15" />
+    ),
+    'arrow-right': (
+        <>
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+        </>
+    ),
+    send: (
+        <>
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </>
+    ),
+    trash: (
+        <>
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </>
+    ),
+    check: (
+        <polyline points="20 6 9 17 4 12" />
+    ),
+    message: (
+        <>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </>
+    ),
+    mail: (
+        <>
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+        </>
+    ),
+    download: (
+        <>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+        </>
+    ),
     building: (
         <>
             <rect x="4" y="2" width="16" height="20" rx="2" />

@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
         await sendNotificationToStudent(
             justification.studentId,
-            approved ? 'Falta justificada ✓' : 'Justificativa reprovada',
+            approved ? 'Falta justificada' : 'Justificativa reprovada',
             `${subjectName} — ${formattedDate}`,
             '/justificativas'
         );

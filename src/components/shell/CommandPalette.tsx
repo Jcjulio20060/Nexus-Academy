@@ -38,8 +38,12 @@ export default function CommandPalette() {
 
     const items: PaletteItem[] = [
         { id: 'home', group: 'Páginas', label: 'Ir para o Início', hint: '/', icon: 'home', run: () => go('/') },
+        { id: 'grade', group: 'Páginas', label: 'Ver a Grade semanal', hint: '/grade', icon: 'calendar', run: () => go('/grade') },
         { id: 'tickets', group: 'Páginas', label: 'Meus Tickets', hint: '/tickets', icon: 'ticket', run: () => go('/tickets') },
         { id: 'faltas', group: 'Páginas', label: 'Justificar Falta', hint: '/justificativas', icon: 'clipboard', run: () => go('/justificativas') },
+        { id: 'materiais', group: 'Páginas', label: 'Materiais de estudo', hint: '/materiais', icon: 'book', run: () => go('/materiais') },
+        { id: 'prazos', group: 'Páginas', label: 'Prazos e datas', hint: '/prazos', icon: 'flag', run: () => go('/prazos') },
+        { id: 'faq', group: 'Páginas', label: 'Perguntas frequentes', hint: '/faq', icon: 'help', run: () => go('/faq') },
         { id: 'admin', group: 'Páginas', label: 'Painel Admin', hint: '/admin/login', icon: 'building', run: () => go('/admin/login') },
         { id: 'novo-ticket', group: 'Ações', label: 'Abrir um ticket', icon: 'ticket', run: () => go('/tickets') },
         { id: 'nova-falta', group: 'Ações', label: 'Justificar uma falta', icon: 'clipboard', run: () => go('/justificativas') },

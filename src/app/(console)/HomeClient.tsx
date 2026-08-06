@@ -96,7 +96,16 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                 <UpcomingList classes={upcoming} now={now} />
             </div>
 
-            <SectionHeader label="prazos" style={{ marginBottom: '0.9rem' }} />
+            <SectionHeader
+                label="prazos"
+                style={{ marginBottom: '0.9rem' }}
+                action={
+                    <Link href="/prazos" className="mono" style={{ fontSize: '0.72rem', color: 'var(--primary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                        ver todos
+                        <Icon name="arrow-right" size={13} />
+                    </Link>
+                }
+            />
             <div style={{ marginBottom: '2.5rem' }}>
                 {upcomingEvents.length > 0 ? (
                     <ImportantDates events={upcomingEvents} notices={[]} />
@@ -129,6 +138,20 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                     </span>
                     <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Justificar falta</p>
                     <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Enviar uma justificativa de ausência.</p>
+                </Link>
+                <Link href="/grade" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <span style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--primary-glow)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon name="calendar" size={20} />
+                    </span>
+                    <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Grade da semana</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Aulas, horários, salas e professores.</p>
+                </Link>
+                <Link href="/materiais" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <span style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--secondary-glow)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon name="book" size={20} />
+                    </span>
+                    <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Materiais de estudo</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Links e arquivos por matéria.</p>
                 </Link>
             </div>
         </div>

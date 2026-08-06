@@ -6,6 +6,10 @@ import StudentIdentifyForm from '@/components/StudentIdentifyForm';
 import { toast } from 'sonner';
 import { getStudentSession, StudentSession } from '@/lib/studentSession';
 import { Subject } from '@/lib/data';
+import Card from '@/components/ui/Card';
+import Badge, { BadgeTone } from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
+import Icon from '@/components/ui/Icon';
 
 interface AbsenceItem {
     id: number;
@@ -20,16 +24,11 @@ interface AbsenceItem {
     createdAt: string;
 }
 
-const STATUS_LABEL: Record<string, { label: string; color: string; background: string }> = {
-    PENDING: { label: 'Pendente', color: 'black', background: 'var(--warning)' },
-    APPROVED: { label: 'Aprovada', color: 'white', background: 'var(--success)' },
-    REJECTED: { label: 'Reprovada', color: 'white', background: 'var(--error)' }
+const STATUS_META: Record<string, { label: string; tone: BadgeTone }> = {
+    PENDING: { label: 'Pendente', tone: 'warning' },
+    APPROVED: { label: 'Aprovada', tone: 'success' },
+    REJECTED: { label: 'Reprovada', tone: 'error' }
 };
-
-const inputStyle = {
-    padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)',
-    background: 'var(--surface)', color: 'var(--foreground)'
-} as const;
 
 interface JustificativasClientProps {
     subjects: Subject[];
@@ -87,109 +86,99 @@ export default function JustificativasClient({ subjects }: JustificativasClientP
     if (!student) {
         return (
             <div className="glass-panel" style={{ maxWidth: '420px', margin: '0 auto', padding: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.15rem', marginBottom: '1rem', color: 'var(--primary)' }}>Identifique-se</h2>
+                <p className="console-label" style={{ marginBottom: '1rem' }}>Identifique-se</p>
                 <StudentIdentifyForm onSuccess={(s) => setStudent(s)} />
             </div>
         );
     }
 
     return (
-        <div className="animate-fade-in">
+        <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', gap: '1rem', flexWrap: 'wrap' }}>
-                <div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--foreground-muted)' }}>
-                        Identificado como <strong>{student.name}</strong> • Matrícula {student.registration}
-                    </p>
-                </div>
-                <button
-                    onClick={() => setIsCreateOpen(true)}
-                    style={{
-                        padding: '0.75rem 1.5rem', background: 'var(--primary)', color: 'white',
-                        border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer',
-                        boxShadow: '0 4px 12px var(--primary-glow)'
-                    }}
-                >
-                    + Nova Justificativa
-                </button>
+                <p className="mono" style={{ fontSize: '0.8rem', color: 'var(--foreground-muted)' }}>
+                    <span style={{ color: 'var(--primary)' }}>{student.name}</span> · {student.registration}
+                </p>
+                <Button icon="plus" onClick={() => setIsCreateOpen(true)}>
+                    Nova justificativa
+                </Button>
             </div>
 
             {loading ? (
-                <p style={{ textAlign: 'center', color: 'var(--foreground-muted)', padding: '2rem' }}>Carregando...</p>
+                <p className="mono" style={{ textAlign: 'center', color: 'var(--foreground-muted)', padding: '2rem' }}>carregando...</p>
             ) : absences.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--foreground-muted)' }}>
-                    <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Nenhuma justificativa ainda.</p>
-                    <p style={{ fontSize: '0.9rem' }}>Justifique uma falta aqui!</p>
+                    <p style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: 'var(--foreground)' }}>Nenhuma justificativa ainda.</p>
+                    <p style={{ fontSize: '0.9rem' }}>Justifique uma falta aqui.</p>
                 </div>
             ) : (
-                <div style={{ display: 'grid', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gap: '1rem' }}>
                     {absences.map(item => {
-                        const status = STATUS_LABEL[item.status] || STATUS_LABEL.PENDING;
+                        const status = STATUS_META[item.status] || STATUS_META.PENDING;
                         return (
-                            <div key={item.id} className="glass-panel" style={{ padding: '1.5rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
+                            <Card key={item.id} accent={item.status === 'APPROVED' ? 'var(--success)' : item.status === 'REJECTED' ? 'var(--error)' : 'var(--warning)'}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                                     <div>
-                                        <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{item.subject?.name || 'Matéria removida'}{item.subject?.period && <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--secondary)' }}> · {item.subject.period}</span>}</h3>
-                                        <p style={{ fontSize: '0.8rem', color: 'var(--foreground-muted)' }}>
+                                        <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>
+                                            {item.subject?.name || 'Matéria removida'}
+                                            {item.subject?.period && <span className="mono" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--secondary)' }}> · {item.subject.period}</span>}
+                                        </h3>
+                                        <p className="mono" style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>
                                             {new Date(item.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                                         </p>
                                     </div>
-                                    <span style={{
-                                        fontSize: '0.7rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px',
-                                        background: status.background, color: status.color, textTransform: 'uppercase'
-                                    }}>
-                                        {status.label}
-                                    </span>
+                                    <Badge tone={status.tone}>{status.label}</Badge>
                                 </div>
 
                                 <p style={{ lineHeight: '1.6', color: 'var(--foreground)', whiteSpace: 'pre-wrap' }}>{item.reason}</p>
 
                                 {item.attachmentUrl && (
                                     <a href={item.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.75rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
-                                        📎 {item.fileName || 'Ver anexo'}
+                                        <Icon name="paperclip" size={14} />
+                                        {item.fileName || 'Ver anexo'}
                                     </a>
                                 )}
 
                                 {item.status !== 'PENDING' && item.adminNote && (
                                     <div style={{
-                                        padding: '0.9rem', background: 'var(--surface-card)', borderRadius: '10px',
-                                        borderLeft: `4px solid ${item.status === 'APPROVED' ? 'var(--success)' : 'var(--error)'}`, marginTop: '1rem'
+                                        padding: '0.9rem 1rem', background: 'var(--surface-card)', borderRadius: '10px',
+                                        borderLeft: `3px solid ${item.status === 'APPROVED' ? 'var(--success)' : 'var(--error)'}`, marginTop: '1rem'
                                     }}>
-                                        <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--foreground-muted)', marginBottom: '0.3rem', textTransform: 'uppercase' }}>
-                                            Observação:
+                                        <p className="mono" style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--foreground-muted)', marginBottom: '0.3rem', textTransform: 'uppercase' }}>
+                                            Observação
                                         </p>
                                         <p style={{ fontSize: '0.9rem', color: 'var(--foreground-muted)' }}>{item.adminNote}</p>
                                     </div>
                                 )}
-                            </div>
+                            </Card>
                         );
                     })}
                 </div>
             )}
 
-            <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Nova Justificativa de Falta">
+            <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Nova justificativa de falta">
                 <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Matéria</label>
-                        <select name="subjectId" required defaultValue="" style={inputStyle}>
+                    <div>
+                        <label className="console-label">Matéria</label>
+                        <select name="subjectId" required defaultValue="" className="console-select">
                             <option value="" disabled>Selecione a matéria...</option>
                             {subjects.map(sub => <option key={sub.id} value={sub.id}>{sub.name}{sub.period ? ` · ${sub.period}` : ''}</option>)}
                         </select>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Data da falta</label>
-                        <input name="date" type="date" required max={todayStr} style={inputStyle} />
+                    <div>
+                        <label className="console-label">Data da falta</label>
+                        <input name="date" type="date" required max={todayStr} className="console-input" />
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Motivo</label>
-                        <textarea name="reason" required placeholder="Descreva o motivo da falta..." style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }} />
+                    <div>
+                        <label className="console-label">Motivo</label>
+                        <textarea name="reason" required placeholder="Descreva o motivo da falta..." className="console-textarea" />
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Anexo (opcional, ex: atestado)</label>
-                        <input name="file" type="file" style={{ color: 'var(--foreground)', fontSize: '0.85rem' }} />
+                    <div>
+                        <label className="console-label">Anexo (opcional, ex: atestado)</label>
+                        <input name="file" type="file" className="console-input" style={{ padding: '0.5rem' }} />
                     </div>
-                    <button type="submit" style={{ padding: '1rem', background: 'var(--primary)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', marginTop: '0.5rem' }}>
-                        Enviar Justificativa
-                    </button>
+                    <Button type="submit" fullWidth icon="send">
+                        Enviar justificativa
+                    </Button>
                 </form>
             </Modal>
         </div>

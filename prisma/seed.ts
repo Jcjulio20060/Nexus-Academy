@@ -31,6 +31,41 @@ async function upsertResource(title: string, url: string, subjectId: number) {
     }
 }
 
+function isoDate(daysFromNow: number): string {
+    const d = new Date();
+    d.setDate(d.getDate() + daysFromNow);
+    return d.toISOString().slice(0, 10);
+}
+
+async function upsertEvent(title: string, daysFromNow: number, type: string) {
+    const date = isoDate(daysFromNow);
+    const existing = await prisma.event.findFirst({ where: { title } });
+    if (!existing) {
+        await prisma.event.create({ data: { title, date, type } });
+    }
+}
+
+async function upsertFaq(question: string, answer: string, order: number) {
+    const existing = await prisma.faq.findFirst({ where: { question } });
+    if (!existing) {
+        await prisma.faq.create({ data: { question, answer, order } });
+    }
+}
+
+async function upsertNotice(message: string) {
+    const existing = await prisma.notice.findFirst({ where: { message } });
+    if (!existing) {
+        await prisma.notice.create({ data: { message, active: true } });
+    }
+}
+
+async function upsertRepresentative(name: string, role: string, contact: string, email: string) {
+    const existing = await prisma.representative.findFirst({ where: { name } });
+    if (!existing) {
+        await prisma.representative.create({ data: { name, role, contact, email } });
+    }
+}
+
 async function main() {
     // 1. Matérias (Sequencial)
     const subMat = await prisma.subject.upsert({
@@ -76,8 +111,56 @@ async function main() {
 
     // 4. Recursos - idempotente
     await upsertResource('Lista de Exercícios 1', 'https://google.com', subMat.id);
+    await upsertResource('Apresentação de Aulas', 'https://google.com', subAlg.id);
+    await upsertResource('Modelo de Projeto', 'https://google.com', subAlg.id);
 
-    // 5. Admin
+    // 5. Eventos (datas relativas a hoje) - idempotente
+    await upsertEvent('Prova de Matemática Discreta', 7, 'exam');
+    await upsertEvent('Entrega do Trabalho de Algoritmos', 3, 'assignment');
+    await upsertEvent('Apresentação do Projeto Final', 14, 'project');
+    await upsertEvent('Feriado — Aniversário da Cidade', 21, 'holiday');
+
+    // 6. FAQ - idempotente
+    await upsertFaq(
+        'Como justifico uma falta?',
+        'Vá em Faltas no menu, clique em "Nova justificativa", preencha a matéria, a data e o motivo. Se tiver atestado, anexe. A análise é feita pela coordenação e você recebe uma notificação com o resultado.',
+        1
+    );
+    await upsertFaq(
+        'Onde encontro os materiais das matérias?',
+        'Os materiais ficam em Materiais de estudo, agrupados por matéria. Lá você encontra links e arquivos disponibilizados pelos professores.',
+        2
+    );
+    await upsertFaq(
+        'Como acompanho meus tickets de suporte?',
+        'Em Tickets, abra o ticket e veja a conversa com os representantes. Você pode responder e acompanhar o status (aberto ou encerrado).',
+        3
+    );
+    await upsertFaq(
+        'Recebo notificações de avisos importantes?',
+        'Sim. Clique no sino na barra superior para ativar as notificações push no seu navegador e receba avisos e atualizações de prazos.',
+        4
+    );
+
+    // 7. Avisos - idempotente
+    await upsertNotice('Bem-vindos de volta! O console do aluno está de cara nova.');
+    await upsertNotice('As notas do 2º bimestre serão publicadas até o fim do mês.');
+
+    // 8. Representantes - idempotente
+    await upsertRepresentative(
+        'Maria Oliveira',
+        'Representante',
+        '(11) 99999-0001',
+        'maria.representante@example.com'
+    );
+    await upsertRepresentative(
+        'João Pereira',
+        'Vice-Representante',
+        '(11) 99999-0002',
+        'joao.vice@example.com'
+    );
+
+    // 9. Admin
     const rawPassword = process.env.ADMIN_PASSWORD;
     if (!rawPassword) {
         console.error('ADMIN_PASSWORD não definido no arquivo .env. Abortando seed.');

@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal';
 import ThemeToggle from '@/components/ThemeToggle';
 import Image from 'next/image';
 import { Database, TicketWithReplies, AbsenceWithRelations } from '@/lib/data';
 import { toast } from 'sonner';
+import Icon from '@/components/ui/Icon';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
 
 interface AdminDashboardClientProps {
     initialData: Database;
@@ -171,16 +173,17 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
             overflowX: 'auto', scrollbarWidth: 'none'
         }}>
             {([
-                { id: 'academic', label: '📖 Acadêmico' },
-                { id: 'content', label: '📝 Conteúdo' },
-                { id: 'tickets', label: '🎫 Tickets' },
-                { id: 'absences', label: '📋 Faltas' }
+                { id: 'academic', label: 'Acadêmico', icon: 'book' },
+                { id: 'content', label: 'Conteúdo', icon: 'file' },
+                { id: 'tickets', label: 'Tickets', icon: 'ticket' },
+                { id: 'absences', label: 'Faltas', icon: 'clipboard' }
             ] as const).map(tab => (
                 <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     style={{
                         flex: '1 1 auto',
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
                         padding: '0.75rem 1rem', borderRadius: '10px', border: 'none',
                         background: activeTab === tab.id ? 'var(--primary)' : 'transparent',
                         color: activeTab === tab.id ? 'white' : 'var(--foreground-muted)',
@@ -188,27 +191,38 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                         whiteSpace: 'nowrap', fontSize: '0.85rem'
                     }}
                 >
+                    <Icon name={tab.icon} size={15} />
                     {tab.label}
                 </button>
             ))}
         </div>
     );
 
+    const sectionTitle = (label: string, color = 'var(--foreground)') => (
+        <h2 className="label-mono" style={{ margin: 0, color }}>
+            <span style={{ color: 'var(--primary)' }}>{'//'}</span> {label}
+        </h2>
+    );
+
+    const smallAddButton = (onClick: () => void) => (
+        <Button variant="ghost" size="sm" icon="plus" onClick={onClick} style={{ padding: '0.35rem 0.6rem' }} />
+    );
+
     return (
         <main className="container" style={{ padding: '1.5rem 1rem' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', gap: '1rem', flexWrap: 'wrap' }}>
-                <h1 style={{ fontSize: '1.75rem', color: 'var(--foreground)' }}>Admin</h1>
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', gap: '1rem', flexWrap: 'wrap' }}>
+                <div>
+                    <p className="label-mono" style={{ margin: '0 0 0.4rem' }}>{'// painel de controle'}</p>
+                    <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: 'var(--foreground)' }}>Admin</h1>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <ThemeToggle />
-                    <Link href="/" style={{ padding: '0.5rem 0.8rem', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--surface-border)', color: 'var(--foreground)', textDecoration: 'none', fontSize: '0.85rem' }}>
-                        Ver Site
-                    </Link>
-                    <button
-                        onClick={handleLogout}
-                        style={{ padding: '0.5rem 0.8rem', background: 'var(--error)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
-                    >
+                    <Button variant="ghost" size="sm" icon="external" href="/">
+                        Ver site
+                    </Button>
+                    <Button variant="danger" size="sm" icon="logout" onClick={handleLogout}>
                         Sair
-                    </button>
+                    </Button>
                 </div>
             </header>
 
@@ -219,8 +233,8 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                         <section className="glass-panel" style={{ padding: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                <h2 style={{ fontSize: '1.25rem', color: 'var(--accent)' }}>Matérias</h2>
-                                <button onClick={() => setIsSubjectModalOpen(true)} style={{ padding: '0.5rem', background: 'var(--surface)', border: 'none', borderRadius: '6px', color: 'var(--foreground)', cursor: 'pointer' }}>+</button>
+                                {sectionTitle('matérias', 'var(--accent)')}
+                                {smallAddButton(() => setIsSubjectModalOpen(true))}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '200px', overflowY: 'auto' }}>
                                 {initialData.subjects.map(sub => (
@@ -237,8 +251,8 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
 
                         <section className="glass-panel" style={{ padding: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                <h2 style={{ fontSize: '1.25rem', color: 'var(--accent)' }}>Professores</h2>
-                                <button onClick={() => setIsProfessorModalOpen(true)} style={{ padding: '0.5rem', background: 'var(--surface)', border: 'none', borderRadius: '6px', color: 'var(--foreground)', cursor: 'pointer' }}>+</button>
+                                {sectionTitle('professores', 'var(--accent)')}
+                                {smallAddButton(() => setIsProfessorModalOpen(true))}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '200px', overflowY: 'auto' }}>
                                 {initialData.professors.map(prof => (
@@ -256,8 +270,8 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
 
                     <section className="glass-panel" style={{ padding: '1.5rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)' }}>Grade Horária</h2>
-                            <button onClick={() => setIsClassModalOpen(true)} style={{ padding: '0.5rem 1rem', background: 'var(--primary)', border: 'none', borderRadius: '6px', color: 'white', cursor: 'pointer', fontSize: '0.85rem' }}>+ Nova Aula</button>
+                            {sectionTitle('grade horária', 'var(--primary)')}
+                            <Button size="sm" icon="plus" onClick={() => setIsClassModalOpen(true)}>Nova aula</Button>
                         </div>
                         <div style={{ display: 'grid', gap: '1.5rem' }}>
                             {days.map(day => {
@@ -294,15 +308,18 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                         <section className="glass-panel" style={{ padding: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                <h2 style={{ fontSize: '1.25rem', color: '#60a5fa' }}>Materiais</h2>
-                                <button onClick={() => setIsResourceModalOpen(true)} style={{ padding: '0.5rem 1rem', background: 'var(--primary)', border: 'none', borderRadius: '6px', color: 'white', cursor: 'pointer', fontSize: '0.85rem' }}>+ Novo</button>
+                                {sectionTitle('materiais', '#60a5fa')}
+                                <Button size="sm" icon="plus" onClick={() => setIsResourceModalOpen(true)}>Novo</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '400px', overflowY: 'auto' }}>
                                 {initialData.resources.map(resource => (
                                     <div key={resource.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--surface-card)', borderRadius: '8px', border: '1px solid var(--surface-border)' }}>
                                         <div style={{ flex: 1, minWidth: 0 }}>
-                                            <p style={{ fontWeight: 600, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {resource.type === 'FILE' ? '📎' : '📄'} {resource.title}
+                                            <p style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                <span style={{ color: 'var(--primary)', display: 'inline-flex' }}>
+                                                    <Icon name={resource.type === 'FILE' ? 'paperclip' : 'file'} size={14} />
+                                                </span>
+                                                {resource.title}
                                             </p>
                                             <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>{resource.subject.name}{resource.fileName ? ` • ${resource.fileName}` : ''}</p>
                                         </div>
@@ -317,8 +334,8 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
 
                         <section className="glass-panel" style={{ padding: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                <h2 style={{ fontSize: '1.25rem', color: 'var(--warning)' }}>FAQ</h2>
-                                <button onClick={() => setIsFaqModalOpen(true)} style={{ padding: '0.5rem 1rem', background: 'var(--primary)', border: 'none', borderRadius: '6px', color: 'white', cursor: 'pointer', fontSize: '0.85rem' }}>+ Novo</button>
+                                {sectionTitle('faq', 'var(--warning)')}
+                                <Button size="sm" icon="plus" onClick={() => setIsFaqModalOpen(true)}>Novo</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '400px', overflowY: 'auto' }}>
                                 {initialData.faqs.map(faq => (
@@ -337,8 +354,8 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                         <section className="glass-panel" style={{ padding: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                <h2 style={{ fontSize: '1.25rem', color: 'var(--secondary)' }}>Avisos</h2>
-                                <button onClick={() => setIsNoticeModalOpen(true)} style={{ padding: '0.5rem 1rem', background: 'var(--primary)', border: 'none', borderRadius: '6px', color: 'white', cursor: 'pointer', fontSize: '0.85rem' }}>+ Novo</button>
+                                {sectionTitle('avisos', 'var(--secondary)')}
+                                <Button size="sm" icon="plus" onClick={() => setIsNoticeModalOpen(true)}>Novo</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 {initialData.notices.map(notice => (
@@ -355,8 +372,8 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
 
                         <section className="glass-panel" style={{ padding: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                <h2 style={{ fontSize: '1.25rem', color: 'var(--accent)' }}>Prazos</h2>
-                                <button onClick={() => setIsEventModalOpen(true)} style={{ padding: '0.5rem 1rem', background: 'var(--primary)', border: 'none', borderRadius: '6px', color: 'white', cursor: 'pointer', fontSize: '0.85rem' }}>+ Novo</button>
+                                {sectionTitle('prazos', 'var(--accent)')}
+                                <Button size="sm" icon="plus" onClick={() => setIsEventModalOpen(true)}>Novo</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                 {initialData.events.map(event => (
@@ -377,14 +394,18 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
 
                     <section className="glass-panel" style={{ padding: '1.5rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)' }}>Representantes</h2>
-                            <button onClick={() => setIsRepModalOpen(true)} style={{ padding: '0.5rem', background: 'var(--surface)', border: 'none', borderRadius: '6px', color: 'var(--foreground)', cursor: 'pointer' }}>+</button>
+                            {sectionTitle('representantes', 'var(--primary)')}
+                            {smallAddButton(() => setIsRepModalOpen(true))}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', scrollbarWidth: 'none' }}>
                             {initialData.representatives.map(rep => (
                                 <div key={rep.id} style={{ flex: '0 0 160px', padding: '1rem', background: 'var(--surface-card)', borderRadius: '12px', border: '1px solid var(--surface-border)', textAlign: 'center' }}>
                                     <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'var(--surface)', margin: '0 auto 0.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', overflow: 'hidden' }}>
-                                        {rep.photoUrl ? <Image src={rep.photoUrl} alt={rep.name} width={50} height={50} unoptimized style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
+                                        {rep.photoUrl ? <Image src={rep.photoUrl} alt={rep.name} width={50} height={50} unoptimized style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (
+                                            <span style={{ color: 'var(--foreground-muted)', display: 'inline-flex' }}>
+                                                <Icon name="user" size={20} />
+                                            </span>
+                                        )}
                                     </div>
                                     <p style={{ fontWeight: 700, fontSize: '0.85rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{rep.name}</p>
                                     <p style={{ fontSize: '0.7rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>{rep.role}</p>
@@ -402,7 +423,7 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
             {activeTab === 'tickets' && (
                 <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     <section className="glass-panel" style={{ padding: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginBottom: '1.5rem' }}>Tickets dos Alunos</h2>
+                        <div style={{ marginBottom: '1.5rem' }}>{sectionTitle('tickets dos alunos', 'var(--primary)')}</div>
                         <div style={{ display: 'grid', gap: '1rem' }}>
                             {initialTickets.map(ticket => (
                                 <div key={ticket.id} style={{
@@ -412,16 +433,12 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', gap: '1rem', flexWrap: 'wrap' }}>
                                         <div style={{ minWidth: 0 }}>
                                             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
-                                                <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px', background: 'var(--primary)', color: 'white', textTransform: 'uppercase' }}>
+                                                <Badge tone="amber">
                                                     {CATEGORY_LABEL[ticket.category] || ticket.category}
-                                                </span>
-                                                <span style={{
-                                                    fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px',
-                                                    background: ticket.status === 'OPEN' ? 'var(--warning)' : 'var(--success)',
-                                                    color: ticket.status === 'OPEN' ? 'black' : 'white', textTransform: 'uppercase'
-                                                }}>
-                                                    {ticket.status === 'OPEN' ? 'Aberto' : 'Encerrado'}
-                                                </span>
+                                                </Badge>
+                                                <Badge tone={ticket.status === 'OPEN' ? 'warning' : 'success'}>
+                                                    {ticket.status === 'OPEN' ? 'aberto' : 'encerrado'}
+                                                </Badge>
                                             </div>
                                             <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {ticket.subject}
@@ -462,7 +479,7 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                                     <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{ticket.message}</p>
                                     {ticket.attachmentUrl && (
                                         <a href={ticket.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
-                                            📎 {ticket.fileName || 'Ver anexo'}
+                                            <Icon name="paperclip" size={14} /> {ticket.fileName || 'Ver anexo'}
                                         </a>
                                     )}
 
@@ -493,7 +510,7 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
             {activeTab === 'absences' && (
                 <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     <section className="glass-panel" style={{ padding: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginBottom: '1.5rem' }}>Justificativas de Falta</h2>
+                        <div style={{ marginBottom: '1.5rem' }}>{sectionTitle('justificativas de falta', 'var(--primary)')}</div>
                         <div style={{ display: 'grid', gap: '1rem' }}>
                             {initialAbsences.map(item => {
                                 const status = STATUS_LABEL[item.status] || STATUS_LABEL.PENDING;
@@ -512,12 +529,9 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                                                 </p>
                                             </div>
                                             <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0, alignItems: 'center' }}>
-                                                <span style={{
-                                                    fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px',
-                                                    background: status.background, color: status.color, textTransform: 'uppercase'
-                                                }}>
+                                                <Badge tone={item.status === 'APPROVED' ? 'success' : item.status === 'REJECTED' ? 'error' : 'warning'}>
                                                     {status.label}
-                                                </span>
+                                                </Badge>
                                                 {item.status === 'PENDING' && (
                                                     <button
                                                         onClick={() => { setSelectedAbsence(item); setIsAbsenceReviewModalOpen(true); }}
@@ -537,9 +551,9 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
 
                                         <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{item.reason}</p>
                                         {item.attachmentUrl && (
-                                            <a href={item.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
-                                                📎 {item.fileName || 'Ver anexo'}
-                                            </a>
+                                        <a href={item.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                                            <Icon name="paperclip" size={14} /> {item.fileName || 'Ver anexo'}
+                                        </a>
                                         )}
                                         {item.status !== 'PENDING' && item.adminNote && (
                                             <div style={{ padding: '0.8rem', background: 'var(--surface)', borderRadius: '8px', borderLeft: `3px solid ${item.status === 'APPROVED' ? 'var(--success)' : 'var(--error)'}`, marginTop: '0.75rem' }}>
@@ -591,7 +605,7 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                             <p style={{ fontSize: '0.9rem' }}>{selectedAbsence.reason}</p>
                             {selectedAbsence.attachmentUrl && (
                                 <a href={selectedAbsence.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
-                                    📎 {selectedAbsence.fileName || 'Ver anexo'}
+                                    <Icon name="paperclip" size={14} /> {selectedAbsence.fileName || 'Ver anexo'}
                                 </a>
                             )}
                         </div>
@@ -599,11 +613,11 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                             <textarea name="adminNote" placeholder="Observação (opcional)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '80px', fontSize: '0.9rem' }} />
                         </form>
                         <div style={{ display: 'flex', gap: '0.75rem' }}>
-                            <button onClick={() => handleAbsenceReview('APPROVED')} style={{ flex: 1, padding: '0.85rem', background: 'var(--success)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
-                                ✓ Aprovar
+                            <button onClick={() => handleAbsenceReview('APPROVED')} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.85rem', background: 'var(--success)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <Icon name="check" size={16} /> Aprovar
                             </button>
-                            <button onClick={() => handleAbsenceReview('REJECTED')} style={{ flex: 1, padding: '0.85rem', background: 'var(--error)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
-                                ✕ Reprovar
+                            <button onClick={() => handleAbsenceReview('REJECTED')} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.85rem', background: 'var(--error)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <Icon name="x" size={16} /> Reprovar
                             </button>
                         </div>
                     </div>
