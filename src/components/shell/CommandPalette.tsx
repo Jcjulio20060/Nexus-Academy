@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Icon, { IconName } from '../ui/Icon';
 
@@ -124,7 +125,7 @@ export default function CommandPalette() {
                 <Icon name="search" size={15} />
             </button>
 
-            {open && (
+            {open && createPortal(
                 <div
                     onClick={() => setOpen(false)}
                     style={{
@@ -219,7 +220,8 @@ export default function CommandPalette() {
                             <span>esc fechar</span>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </>
     );

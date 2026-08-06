@@ -5,6 +5,12 @@ import { cookies } from 'next/headers';
 export const SESSION_COOKIE = 'admin_session';
 export const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 
+export interface SessionUser {
+    role: 'admin' | 'representative';
+    name: string;
+    id?: number;
+}
+
 function getSecret(): Uint8Array {
     const secret = process.env.SESSION_SECRET;
     if (!secret) {
@@ -13,8 +19,8 @@ function getSecret(): Uint8Array {
     return new TextEncoder().encode(secret);
 }
 
-export async function createSession(): Promise<string> {
-    return new SignJWT({ role: 'admin' })
+export async function createSession(user: SessionUser): Promise<string> {
+    return new SignJWT({ role: user.role, name: user.name, id: user.id })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('7d')
@@ -30,8 +36,8 @@ export async function verifySessionToken(token: string): Promise<boolean> {
     }
 }
 
-export async function setSessionCookie(): Promise<void> {
-    const token = await createSession();
+export async function setSessionCookie(user: SessionUser): Promise<void> {
+    const token = await createSession(user);
     (await cookies()).set(SESSION_COOKIE, token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -39,6 +45,21 @@ export async function setSessionCookie(): Promise<void> {
         maxAge: SESSION_DURATION,
         path: '/',
     });
+}
+
+export async function getSessionUser(): Promise<SessionUser | null> {
+    const token = (await cookies()).get(SESSION_COOKIE)?.value;
+    if (!token) return null;
+    try {
+        const { payload } = await jwtVerify(token, getSecret());
+        return {
+            role: (payload.role as SessionUser['role']) || 'admin',
+            name: (payload.name as string) || 'admin',
+            id: payload.id as number | undefined
+        };
+    } catch {
+        return null;
+    }
 }
 
 export async function clearSessionCookie(): Promise<void> {

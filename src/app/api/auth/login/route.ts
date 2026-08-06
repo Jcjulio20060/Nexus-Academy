@@ -42,12 +42,22 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false }, { status: 400 });
     }
 
-    const user = await prisma.adminUser.findUnique({
+    const admin = await prisma.adminUser.findUnique({
         where: { username }
     });
 
-    if (user && await bcrypt.compare(password, user.password)) {
-        await setSessionCookie();
+    if (admin && await bcrypt.compare(password, admin.password)) {
+        await setSessionCookie({ role: 'admin', name: 'admin' });
+        return NextResponse.json({ success: true });
+    }
+
+    const email = username.trim().toLowerCase();
+    const representative = await prisma.representative.findFirst({
+        where: { email: { equals: email, mode: 'insensitive' } }
+    });
+
+    if (representative?.password && await bcrypt.compare(password, representative.password)) {
+        await setSessionCookie({ role: 'representative', name: representative.name, id: representative.id });
         return NextResponse.json({ success: true });
     }
 

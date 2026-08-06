@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import BrandLogo from '../BrandLogo';
 import Clock from './Clock';
 import CommandPalette from './CommandPalette';
+import { WeatherProvider } from '../WeatherContext';
+import WeatherAmbience from '../WeatherAmbience';
 import WeatherWidget from '../WeatherWidget';
 import ThemeToggle from '../ThemeToggle';
 import StudentBadge from '../StudentBadge';
@@ -50,8 +52,10 @@ export default function ConsoleShell({ children }: { children: ReactNode }) {
     );
 
     return (
-        <div className="console-shell">
-            <div className="console-grid" />
+        <WeatherProvider>
+            <div className="console-shell">
+                <WeatherAmbience />
+                <div className="console-grid" />
 
             <header className="console-statusbar">
                 <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', color: 'var(--foreground)' }}>
@@ -91,6 +95,7 @@ export default function ConsoleShell({ children }: { children: ReactNode }) {
                     </Link>
                 ))}
             </nav>
-        </div>
+            </div>
+        </WeatherProvider>
     );
 }

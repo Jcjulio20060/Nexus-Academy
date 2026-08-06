@@ -59,10 +59,15 @@ async function upsertNotice(message: string) {
     }
 }
 
-async function upsertRepresentative(name: string, role: string, contact: string, email: string) {
+async function upsertRepresentative(name: string, role: string, contact: string, email: string, passwordHash: string) {
     const existing = await prisma.representative.findFirst({ where: { name } });
-    if (!existing) {
-        await prisma.representative.create({ data: { name, role, contact, email } });
+    if (existing) {
+        await prisma.representative.update({
+            where: { id: existing.id },
+            data: { role, contact, email, password: existing.password ?? passwordHash }
+        });
+    } else {
+        await prisma.representative.create({ data: { name, role, contact, email, password: passwordHash } });
     }
 }
 
@@ -147,17 +152,22 @@ async function main() {
     await upsertNotice('As notas do 2º bimestre serão publicadas até o fim do mês.');
 
     // 8. Representantes - idempotente
+    const repPasswordHash = await bcrypt.hash('rep@2026', 10);
+    const vicePasswordHash = await bcrypt.hash('vice@2026', 10);
+
     await upsertRepresentative(
         'Maria Oliveira',
         'Representante',
         '(11) 99999-0001',
-        'maria.representante@example.com'
+        'maria.representante@example.com',
+        repPasswordHash
     );
     await upsertRepresentative(
         'João Pereira',
         'Vice-Representante',
         '(11) 99999-0002',
-        'joao.vice@example.com'
+        'joao.vice@example.com',
+        vicePasswordHash
     );
 
     // 9. Admin

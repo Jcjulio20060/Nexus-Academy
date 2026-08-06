@@ -51,6 +51,7 @@ model Representative {
   role      String   // "Representante" ou "Vice-Representante"
   contact   String?  // WhatsApp
   email     String?
+  password  String?  // hash para acesso ao painel admin
   photoUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

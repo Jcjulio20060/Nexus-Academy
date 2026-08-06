@@ -6,6 +6,7 @@ import Modal from '@/components/Modal';
 import ThemeToggle from '@/components/ThemeToggle';
 import Image from 'next/image';
 import { Database, TicketWithReplies, AbsenceWithRelations } from '@/lib/data';
+import type { SessionUser } from '@/lib/auth';
 import { toast } from 'sonner';
 import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
@@ -15,6 +16,7 @@ interface AdminDashboardClientProps {
     initialData: Database;
     initialTickets: TicketWithReplies[];
     initialAbsences: AbsenceWithRelations[];
+    sessionUser: SessionUser;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -30,7 +32,7 @@ const STATUS_LABEL: Record<string, { label: string; color: string; background: s
     REJECTED: { label: 'Reprovada', color: 'white', background: 'var(--error)' }
 };
 
-export default function AdminDashboardClient({ initialData, initialTickets, initialAbsences }: AdminDashboardClientProps) {
+export default function AdminDashboardClient({ sessionUser, initialData, initialTickets, initialAbsences }: AdminDashboardClientProps) {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<'academic' | 'content' | 'tickets' | 'absences'>('academic');
 
@@ -213,7 +215,15 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', gap: '1rem', flexWrap: 'wrap' }}>
                 <div>
                     <p className="label-mono" style={{ margin: '0 0 0.4rem' }}>{'// painel de controle'}</p>
-                    <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: 'var(--foreground)' }}>Admin</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: 'var(--foreground)' }}>Admin</h1>
+                        <Badge tone={sessionUser.role === 'admin' ? 'amber' : 'teal'}>
+                            {sessionUser.role === 'admin' ? 'principal' : sessionUser.name}
+                        </Badge>
+                    </div>
+                    <p className="mono" style={{ margin: '0.4rem 0 0', fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>
+                        acessando como <span style={{ color: 'var(--primary)' }}>{sessionUser.name}</span>
+                    </p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <ThemeToggle />
@@ -711,7 +721,11 @@ export default function AdminDashboardClient({ initialData, initialTickets, init
                         <option value="Vice-Representante">Vice-Representante</option>
                     </select>
                     <input name="contact" placeholder="WhatsApp" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
-                    <input name="email" type="email" placeholder="E-mail" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
+                    <input name="email" type="email" placeholder="E-mail (usado para login)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Senha de acesso ao painel</label>
+                        <input name="password" type="password" placeholder="Senha (opcional)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
+                    </div>
                     <input name="photoUrl" placeholder="Link da Foto" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
                     <button type="submit" style={{ padding: '0.85rem', background: 'var(--primary)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>Salvar</button>
                 </form>

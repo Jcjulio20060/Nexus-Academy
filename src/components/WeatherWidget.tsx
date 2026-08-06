@@ -1,36 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-interface WeatherData {
-    temp: number;
-    condition: string;
-    icon: string;
-    city: string;
-}
+import { useWeather } from './WeatherContext';
 
 export default function WeatherWidget() {
-    const [weather, setWeather] = useState<WeatherData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchWeather = async () => {
-            try {
-                const res = await fetch('/api/weather');
-                if (res.ok) {
-                    const data = await res.json();
-                    setWeather(data);
-                }
-            } catch (error) {
-                console.error('Weather fetch error:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchWeather();
-    }, []);
+    const { weather, loading } = useWeather();
 
     if (loading) return (
         <div className="glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: '150px', height: '40px' }}>

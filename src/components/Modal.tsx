@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Icon from './ui/Icon';
 
 interface ModalProps {
@@ -31,7 +32,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <div
             ref={overlayRef}
             onClick={(e) => {
@@ -98,6 +99,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                     {children}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

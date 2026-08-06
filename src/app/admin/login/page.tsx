@@ -61,7 +61,7 @@ export default function Login() {
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input
                         type="text"
-                        placeholder="Usuário"
+                        placeholder="Usuário ou e-mail"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         style={inputBase}
@@ -73,6 +73,9 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         style={inputBase}
                     />
+                    <p className="mono" style={{ fontSize: '0.72rem', color: 'var(--foreground-muted)', margin: 0, lineHeight: 1.5 }}>
+                        Representantes e vice entram com o e-mail cadastrado no painel.
+                    </p>
                     {error && (
                         <p style={{ color: 'var(--error)', textAlign: 'center', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
                             <Icon name="alert" size={13} /> {error}
