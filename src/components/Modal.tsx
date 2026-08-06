@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Icon from './ui/Icon';
 
 interface ModalProps {
     isOpen: boolean;
@@ -64,25 +65,33 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                 }}
             >
                 <div style={{
-                    padding: '1.5rem',
+                    padding: '1.25rem 1.5rem',
                     borderBottom: '1px solid var(--surface-border)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
                 }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{title}</h2>
+                    <h2 className="label-mono" style={{ margin: 0 }}>
+                        <span style={{ color: 'var(--primary)' }}>{'//'}</span> {title}
+                    </h2>
                     <button
                         onClick={onClose}
+                        title="Fechar"
                         style={{
-                            background: 'none',
-                            border: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '30px',
+                            height: '30px',
+                            background: 'var(--surface)',
+                            border: '1px solid var(--surface-border)',
+                            borderRadius: '8px',
                             color: 'var(--foreground-muted)',
-                            fontSize: '1.5rem',
                             cursor: 'pointer',
-                            lineHeight: 1
+                            transition: 'color 0.15s ease'
                         }}
                     >
-                        &times;
+                        <Icon name="x" size={15} />
                     </button>
                 </div>
                 <div style={{ padding: '1.5rem' }}>

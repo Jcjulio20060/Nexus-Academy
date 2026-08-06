@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Icon from './ui/Icon';
 
 export default function ThemeToggle() {
     const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -22,18 +23,19 @@ export default function ThemeToggle() {
             onClick={toggle}
             title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
             style={{
-                fontSize: '0.8rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '34px',
+                height: '34px',
                 color: 'var(--foreground-muted)',
-                padding: '0.5rem 0.8rem',
                 border: '1px solid var(--surface-border)',
                 borderRadius: '10px',
                 background: 'var(--surface)',
-                fontWeight: 600,
-                backdropFilter: 'blur(8px)',
                 cursor: 'pointer'
             }}
         >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            {theme === 'dark' ? <Icon name="sun" size={16} /> : <Icon name="moon" size={16} />}
         </button>
     );
 }

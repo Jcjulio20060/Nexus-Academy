@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { getStudentSession } from '@/lib/studentSession';
+import Icon from './ui/Icon';
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -129,18 +130,19 @@ export default function PushNotificationManager() {
             onClick={isSubscribed ? unsubscribe : subscribe}
             title={isSubscribed ? 'Desativar notificações' : 'Ativar notificações'}
             style={{
-                fontSize: '0.8rem',
-                padding: '0.5rem 0.8rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '34px',
+                height: '34px',
                 border: '1px solid var(--surface-border)',
                 borderRadius: '10px',
-                background: isSubscribed ? 'var(--primary)' : 'var(--surface)',
-                color: isSubscribed ? 'white' : 'var(--foreground-muted)',
-                fontWeight: 600,
-                backdropFilter: 'blur(8px)',
+                background: isSubscribed ? 'var(--primary-glow)' : 'var(--surface)',
+                color: isSubscribed ? 'var(--primary)' : 'var(--foreground-muted)',
                 cursor: 'pointer'
             }}
         >
-            {isSubscribed ? '🔔' : '🔕'}
+            <Icon name="bell" size={16} />
         </button>
     );
 }
