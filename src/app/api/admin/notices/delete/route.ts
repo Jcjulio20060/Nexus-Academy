@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
+import { isAdminRequest } from '@/lib/auth';
 
 export async function POST(request: Request) {
+    if (!(await isAdminRequest(request))) {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const idValue = formData.get('id');
 

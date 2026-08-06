@@ -1,4 +1,4 @@
-# Nexus Academy - Portal de Estudos ☕📖
+# Coffee & Code - Portal de Estudos ☕💻
 
 Um portal acadêmico premium projetado para facilitar a vida do estudante modernizando a visualização de grades, materiais e prazos em um "Console Unificado" fluido e responsivo.
 

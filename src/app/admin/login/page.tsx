@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import BrandLogo from '@/components/BrandLogo';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -29,7 +30,11 @@ export default function Login() {
     return (
         <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
             <div className="glass-panel" style={{ padding: '3rem', width: '100%', maxWidth: '400px' }}>
-                <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Admin Access</h1>
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                    <BrandLogo size={56} className="brand-logo-glow" />
+                    <h1 style={{ textAlign: 'center', marginTop: '1rem', fontSize: '1.5rem' }}>Admin Access</h1>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', marginTop: '0.25rem' }}>Coffee & Code</p>
+                </div>
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div>
                         <input
@@ -41,9 +46,9 @@ export default function Login() {
                                 width: '100%',
                                 padding: '1rem',
                                 borderRadius: '8px',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--surface-hover)',
                                 border: '1px solid var(--surface-border)',
-                                color: 'white',
+                                color: 'var(--foreground)',
                                 fontSize: '1rem',
                                 outline: 'none',
                                 marginBottom: '1rem'
@@ -58,9 +63,9 @@ export default function Login() {
                                 width: '100%',
                                 padding: '1rem',
                                 borderRadius: '8px',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--surface-hover)',
                                 border: '1px solid var(--surface-border)',
-                                color: 'white',
+                                color: 'var(--foreground)',
                                 fontSize: '1rem',
                                 outline: 'none'
                             }}

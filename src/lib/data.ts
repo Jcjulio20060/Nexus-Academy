@@ -15,9 +15,8 @@ export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // Re-export types for compatibility
-// Re-export Prisma types for frontend use
-import { Prisma, ClassSession, Notice, Resource, Subject, Professor, Event as PrismaEvent, Representative, Faq, CommunicationPost } from '@prisma/client';
-export type { ClassSession, Notice, Resource, Subject, Professor, Representative, Faq, CommunicationPost };
+import { Prisma, ClassSession, Notice, Resource, Subject, Professor, Event as PrismaEvent, Representative, Faq, Student, PushSubscription, Ticket, TicketReply, AbsenceJustification } from '@prisma/client';
+export type { ClassSession, Notice, Resource, Subject, Professor, Representative, Faq, Student, PushSubscription, Ticket, TicketReply, AbsenceJustification };
 export type AcademicEvent = PrismaEvent;
 
 export type ClassSessionWithRelations = Prisma.ClassSessionGetPayload<{
@@ -26,6 +25,14 @@ export type ClassSessionWithRelations = Prisma.ClassSessionGetPayload<{
 
 export type ResourceWithRelations = Prisma.ResourceGetPayload<{
     include: { subject: true }
+}>;
+
+export type TicketWithReplies = Prisma.TicketGetPayload<{
+    include: { student: true; replies: { orderBy: { createdAt: 'asc' } } }
+}>;
+
+export type AbsenceWithRelations = Prisma.AbsenceJustificationGetPayload<{
+    include: { student: true; subject: true }
 }>;
 
 export interface Database {
@@ -37,7 +44,6 @@ export interface Database {
     professors: Professor[];
     representatives: Representative[];
     faqs: Faq[];
-    communicationPosts: CommunicationPost[];
 }
 
 export async function getDatabase() {
@@ -59,30 +65,25 @@ export async function getDatabase() {
     const professors = await prisma.professor.findMany({ orderBy: { name: 'asc' } });
     const representatives = await prisma.representative.findMany({ orderBy: { role: 'asc' } });
     const faqs = await prisma.faq.findMany({ orderBy: { order: 'asc' } });
-    const communicationPosts = await prisma.communicationPost.findMany({
-        orderBy: { createdAt: 'desc' }
-    });
 
-    return { classes, events, notices, resources, subjects, professors, representatives, faqs, communicationPosts };
+    return { classes, events, notices, resources, subjects, professors, representatives, faqs };
 }
 
-export async function getCurrentClass(): Promise<ClassSessionWithRelations | null> {
-    const now = new Date();
-    const currentTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayName = days[now.getDay()];
-
-    // Prisma doesn't support complex time comparisons easily with just string columns in SQLite
-    // So we fetch classes for the day and filter in JS
-    const classesToday = await prisma.classSession.findMany({
-        where: { day: dayName },
-        include: { subject: true, professor: true }
+export async function getAllTickets(): Promise<TicketWithReplies[]> {
+    return await prisma.ticket.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: {
+            student: true,
+            replies: { orderBy: { createdAt: 'asc' } }
+        }
     });
+}
 
-    return classesToday.find(c =>
-        currentTime >= c.start &&
-        currentTime <= c.end
-    ) || null;
+export async function getAllAbsences(): Promise<AbsenceWithRelations[]> {
+    return await prisma.absenceJustification.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: { student: true, subject: true }
+    });
 }
 
 export async function getClassesForToday(): Promise<ClassSessionWithRelations[]> {

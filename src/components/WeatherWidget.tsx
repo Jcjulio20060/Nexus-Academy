@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface WeatherData {
     temp: number;
@@ -48,9 +49,12 @@ export default function WeatherWidget() {
             background: 'var(--surface-hover)',
             borderRadius: '12px'
         }}>
-            <img 
+            <Image 
                 src={`https://openweathermap.org/img/wn/${weather.icon}.png`} 
                 alt={weather.condition} 
+                width={32}
+                height={32}
+                unoptimized
                 style={{ width: '32px', height: '32px' }}
             />
             <div>

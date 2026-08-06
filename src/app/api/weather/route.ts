@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-    const apiKey = process.env.API_KEY_WHEATER;
+    const apiKey = process.env.API_KEY_WEATHER;
     // We could use a default city or try to get it from request/env
     // For now, let's assume a default city or allow passing it
     const city = "Recife"; 
@@ -28,6 +28,7 @@ export async function GET() {
             city: data.name
         });
     } catch (error) {
+        console.error('Weather fetch error:', error);
         return NextResponse.json({ error: 'Failed to fetch weather' }, { status: 500 });
     }
 }

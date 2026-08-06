@@ -1,0 +1,16 @@
+services:
+  db:
+    image: docker.io/library/postgres:latest
+    container_name: nexus_db_1
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nexus
+      POSTGRES_USER: nexus
+      POSTGRES_PASSWORD: nexus-postgres
+    volumes:
+      - nexus_db_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+
+volumes:
+  nexus_db_data:

@@ -1,14 +1,15 @@
 import Link from 'next/link';
 import { getDatabase } from '@/lib/data';
-import CommunicationClient from './CommunicationClient';
+import JustificativasClient from './JustificativasClient';
 import WeatherWidget from '@/components/WeatherWidget';
+import ThemeToggle from '@/components/ThemeToggle';
 import styles from '../page.module.css';
 
 export const revalidate = 0;
 
-export default async function CommunicationPage() {
+export default async function JustificativasPage() {
     const db = await getDatabase();
-    
+
     return (
         <main className={styles.main}>
             <div className="container">
@@ -17,12 +18,15 @@ export default async function CommunicationPage() {
                         <Link href="/" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                             ← Voltar ao Console
                         </Link>
-                        <h1 className={styles.title}>Comunicação</h1>
+                        <h1 className={styles.title}>Justificativa de Falta</h1>
                     </div>
-                    <WeatherWidget />
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <ThemeToggle />
+                        <WeatherWidget />
+                    </div>
                 </header>
 
-                <CommunicationClient initialPosts={db.communicationPosts} />
+                <JustificativasClient subjects={db.subjects} />
             </div>
         </main>
     );

@@ -1,11 +1,11 @@
 {
-    "name": "Café e Código",
-    "short_name": "CaféCode",
-    "description": "Portal acadêmico da turma",
+    "name": "Coffee & Code",
+    "short_name": "Coffee&Code",
+    "description": "Portal da turma de Ciência da Computação",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#0a0a0c",
-    "theme_color": "#0a0a0c",
+    "background_color": "#171109",
+    "theme_color": "#171109",
     "icons": [
         {
             "src": "/icons/icon-192x192.png",

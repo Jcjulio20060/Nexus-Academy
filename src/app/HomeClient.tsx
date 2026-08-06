@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Database, ClassSessionWithRelations, ResourceWithRelations, AcademicEvent } from '@/lib/data';
+import { Database, ClassSessionWithRelations, ResourceWithRelations, Subject } from '@/lib/data';
 import CurrentClass from '@/components/CurrentClass';
 import UpcomingList from '@/components/UpcomingList';
 import ImportantDates from '@/components/ImportantDates';
 import Link from 'next/link';
 
 // Sub-component for Material Filtering
-function ResourcesView({ resources, subjects }: { resources: ResourceWithRelations[], subjects: string[] }) {
+function ResourcesView({ resources, subjects }: { resources: ResourceWithRelations[], subjects: Subject[] }) {
     const [selectedSubject, setSelectedSubject] = useState<string>('all');
 
     const filteredResources = selectedSubject === 'all'
@@ -23,6 +23,7 @@ function ResourcesView({ resources, subjects }: { resources: ResourceWithRelatio
     }, {} as Record<string, typeof resources>);
 
     const activeSubjects = Object.keys(groupedResources).sort();
+    const periodOf = (name: string) => subjects.find(s => s.name === name)?.period;
 
     return (
         <div className="animate-fade-in">
@@ -37,7 +38,7 @@ function ResourcesView({ resources, subjects }: { resources: ResourceWithRelatio
                     }}
                 >
                     <option value="all">Todas as Matérias</option>
-                    {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+                    {subjects.map(s => <option key={s.id} value={s.name}>{s.name}{s.period ? ` · ${s.period}` : ''}</option>)}
                 </select>
             </div>
 
@@ -45,7 +46,7 @@ function ResourcesView({ resources, subjects }: { resources: ResourceWithRelatio
                 {activeSubjects.map(subject => (
                     <section key={subject} className="glass-panel" style={{ padding: '1.5rem' }}>
                         <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--primary)', borderBottom: '1px solid var(--surface-border)', paddingBottom: '0.5rem' }}>
-                            {subject}
+                            {subject}{periodOf(subject) && <span style={{ color: 'var(--secondary)', fontSize: '0.8rem', fontWeight: 700 }}> · {periodOf(subject)}</span>}
                         </h3>
                         <div style={{ display: 'grid', gap: '0.75rem' }}>
                             {groupedResources[subject].map(resource => (
@@ -55,9 +56,12 @@ function ResourcesView({ resources, subjects }: { resources: ResourceWithRelatio
                                     textDecoration: 'none', transition: 'transform 0.2s',
                                     border: '1px solid var(--surface-border)'
                                 }}>
-                                    <div style={{ marginRight: '1rem', fontSize: '1.2rem' }}>📄</div>
+                                    <div style={{ marginRight: '1rem', fontSize: '1.2rem' }}>{resource.type === 'FILE' ? '📎' : '📄'}</div>
                                     <div style={{ flex: 1 }}>
                                         <p style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '1rem' }}>{resource.title}</p>
+                                        {resource.fileName && (
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>{resource.fileName}</p>
+                                        )}
                                     </div>
                                     <div style={{ color: 'var(--primary)' }}>➜</div>
                                 </a>
@@ -84,13 +88,17 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
     useEffect(() => {
         const updateClasses = () => {
             const now = new Date();
-            const currentTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const toMinutes = (time: string) => {
+                const [h, m] = time.split(':').map(Number);
+                return h * 60 + (m || 0);
+            };
 
             const current = classesToday.find(c =>
-                currentTime >= c.start && currentTime <= c.end
+                currentMinutes >= toMinutes(c.start) && currentMinutes <= toMinutes(c.end)
             ) || null;
 
-            const upcoming = classesToday.filter(c => c.start > currentTime);
+            const upcoming = classesToday.filter(c => toMinutes(c.start) > currentMinutes);
 
             setCurrentClass(current);
             setUpcomingClasses(upcoming);
@@ -147,7 +155,7 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
+                        onClick={() => setActiveTab(tab.id)}
                         style={{
                             flex: '1 0 auto',
                             padding: '0.75rem 1rem',
@@ -185,16 +193,25 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                     {/* Events at the bottom of Home */}
                     <ImportantDates events={db.events} notices={[]} />
 
-                    {/* Talk to Representative Button at the bottom of Home */}
-                    <div style={{ marginTop: '3rem', textAlign: 'center' }}>
-                        <Link href="/comunicacao" className="glass-panel" style={{ 
-                            display: 'inline-flex', alignItems: 'center', gap: '1rem',
-                            padding: '1rem 2rem', background: 'var(--primary)', color: 'white',
+                    {/* Student actions */}
+                    <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <Link href="/tickets" className="glass-panel" style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '0.75rem',
+                            padding: '1rem 1.75rem', background: 'var(--primary)', color: 'white',
                             fontWeight: 700, borderRadius: '16px', boxShadow: '0 8px 20px var(--primary-glow)',
                             textDecoration: 'none', transition: 'transform 0.2s'
                         }}>
-                            <span style={{ fontSize: '1.5rem' }}>💬</span>
-                            Falar com o Representante
+                            <span style={{ fontSize: '1.4rem' }}>🎫</span>
+                            Meus Tickets
+                        </Link>
+                        <Link href="/justificativas" className="glass-panel" style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '0.75rem',
+                            padding: '1rem 1.75rem', background: 'var(--surface-card)', color: 'var(--foreground)',
+                            fontWeight: 700, borderRadius: '16px', border: '1px solid var(--surface-border)',
+                            textDecoration: 'none', transition: 'transform 0.2s'
+                        }}>
+                            <span style={{ fontSize: '1.4rem' }}>📋</span>
+                            Justificar Falta
                         </Link>
                     </div>
                 </div>
@@ -216,7 +233,7 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
                                         {classes.map((cls, idx) => (
                                             <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <div>
-                                                    <p style={{ fontWeight: 600 }}>{cls.subject.name}</p>
+                                                    <p style={{ fontWeight: 600 }}>{cls.subject.name}{cls.subject.period && <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary)' }}> · {cls.subject.period}</span>}</p>
                                                     <p style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)' }}>{cls.professor.name}</p>
                                                 </div>
                                                 <div style={{ textAlign: 'right', fontSize: '0.9rem' }}>
@@ -236,7 +253,7 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
             {activeTab === 'resources' && (
                 <ResourcesView
                     resources={db.resources}
-                    subjects={Array.from(new Set(db.resources.map(r => r.subject.name))).sort()}
+                    subjects={db.subjects}
                 />
             )}
 

@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getDatabase } from '@/lib/data';
+import { getDatabase, getAllTickets, getAllAbsences } from '@/lib/data';
 import AdminDashboardClient from './AdminDashboardClient';
 
 export default async function Dashboard() {
@@ -11,7 +11,7 @@ export default async function Dashboard() {
         redirect('/admin/login');
     }
 
-    const db = await getDatabase();
+    const [db, tickets, absences] = await Promise.all([getDatabase(), getAllTickets(), getAllAbsences()]);
 
-    return <AdminDashboardClient initialData={db} />;
+    return <AdminDashboardClient initialData={db} initialTickets={tickets} initialAbsences={absences} />;
 }

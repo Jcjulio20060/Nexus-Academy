@@ -4,17 +4,34 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal';
-import { Database, CommunicationPost } from '@/lib/data';
+import ThemeToggle from '@/components/ThemeToggle';
+import Image from 'next/image';
+import { Database, TicketWithReplies, AbsenceWithRelations } from '@/lib/data';
 import { toast } from 'sonner';
 
 interface AdminDashboardClientProps {
     initialData: Database;
+    initialTickets: TicketWithReplies[];
+    initialAbsences: AbsenceWithRelations[];
 }
 
-export default function AdminDashboardClient({ initialData }: AdminDashboardClientProps) {
+const CATEGORY_LABEL: Record<string, string> = {
+    GERAL: 'Geral',
+    ACADEMICO: 'Acadêmico',
+    TECNICO: 'Técnico',
+    OUTRO: 'Outro'
+};
+
+const STATUS_LABEL: Record<string, { label: string; color: string; background: string }> = {
+    PENDING: { label: 'Pendente', color: 'black', background: 'var(--warning)' },
+    APPROVED: { label: 'Aprovada', color: 'white', background: 'var(--success)' },
+    REJECTED: { label: 'Reprovada', color: 'white', background: 'var(--error)' }
+};
+
+export default function AdminDashboardClient({ initialData, initialTickets, initialAbsences }: AdminDashboardClientProps) {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'academic' | 'content' | 'communication'>('academic');
-    
+    const [activeTab, setActiveTab] = useState<'academic' | 'content' | 'tickets' | 'absences'>('academic');
+
     // Modals
     const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -24,8 +41,11 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
     const [isProfessorModalOpen, setIsProfessorModalOpen] = useState(false);
     const [isRepModalOpen, setIsRepModalOpen] = useState(false);
     const [isFaqModalOpen, setIsFaqModalOpen] = useState(false);
-    const [isAnswerModalOpen, setIsAnswerModalOpen] = useState(false);
-    const [selectedPost, setSelectedPost] = useState<CommunicationPost | null>(null);
+    const [isTicketReplyModalOpen, setIsTicketReplyModalOpen] = useState(false);
+    const [isAbsenceReviewModalOpen, setIsAbsenceReviewModalOpen] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState<TicketWithReplies | null>(null);
+    const [selectedAbsence, setSelectedAbsence] = useState<AbsenceWithRelations | null>(null);
+    const [expandedTicketId, setExpandedTicketId] = useState<number | null>(null);
 
     const [selectedDay, setSelectedDay] = useState('Monday');
 
@@ -47,6 +67,10 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
             method: 'POST',
             body: formData,
         }).then(async (res) => {
+            if (res.status === 401) {
+                router.push('/admin/login');
+                throw new Error('Sessão expirada');
+            }
             if (res.ok) {
                 modalSetter(false);
                 form.reset();
@@ -71,6 +95,10 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
             method: 'POST',
             body: formData,
         }).then(async (res) => {
+            if (res.status === 401) {
+                router.push('/admin/login');
+                throw new Error('Sessão expirada');
+            }
             if (res.ok) router.refresh();
             else throw new Error('Falha ao excluir');
         });
@@ -79,6 +107,50 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
             loading: 'Excluindo...',
             success: 'Item removido!',
             error: 'Erro ao excluir'
+        });
+    };
+
+    const handleTicketClose = async (ticketId: number) => {
+        const formData = new FormData();
+        formData.set('id', String(ticketId));
+
+        const promise = fetch('/api/admin/tickets/close', { method: 'POST', body: formData }).then(async (res) => {
+            if (res.status === 401) {
+                router.push('/admin/login');
+                throw new Error('Sessão expirada');
+            }
+            if (!res.ok) throw new Error('Falha ao encerrar');
+            router.refresh();
+        });
+
+        toast.promise(promise, {
+            loading: 'Encerrando ticket...',
+            success: 'Ticket encerrado!',
+            error: 'Erro ao encerrar ticket.'
+        });
+    };
+
+    const handleAbsenceReview = async (status: 'APPROVED' | 'REJECTED') => {
+        if (!selectedAbsence) return;
+        const form = document.getElementById('absence-review-form') as HTMLFormElement | null;
+        const formData = new FormData(form || undefined);
+        formData.set('id', String(selectedAbsence.id));
+        formData.set('status', status);
+
+        const promise = fetch('/api/admin/absences/review', { method: 'POST', body: formData }).then(async (res) => {
+            if (res.status === 401) {
+                router.push('/admin/login');
+                throw new Error('Sessão expirada');
+            }
+            if (!res.ok) throw new Error('Falha ao revisar');
+            setIsAbsenceReviewModalOpen(false);
+            router.refresh();
+        });
+
+        toast.promise(promise, {
+            loading: 'Salvando...',
+            success: status === 'APPROVED' ? 'Justificativa aprovada!' : 'Justificativa reprovada!',
+            error: 'Erro ao salvar'
         });
     };
 
@@ -92,20 +164,21 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
     };
 
     const renderTabs = () => (
-        <div style={{ 
-            display: 'flex', gap: '0.5rem', marginBottom: '2.5rem', 
+        <div style={{
+            display: 'flex', gap: '0.5rem', marginBottom: '2.5rem',
             background: 'var(--surface-card)', padding: '0.4rem', borderRadius: '14px',
             border: '1px solid var(--surface-border)', width: '100%',
             overflowX: 'auto', scrollbarWidth: 'none'
         }}>
-            {[
+            {([
                 { id: 'academic', label: '📖 Acadêmico' },
                 { id: 'content', label: '📝 Conteúdo' },
-                { id: 'communication', label: '💬 Comunicação' }
-            ].map(tab => (
+                { id: 'tickets', label: '🎫 Tickets' },
+                { id: 'absences', label: '📋 Faltas' }
+            ] as const).map(tab => (
                 <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id)}
                     style={{
                         flex: '1 1 auto',
                         padding: '0.75rem 1rem', borderRadius: '10px', border: 'none',
@@ -125,7 +198,8 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
         <main className="container" style={{ padding: '1.5rem 1rem' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', gap: '1rem', flexWrap: 'wrap' }}>
                 <h1 style={{ fontSize: '1.75rem', color: 'var(--foreground)' }}>Admin</h1>
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <ThemeToggle />
                     <Link href="/" style={{ padding: '0.5rem 0.8rem', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--surface-border)', color: 'var(--foreground)', textDecoration: 'none', fontSize: '0.85rem' }}>
                         Ver Site
                     </Link>
@@ -151,7 +225,7 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '200px', overflowY: 'auto' }}>
                                 {initialData.subjects.map(sub => (
                                     <div key={sub.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', background: 'var(--surface-card)', borderRadius: '6px' }}>
-                                        <span style={{ fontSize: '0.9rem' }}>{sub.name} <small style={{ opacity: 0.5 }}>{sub.code}</small></span>
+                                        <span style={{ fontSize: '0.9rem' }}>{sub.name} <small style={{ opacity: 0.5 }}>{sub.code}</small> {sub.period && <small style={{ color: 'var(--secondary)', fontWeight: 600 }}>· {sub.period}</small>}</span>
                                         <form onSubmit={(e) => handleDelete(e, '/api/admin/subjects/delete')}>
                                             <input type="hidden" name="id" value={sub.id} />
                                             <button type="submit" style={{ border: 'none', background: 'none', color: 'var(--error)', cursor: 'pointer' }}>&times;</button>
@@ -196,7 +270,7 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                                                 <div key={cls.id} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '0.75rem', alignItems: 'center', background: 'var(--surface-card)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)' }}>
                                                     <span style={{ whiteSpace: 'nowrap', fontSize: '0.8rem', color: 'var(--foreground-muted)' }}>{cls.start}</span>
                                                     <div style={{ minWidth: 0 }}>
-                                                        <p style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cls.subject.name}</p>
+                                                        <p style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cls.subject.name}{cls.subject.period && <span style={{ color: 'var(--secondary)' }}> · {cls.subject.period}</span>}</p>
                                                         <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cls.room} • {cls.professor.name}</p>
                                                     </div>
                                                     <form onSubmit={(e) => handleDelete(e, '/api/admin/classes/delete')}>
@@ -227,8 +301,10 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                                 {initialData.resources.map(resource => (
                                     <div key={resource.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--surface-card)', borderRadius: '8px', border: '1px solid var(--surface-border)' }}>
                                         <div style={{ flex: 1, minWidth: 0 }}>
-                                            <p style={{ fontWeight: 600, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{resource.title}</p>
-                                            <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>{resource.subject.name}</p>
+                                            <p style={{ fontWeight: 600, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {resource.type === 'FILE' ? '📎' : '📄'} {resource.title}
+                                            </p>
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>{resource.subject.name}{resource.fileName ? ` • ${resource.fileName}` : ''}</p>
                                         </div>
                                         <form onSubmit={(e) => handleDelete(e, '/api/admin/resources/delete')}>
                                             <input type="hidden" name="id" value={resource.id} />
@@ -308,7 +384,7 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                             {initialData.representatives.map(rep => (
                                 <div key={rep.id} style={{ flex: '0 0 160px', padding: '1rem', background: 'var(--surface-card)', borderRadius: '12px', border: '1px solid var(--surface-border)', textAlign: 'center' }}>
                                     <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'var(--surface)', margin: '0 auto 0.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', overflow: 'hidden' }}>
-                                        {rep.photoUrl ? <img src={rep.photoUrl} alt={rep.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
+                                        {rep.photoUrl ? <Image src={rep.photoUrl} alt={rep.name} width={50} height={50} unoptimized style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👤'}
                                     </div>
                                     <p style={{ fontWeight: 700, fontSize: '0.85rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{rep.name}</p>
                                     <p style={{ fontSize: '0.7rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>{rep.role}</p>
@@ -323,70 +399,214 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                 </div>
             )}
 
-            {activeTab === 'communication' && (
+            {activeTab === 'tickets' && (
                 <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     <section className="glass-panel" style={{ padding: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginBottom: '1.5rem' }}>Solicitações dos Alunos</h2>
+                        <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginBottom: '1.5rem' }}>Tickets dos Alunos</h2>
                         <div style={{ display: 'grid', gap: '1rem' }}>
-                            {initialData.communicationPosts.map(post => (
-                                <div key={post.id} style={{ 
-                                    padding: '1.25rem', background: 'var(--surface-card)', borderRadius: '12px', 
-                                    border: `1px solid ${post.status === 'OPEN' ? 'var(--warning)' : 'var(--surface-border)'}`,
-                                    position: 'relative'
+                            {initialTickets.map(ticket => (
+                                <div key={ticket.id} style={{
+                                    padding: '1.25rem', background: 'var(--surface-card)', borderRadius: '12px',
+                                    border: `1px solid ${ticket.status === 'OPEN' ? 'var(--warning)' : 'var(--surface-border)'}`
                                 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', gap: '1rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', gap: '1rem', flexWrap: 'wrap' }}>
                                         <div style={{ minWidth: 0 }}>
-                                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.firstName} {post.lastName}</span>
-                                            <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>{new Date(post.createdAt).toLocaleDateString('pt-BR')}</p>
+                                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
+                                                <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px', background: 'var(--primary)', color: 'white', textTransform: 'uppercase' }}>
+                                                    {CATEGORY_LABEL[ticket.category] || ticket.category}
+                                                </span>
+                                                <span style={{
+                                                    fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px',
+                                                    background: ticket.status === 'OPEN' ? 'var(--warning)' : 'var(--success)',
+                                                    color: ticket.status === 'OPEN' ? 'black' : 'white', textTransform: 'uppercase'
+                                                }}>
+                                                    {ticket.status === 'OPEN' ? 'Aberto' : 'Encerrado'}
+                                                </span>
+                                            </div>
+                                            <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {ticket.subject}
+                                            </p>
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>
+                                                {ticket.student.name} ({ticket.student.registration}) • {new Date(ticket.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                            </p>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
-                                            {post.status === 'OPEN' && (
-                                                <button 
-                                                    onClick={() => { setSelectedPost(post); setIsAnswerModalOpen(true); }}
-                                                    style={{ padding: '0.3rem 0.6rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}
-                                                >
-                                                    Responder
-                                                </button>
+                                        <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0, alignItems: 'center' }}>
+                                            {ticket.status === 'OPEN' && (
+                                                <>
+                                                    <button
+                                                        onClick={() => { setSelectedTicket(ticket); setIsTicketReplyModalOpen(true); }}
+                                                        style={{ padding: '0.3rem 0.6rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}
+                                                    >
+                                                        Responder
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleTicketClose(ticket.id)}
+                                                        style={{ padding: '0.3rem 0.6rem', background: 'var(--secondary)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}
+                                                    >
+                                                        Encerrar
+                                                    </button>
+                                                </>
                                             )}
-                                            <form onSubmit={(e) => handleDelete(e, '/api/admin/communication/delete')}>
-                                                <input type="hidden" name="id" value={post.id} />
+                                            <button onClick={() => setExpandedTicketId(expandedTicketId === ticket.id ? null : ticket.id)} style={{ padding: '0.3rem 0.6rem', background: 'var(--surface)', border: '1px solid var(--surface-border)', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>
+                                                {expandedTicketId === ticket.id ? 'Recolher' : `Conversa (${ticket.replies.length})`}
+                                            </button>
+                                            <form onSubmit={(e) => handleDelete(e, '/api/admin/tickets/delete')}>
+                                                <input type="hidden" name="id" value={ticket.id} />
                                                 <button type="submit" style={{ padding: '0.3rem 0.6rem', background: 'var(--error)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>
                                                     Excluir
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
-                                    <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', marginBottom: post.answer ? '1rem' : '0' }}>{post.question}</p>
-                                    {post.answer && (
-                                        <div style={{ padding: '0.8rem', background: 'var(--surface)', borderRadius: '8px', borderLeft: '3px solid var(--success)' }}>
-                                            <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--success)', marginBottom: '0.25rem' }}>RESPOSTA:</p>
-                                            <p style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)' }}>{post.answer}</p>
+
+                                    <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{ticket.message}</p>
+                                    {ticket.attachmentUrl && (
+                                        <a href={ticket.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                                            📎 {ticket.fileName || 'Ver anexo'}
+                                        </a>
+                                    )}
+
+                                    {expandedTicketId === ticket.id && ticket.replies.length > 0 && (
+                                        <div style={{ marginTop: '1rem', display: 'grid', gap: '0.6rem' }}>
+                                            {ticket.replies.map(reply => (
+                                                <div key={reply.id} style={{
+                                                    padding: '0.75rem', borderRadius: '10px',
+                                                    background: reply.isAdmin ? 'var(--surface)' : 'var(--surface-card)',
+                                                    borderLeft: reply.isAdmin ? '3px solid var(--primary)' : '3px solid var(--surface-border)'
+                                                }}>
+                                                    <p style={{ fontSize: '0.7rem', fontWeight: 700, color: reply.isAdmin ? 'var(--primary)' : 'var(--foreground-muted)', textTransform: 'uppercase' }}>
+                                                        {reply.isAdmin ? 'Admin' : ticket.student.name}
+                                                    </p>
+                                                    <p style={{ fontSize: '0.85rem', color: 'var(--foreground)', whiteSpace: 'pre-wrap' }}>{reply.message}</p>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>
                             ))}
-                            {initialData.communicationPosts.length === 0 && <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Nenhuma solicitação encontrada.</p>}
+                            {initialTickets.length === 0 && <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Nenhum ticket encontrado.</p>}
+                        </div>
+                    </section>
+                </div>
+            )}
+
+            {activeTab === 'absences' && (
+                <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    <section className="glass-panel" style={{ padding: '1.5rem' }}>
+                        <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginBottom: '1.5rem' }}>Justificativas de Falta</h2>
+                        <div style={{ display: 'grid', gap: '1rem' }}>
+                            {initialAbsences.map(item => {
+                                const status = STATUS_LABEL[item.status] || STATUS_LABEL.PENDING;
+                                return (
+                                    <div key={item.id} style={{
+                                        padding: '1.25rem', background: 'var(--surface-card)', borderRadius: '12px',
+                                        border: `1px solid ${item.status === 'PENDING' ? 'var(--warning)' : 'var(--surface-border)'}`
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', gap: '1rem', flexWrap: 'wrap' }}>
+                                            <div style={{ minWidth: 0 }}>
+                                                <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                    {item.student.name} ({item.student.registration})
+                                                </p>
+                                                <p style={{ fontSize: '0.75rem', color: 'var(--foreground-muted)' }}>
+                                                    {item.subject?.name || 'Matéria removida'}{item.subject?.period && <span style={{ color: 'var(--secondary)' }}> · {item.subject.period}</span>} • {new Date(item.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                </p>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0, alignItems: 'center' }}>
+                                                <span style={{
+                                                    fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '20px',
+                                                    background: status.background, color: status.color, textTransform: 'uppercase'
+                                                }}>
+                                                    {status.label}
+                                                </span>
+                                                {item.status === 'PENDING' && (
+                                                    <button
+                                                        onClick={() => { setSelectedAbsence(item); setIsAbsenceReviewModalOpen(true); }}
+                                                        style={{ padding: '0.3rem 0.6rem', background: 'var(--success)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}
+                                                    >
+                                                        Revisar
+                                                    </button>
+                                                )}
+                                                <form onSubmit={(e) => handleDelete(e, '/api/admin/absences/delete')}>
+                                                    <input type="hidden" name="id" value={item.id} />
+                                                    <button type="submit" style={{ padding: '0.3rem 0.6rem', background: 'var(--error)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600 }}>
+                                                        Excluir
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{item.reason}</p>
+                                        {item.attachmentUrl && (
+                                            <a href={item.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                                                📎 {item.fileName || 'Ver anexo'}
+                                            </a>
+                                        )}
+                                        {item.status !== 'PENDING' && item.adminNote && (
+                                            <div style={{ padding: '0.8rem', background: 'var(--surface)', borderRadius: '8px', borderLeft: `3px solid ${item.status === 'APPROVED' ? 'var(--success)' : 'var(--error)'}`, marginTop: '0.75rem' }}>
+                                                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--foreground-muted)', marginBottom: '0.25rem' }}>OBSERVAÇÃO:</p>
+                                                <p style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)' }}>{item.adminNote}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                            {initialAbsences.length === 0 && <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Nenhuma justificativa encontrada.</p>}
                         </div>
                     </section>
                 </div>
             )}
 
             {/* MODALS */}
-            
-            {/* Answer Modal */}
-            <Modal isOpen={isAnswerModalOpen} onClose={() => setIsAnswerModalOpen(false)} title="Responder Solicitação">
-                {selectedPost && (
-                    <form onSubmit={(e) => handleSubmit(e, '/api/admin/communication/answer', 'Resposta enviada!', setIsAnswerModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+            {/* Ticket Reply Modal */}
+            <Modal isOpen={isTicketReplyModalOpen} onClose={() => setIsTicketReplyModalOpen(false)} title="Responder Ticket">
+                {selectedTicket && (
+                    <form onSubmit={(e) => handleSubmit(e, '/api/admin/tickets/reply', 'Resposta enviada!', setIsTicketReplyModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <div style={{ padding: '1rem', background: 'var(--surface-card)', borderRadius: '8px', marginBottom: '0.5rem' }}>
-                            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.5rem' }}>PERGUNTA DE {selectedPost.firstName.toUpperCase()}:</p>
-                            <p style={{ fontSize: '0.9rem' }}>{selectedPost.question}</p>
+                            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.5rem' }}>
+                                {selectedTicket.student.name.toUpperCase()} — {selectedTicket.subject.toUpperCase()}
+                            </p>
+                            <p style={{ fontSize: '0.9rem' }}>{selectedTicket.message}</p>
                         </div>
-                        <input type="hidden" name="id" value={selectedPost.id} />
-                        <textarea name="answer" required placeholder="Sua resposta..." style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '120px', fontSize: '0.9rem' }} />
+                        <input type="hidden" name="ticketId" value={selectedTicket.id} />
+                        <textarea name="message" required placeholder="Sua resposta..." style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '120px', fontSize: '0.9rem' }} />
                         <button type="submit" style={{ padding: '0.85rem', background: 'var(--success)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
                             Enviar Resposta
                         </button>
                     </form>
+                )}
+            </Modal>
+
+            {/* Absence Review Modal */}
+            <Modal isOpen={isAbsenceReviewModalOpen} onClose={() => setIsAbsenceReviewModalOpen(false)} title="Revisar Justificativa">
+                {selectedAbsence && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ padding: '1rem', background: 'var(--surface-card)', borderRadius: '8px' }}>
+                            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.5rem' }}>
+                                {selectedAbsence.student.name.toUpperCase()} — {selectedAbsence.subject?.name?.toUpperCase()}
+                            </p>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)', marginBottom: '0.5rem' }}>
+                                {new Date(selectedAbsence.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
+                            </p>
+                            <p style={{ fontSize: '0.9rem' }}>{selectedAbsence.reason}</p>
+                            {selectedAbsence.attachmentUrl && (
+                                <a href={selectedAbsence.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                                    📎 {selectedAbsence.fileName || 'Ver anexo'}
+                                </a>
+                            )}
+                        </div>
+                        <form id="absence-review-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <textarea name="adminNote" placeholder="Observação (opcional)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '80px', fontSize: '0.9rem' }} />
+                        </form>
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                            <button onClick={() => handleAbsenceReview('APPROVED')} style={{ flex: 1, padding: '0.85rem', background: 'var(--success)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
+                                ✓ Aprovar
+                            </button>
+                            <button onClick={() => handleAbsenceReview('REJECTED')} style={{ flex: 1, padding: '0.85rem', background: 'var(--error)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>
+                                ✕ Reprovar
+                            </button>
+                        </div>
+                    </div>
                 )}
             </Modal>
 
@@ -422,7 +642,7 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                     </div>
                     <select name="subjectId" required style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }}>
                         <option value="">Matéria...</option>
-                        {initialData.subjects.map(sub => <option key={sub.id} value={sub.id}>{sub.name}</option>)}
+                        {initialData.subjects.map(sub => <option key={sub.id} value={sub.id}>{sub.name}{sub.period ? ` · ${sub.period}` : ''}</option>)}
                     </select>
                     <select name="professorId" required style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }}>
                         <option value="">Professor...</option>
@@ -436,10 +656,17 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
             <Modal isOpen={isResourceModalOpen} onClose={() => setIsResourceModalOpen(false)} title="Novo Material">
                 <form onSubmit={(e) => handleSubmit(e, '/api/admin/resources/create', 'Material adicionado!', setIsResourceModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input name="title" required placeholder="Título" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
-                    <input name="url" type="url" required placeholder="Link (URL)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Link (URL) — ou envie um arquivo abaixo</label>
+                        <input name="url" type="url" placeholder="https://..." style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Ou envie um arquivo</label>
+                        <input name="file" type="file" style={{ color: 'var(--foreground)', fontSize: '0.85rem' }} />
+                    </div>
                     <select name="subjectId" required style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }}>
                         <option value="">Matéria...</option>
-                        {initialData.subjects.map(sub => <option key={sub.id} value={sub.id}>{sub.name}</option>)}
+                        {initialData.subjects.map(sub => <option key={sub.id} value={sub.id}>{sub.name}{sub.period ? ` · ${sub.period}` : ''}</option>)}
                     </select>
                     <button type="submit" style={{ padding: '0.85rem', background: 'var(--primary)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>Salvar</button>
                 </form>
@@ -449,6 +676,7 @@ export default function AdminDashboardClient({ initialData }: AdminDashboardClie
                 <form onSubmit={(e) => handleSubmit(e, '/api/admin/subjects/create', 'Matéria salva!', setIsSubjectModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input name="name" required placeholder="Nome" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
                     <input name="code" placeholder="Código" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
+                    <input name="period" placeholder="Semestre (ex.: 2026/2)" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: '0.9rem' }} />
                     <button type="submit" style={{ padding: '0.85rem', background: 'var(--primary)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>Salvar</button>
                 </form>
             </Modal>

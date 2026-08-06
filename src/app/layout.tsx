@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Space_Grotesk } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' })
 
 export const metadata: Metadata = {
-  title: 'Café e Código',
-  description: 'Portal acadêmico da turma',
+  title: 'Coffee & Code',
+  description: 'Portal da turma de Ciência da Computação',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192x192.png',
@@ -28,7 +30,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${spaceGrotesk.variable}`}>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`}
+        </Script>
         {children}
         <Toaster richColors position="top-right" />
       </body>

@@ -1,19 +1,26 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifySessionToken, SESSION_COOKIE } from '@/lib/auth';
 
-export function middleware(request: NextRequest) {
-    const session = request.cookies.get('admin_session');
+export async function middleware(request: NextRequest) {
+    const session = request.cookies.get(SESSION_COOKIE)?.value;
+    const isAuthed = session ? await verifySessionToken(session) : false;
 
-    // Protect admin dashboard
-    if (request.nextUrl.pathname.startsWith('/admin/dashboard')) {
-        if (!session) {
+    const path = request.nextUrl.pathname;
+
+    // Protect admin dashboard pages and admin API routes
+    if (path.startsWith('/admin/dashboard') || path.startsWith('/api/admin')) {
+        if (!isAuthed) {
+            if (path.startsWith('/api/')) {
+                return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+            }
             return NextResponse.redirect(new URL('/admin/login', request.url));
         }
     }
 
     // Redirect from login if already logged in
-    if (request.nextUrl.pathname === '/admin/login') {
-        if (session) {
+    if (path === '/admin/login') {
+        if (isAuthed) {
             return NextResponse.redirect(new URL('/admin/dashboard', request.url));
         }
     }
@@ -22,5 +29,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/admin/:path*'],
+    matcher: ['/admin/:path*', '/api/admin/:path*'],
 };

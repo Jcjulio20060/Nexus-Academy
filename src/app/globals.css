@@ -1,22 +1,22 @@
 :root {
-  /* Brand Colors - Premium Dark Mode Palette */
-  --background: #0f1115;
-  --foreground: #f8fafc;
-  --foreground-muted: #94a3b8;
+  /* Brand Colors - Coffee & Code · Dark (Espresso) Palette */
+  --background: #171109;
+  --foreground: #f6efe3;
+  --foreground-muted: #a89a86;
 
-  --primary: #818cf8; /* Indigo 400 */
-  --primary-hover: #a5b4fc;
-  --primary-glow: rgba(129, 140, 248, 0.2);
+  --primary: #f2a63b; /* Amber 400 (coffee caramel) */
+  --primary-hover: #ffbe5c;
+  --primary-glow: rgba(242, 166, 59, 0.18);
 
-  --secondary: #fb7185; /* Rose 400 */
-  --secondary-glow: rgba(251, 113, 133, 0.15);
+  --secondary: #2dd4bf; /* Teal 400 (terminal code) */
+  --secondary-glow: rgba(45, 212, 191, 0.15);
 
-  --accent: #c084fc; /* Purple 400 */
+  --accent: #e8c396; /* Cream caramel */
 
   /* Surface Colors (Glassmorphism) */
-  --surface: rgba(30, 41, 59, 0.5);
-  --surface-hover: rgba(30, 41, 59, 0.8);
-  --surface-card: rgba(15, 23, 42, 0.6);
+  --surface: rgba(43, 34, 22, 0.55);
+  --surface-hover: rgba(43, 34, 22, 0.85);
+  --surface-card: rgba(26, 19, 12, 0.6);
   --surface-border: rgba(255, 255, 255, 0.08);
   --glass-blur: 12px;
 
@@ -27,26 +27,54 @@
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  color-scheme: dark;
 }
 
+/* Tema claro escolhido manualmente via toggle */
+:root[data-theme='light'] {
+  --background: #faf4ea;
+  --foreground: #2b2118;
+  --foreground-muted: #6b5c49;
+
+  --primary: #b45309; /* Amber 700 (mocha) */
+  --primary-hover: #92400e;
+  --primary-glow: rgba(180, 83, 9, 0.12);
+
+  --secondary: #0d9488; /* Teal 600 */
+  --secondary-glow: rgba(13, 148, 136, 0.12);
+
+  --surface: rgba(255, 250, 242, 0.85);
+  --surface-hover: rgba(245, 236, 222, 0.9);
+  --surface-card: #ffffff;
+  --surface-border: rgba(0, 0, 0, 0.1);
+  --glass-blur: 16px;
+
+  color-scheme: light;
+}
+
+/* Fallback inicial: segue o sistema enquanto não há escolha manual */
 @media (prefers-color-scheme: light) {
-  :root {
-    --background: #ffffff;
-    --foreground: #0f172a;
-    --foreground-muted: #475569;
+  :root:not([data-theme]) {
+    --background: #faf4ea;
+    --foreground: #2b2118;
+    --foreground-muted: #6b5c49;
 
-    --primary: #4f46e5; /* Indigo 600 */
-    --primary-hover: #4338ca;
-    --primary-glow: rgba(79, 70, 229, 0.1);
+    --primary: #b45309; /* Amber 700 (mocha) */
+    --primary-hover: #92400e;
+    --primary-glow: rgba(180, 83, 9, 0.12);
 
-    --secondary: #e11d48; /* Rose 600 */
-    --secondary-glow: rgba(225, 29, 72, 0.1);
+    --secondary: #0d9488; /* Teal 600 */
+    --secondary-glow: rgba(13, 148, 136, 0.12);
 
-    --surface: rgba(241, 245, 249, 0.8);
-    --surface-hover: rgba(226, 232, 240, 0.9);
+    --surface: rgba(255, 250, 242, 0.85);
+    --surface-hover: rgba(245, 236, 222, 0.9);
     --surface-card: #ffffff;
-    --surface-border: rgba(0, 0, 0, 0.08);
+    --surface-border: rgba(0, 0, 0, 0.1);
     --glass-blur: 16px;
+
+    color-scheme: light;
   }
 }
 
@@ -69,6 +97,10 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
 }
 
 /* Utilities */
@@ -104,7 +136,7 @@ a {
   .container {
     padding: 0 1.25rem;
   }
-...
+
   .glass-panel {
     padding: 1.25rem !important;
     border-radius: 12px;
@@ -126,4 +158,30 @@ a {
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Brand steam animation */
+@keyframes steamRise {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-7px);
+  }
+}
+
+.brand-steam {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: steamRise 3.2s ease-in-out infinite;
+}
+
+.brand-steam-delay {
+  animation-delay: 1.1s;
+}
+
+.brand-logo-glow {
+  filter: drop-shadow(0 0 18px rgba(242, 166, 59, 0.35));
 }
