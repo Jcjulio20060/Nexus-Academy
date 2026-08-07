@@ -1,0 +1,21 @@
+{
+    "name": "Coffee & Code",
+    "short_name": "Coffee&Code",
+    "description": "Portal da turma de Ciência da Computação",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#171109",
+    "theme_color": "#171109",
+    "icons": [
+        {
+            "src": "/icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

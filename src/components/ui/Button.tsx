@@ -1,0 +1,95 @@
+'use client';
+
+import Link from 'next/link';
+import { ReactNode } from 'react';
+import Icon, { IconName } from './Icon';
+
+type Variant = 'primary' | 'ghost' | 'danger';
+type Size = 'sm' | 'md';
+
+interface ButtonProps {
+    children?: ReactNode;
+    variant?: Variant;
+    size?: Size;
+    icon?: IconName;
+    href?: string;
+    onClick?: () => void;
+    type?: 'button' | 'submit';
+    title?: string;
+    disabled?: boolean;
+    fullWidth?: boolean;
+    style?: React.CSSProperties;
+    className?: string;
+}
+
+const variantStyle: Record<Variant, React.CSSProperties> = {
+    primary: {
+        background: 'var(--primary)',
+        color: '#1a130d',
+        border: '1px solid transparent'
+    },
+    ghost: {
+        background: 'var(--surface)',
+        color: 'var(--foreground)',
+        border: '1px solid var(--surface-border)'
+    },
+    danger: {
+        background: 'rgba(248, 113, 113, 0.12)',
+        color: 'var(--error)',
+        border: '1px solid color-mix(in srgb, var(--error) 45%, transparent)'
+    }
+};
+
+export default function Button({
+    children,
+    variant = 'primary',
+    size = 'md',
+    icon,
+    href,
+    onClick,
+    type = 'button',
+    title,
+    disabled,
+    fullWidth,
+    style,
+    className
+}: ButtonProps) {
+    const base: React.CSSProperties = {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '0.5rem',
+        fontFamily: 'var(--font-sans)',
+        fontWeight: 700,
+        borderRadius: '10px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
+        transition: 'transform 0.15s ease, opacity 0.15s ease, background 0.15s ease',
+        textDecoration: 'none',
+        ...variantStyle[variant],
+        ...(size === 'sm' ? { padding: '0.45rem 0.85rem', fontSize: '0.8rem' } : { padding: '0.75rem 1.4rem', fontSize: '0.9rem' }),
+        ...(fullWidth ? { width: '100%' } : {}),
+        ...style
+    };
+
+    const inner = (
+        <>
+            {icon && <Icon name={icon} size={size === 'sm' ? 15 : 17} />}
+            {children}
+        </>
+    );
+
+    if (href) {
+        return (
+            <Link href={href} onClick={onClick} title={title} style={base} className={className}>
+                {inner}
+            </Link>
+        );
+    }
+
+    return (
+        <button type={type} onClick={onClick} title={title} disabled={disabled} style={base} className={className}>
+            {inner}
+        </button>
+    );
+}

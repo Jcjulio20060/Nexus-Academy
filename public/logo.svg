@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Steam curls -->
+  <path d="M205 218 Q 189 200 205 182 Q 219 164 203 148" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M272 218 Q 288 200 272 182 Q 258 164 274 148" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <!-- Left curly brace -->
+  <path d="M20 8 C 6 8 0 18 0 28 C 0 38 8 44 20 50 C 8 56 0 62 0 72 C 0 82 6 92 20 92" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round" fill="none" transform="translate(108 236)"/>
+  <!-- Right curly brace -->
+  <path d="M20 8 C 6 8 0 18 0 28 C 0 38 8 44 20 50 C 8 56 0 62 0 72 C 0 82 6 92 20 92" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round" fill="none" transform="translate(384 236) scale(-1 1)"/>
+  <!-- Cup handle -->
+  <path d="M318 262 h 22 a 20 20 0 0 1 0 40 h -22" stroke="#f2a63b" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <!-- Cup body -->
+  <rect x="170" y="232" width="150" height="124" rx="28" fill="url(#cafeGrad)"/>
+  <!-- Latte foam -->
+  <rect x="170" y="232" width="150" height="24" rx="12" fill="#f6efe3"/>
+  <defs>
+    <linearGradient id="cafeGrad" x1="170" y1="232" x2="320" y2="356" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffbe5c"/>
+      <stop offset="1" stop-color="#d97f1e"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
+import withPWAInit from 'next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+  importScripts: ['push-handler.js'],
+});
 
 const nextConfig: NextConfig = {
   /* config options here */
+  reactCompiler: true,
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);
