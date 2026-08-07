@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
 import { isAdminRequest } from '@/lib/auth';
-import { sendNotificationToStudent } from '@/lib/push';
+import { replyToTicket } from '@/lib/services/tickets';
 
 export async function POST(request: Request) {
     if (!(await isAdminRequest(request))) {
@@ -22,14 +22,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Ticket não encontrado' }, { status: 404 });
         }
 
-        await prisma.ticketReply.create({ data: { message, isAdmin: true, ticketId } });
-
-        await sendNotificationToStudent(
-            ticket.studentId,
-            'Resposta no seu ticket',
-            ticket.subject,
-            '/tickets'
-        );
+        await replyToTicket(ticketId, message, true);
 
         return NextResponse.json({ success: true });
     } catch (error) {

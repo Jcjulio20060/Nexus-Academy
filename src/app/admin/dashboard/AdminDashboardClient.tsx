@@ -167,6 +167,20 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
         }
     };
 
+    const handleTelegramSetup = async () => {
+        const promise = fetch('/api/telegram/setup', { method: 'POST' }).then(async (res) => {
+            const data = await res.json().catch(() => null);
+            if (res.ok && data?.success) return data;
+            throw new Error(data?.error || 'Falha ao ativar');
+        });
+
+        toast.promise(promise, {
+            loading: 'Ativando bot...',
+            success: (data) => `Bot ativado: ${data.webhookUrl}`,
+            error: (err) => err.message || 'Falha ao ativar Telegram'
+        });
+    };
+
     const renderTabs = () => (
         <div style={{
             display: 'flex', gap: '0.5rem', marginBottom: '2.5rem',
@@ -229,6 +243,9 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                     <ThemeToggle />
                     <Button variant="ghost" size="sm" icon="external" href="/">
                         Ver site
+                    </Button>
+                    <Button variant="ghost" size="sm" icon="zap" onClick={handleTelegramSetup}>
+                        Telegram
                     </Button>
                     <Button variant="danger" size="sm" icon="logout" onClick={handleLogout}>
                         Sair

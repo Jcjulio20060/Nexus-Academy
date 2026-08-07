@@ -115,9 +115,19 @@ model Student {
   tickets       Ticket[]
   absences      AbsenceJustification[]
   subscriptions PushSubscription[]
+  telegramChats TelegramChat[]
 
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
+}
+
+model TelegramChat {
+  id        Int      @id @default(autoincrement())
+  chatId    String   @unique
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PushSubscription {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
 import { isAdminRequest } from '@/lib/auth';
-import { sendNotificationToStudent } from '@/lib/push';
+import { closeTicket } from '@/lib/services/tickets';
 
 export async function POST(request: Request) {
     if (!(await isAdminRequest(request))) {
@@ -21,17 +21,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Ticket não encontrado' }, { status: 404 });
         }
 
-        await prisma.ticket.update({
-            where: { id },
-            data: { status: 'CLOSED' }
-        });
-
-        await sendNotificationToStudent(
-            ticket.studentId,
-            'Ticket encerrado',
-            ticket.subject,
-            '/tickets'
-        );
+        await closeTicket(id);
 
         return NextResponse.json({ success: true });
     } catch (error) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
 import { saveFile } from '@/lib/storage';
-import { notifyAdmin } from '@/lib/notify';
+import { notifyAdminNewAbsence } from '@/lib/services/absences';
 
 function todayStr(): string {
     const d = new Date();
@@ -56,20 +56,7 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        const formattedDate = new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-
-        await notifyAdmin(
-            `Justificativa de falta de ${student.name}`,
-            `
-                <h2>Nova justificativa de ${student.name} (${student.registration})</h2>
-                <p><strong>Matéria:</strong> ${subject.name}${subject.period ? ` (${subject.period})` : ''}</p>
-                <p><strong>Data da falta:</strong> ${formattedDate}</p>
-                <p><strong>Motivo:</strong> ${reason}</p>
-                ${attachmentUrl ? `<p><a href="${attachmentUrl}">Ver anexo</a></p>` : ''}
-                <hr />
-                <p>Acesse o painel administrativo para aprovar ou reprovar.</p>
-            `
-        );
+        await notifyAdminNewAbsence(justification.id);
 
         return NextResponse.json({ success: true, id: justification.id });
     } catch (error) {

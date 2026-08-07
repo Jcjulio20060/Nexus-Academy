@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
-import { notifyAdmin } from '@/lib/notify';
+import { replyToTicket } from '@/lib/services/tickets';
 
 export async function POST(req: NextRequest) {
     try {
@@ -22,17 +22,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: 'Ticket não encontrado' }, { status: 404 });
         }
 
-        await prisma.ticketReply.create({ data: { message, isAdmin: false, ticketId } });
-
-        await notifyAdmin(
-            `Nova mensagem no ticket: ${ticket.subject}`,
-            `
-                <h2>Novo comentário de ${ticket.student.name} no ticket "${ticket.subject}"</h2>
-                <p><strong>Mensagem:</strong> ${message}</p>
-                <hr />
-                <p>Acesse o painel administrativo para responder.</p>
-            `
-        );
+        await replyToTicket(ticketId, message, false);
 
         return NextResponse.json({ success: true });
     } catch (error) {

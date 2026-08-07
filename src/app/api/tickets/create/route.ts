@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/data';
 import { saveFile } from '@/lib/storage';
-import { notifyAdmin } from '@/lib/notify';
-
-const CATEGORY_LABEL: Record<string, string> = {
-    GERAL: 'Geral',
-    ACADEMICO: 'Acadêmico',
-    TECNICO: 'Técnico',
-    OUTRO: 'Outro'
-};
+import { notifyAdminNewTicket } from '@/lib/services/tickets';
 
 export async function POST(req: NextRequest) {
     try {
@@ -47,18 +40,7 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        await notifyAdmin(
-            `Novo ticket: ${subject}`,
-            `
-                <h2>Novo ticket de ${student.name} (${student.registration})</h2>
-                <p><strong>Categoria:</strong> ${CATEGORY_LABEL[category] || category}</p>
-                <p><strong>Assunto:</strong> ${subject}</p>
-                <p><strong>Mensagem:</strong> ${message}</p>
-                ${attachmentUrl ? `<p><a href="${attachmentUrl}">Ver anexo</a></p>` : ''}
-                <hr />
-                <p>Acesse o painel administrativo para responder.</p>
-            `
-        );
+        await notifyAdminNewTicket(ticket.id);
 
         return NextResponse.json({ success: true, id: ticket.id });
     } catch (error) {
