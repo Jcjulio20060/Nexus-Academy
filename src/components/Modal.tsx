@@ -44,8 +44,8 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: 'rgba(0, 0, 0, 0.7)',
-                backdropFilter: 'blur(4px)',
+                background: 'rgba(36, 28, 20, 0.45)',
+                backdropFilter: 'blur(3px)',
                 zIndex: 50,
                 display: 'flex',
                 alignItems: 'center',
@@ -60,8 +60,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                     maxWidth: '500px',
                     maxHeight: '90vh',
                     overflowY: 'auto',
-                    background: 'var(--background)',
-                    border: '1px solid var(--surface-border)',
+                    background: 'var(--surface)',
                     color: 'var(--foreground)'
                 }}
             >

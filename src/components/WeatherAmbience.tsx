@@ -6,37 +6,21 @@ function ambienceFor(icon: string): string {
     const night = icon.endsWith('n');
     const code = icon.slice(0, 2);
 
-    switch (code) {
-        case '01':
-            return night
-                ? 'radial-gradient(ellipse at 25% 0%, rgba(63, 76, 172, 0.25), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(30, 58, 138, 0.18), transparent 55%)'
-                : 'radial-gradient(ellipse at 25% 0%, rgba(242, 166, 59, 0.20), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.14), transparent 55%)';
-        case '02':
-        case '03':
-        case '04':
-            return night
-                ? 'radial-gradient(ellipse at 25% 0%, rgba(71, 85, 105, 0.22), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(51, 65, 85, 0.18), transparent 55%)'
-                : 'radial-gradient(ellipse at 25% 0%, rgba(148, 163, 184, 0.14), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(100, 116, 139, 0.10), transparent 55%)';
-        case '09':
-        case '10':
-            return night
-                ? 'radial-gradient(ellipse at 25% 0%, rgba(15, 118, 110, 0.24), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(12, 74, 110, 0.22), transparent 55%)'
-                : 'radial-gradient(ellipse at 25% 0%, rgba(13, 148, 136, 0.16), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(37, 99, 235, 0.12), transparent 55%)';
-        case '11':
-            return night
-                ? 'radial-gradient(ellipse at 25% 0%, rgba(91, 33, 182, 0.26), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(30, 58, 138, 0.22), transparent 55%)'
-                : 'radial-gradient(ellipse at 25% 0%, rgba(139, 92, 246, 0.18), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(59, 130, 246, 0.14), transparent 55%)';
-        case '13':
-            return night
-                ? 'radial-gradient(ellipse at 25% 0%, rgba(100, 116, 139, 0.20), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(71, 85, 105, 0.16), transparent 55%)'
-                : 'radial-gradient(ellipse at 25% 0%, rgba(165, 213, 255, 0.16), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(203, 213, 225, 0.12), transparent 55%)';
-        case '50':
-            return night
-                ? 'radial-gradient(ellipse at 25% 0%, rgba(100, 116, 139, 0.20), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(51, 65, 85, 0.16), transparent 55%)'
-                : 'radial-gradient(ellipse at 25% 0%, rgba(148, 163, 184, 0.14), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(120, 113, 108, 0.10), transparent 55%)';
-        default:
-            return 'radial-gradient(ellipse at 25% 0%, var(--primary-glow), transparent 55%), radial-gradient(ellipse at 80% 100%, var(--secondary-glow), transparent 55%)';
-    }
+    // A single, very soft weather wash over the paper. Opacities are kept
+    // low so it reads as ambient tint, not decoration.
+    const tint = {
+        '01': night ? 'rgba(75, 90, 150, 0.16)' : 'rgba(240, 190, 110, 0.22)',
+        '02': 'rgba(150, 165, 180, 0.14)',
+        '03': 'rgba(160, 170, 180, 0.12)',
+        '04': 'rgba(130, 140, 150, 0.14)',
+        '09': 'rgba(80, 120, 160, 0.14)',
+        '10': 'rgba(70, 110, 150, 0.14)',
+        '11': 'rgba(110, 90, 150, 0.14)',
+        '13': 'rgba(190, 210, 235, 0.2)',
+        '50': 'rgba(160, 170, 175, 0.14)'
+    }[code] ?? 'rgba(240, 180, 100, 0.12)';
+
+    return `radial-gradient(42rem 26rem at 85% -4%, ${tint}, transparent 62%)`;
 }
 
 export default function WeatherAmbience() {

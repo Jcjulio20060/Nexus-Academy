@@ -4,8 +4,8 @@
     "description": "Portal da turma de Ciência da Computação",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#171109",
-    "theme_color": "#171109",
+    "background_color": "#f6f1e8",
+    "theme_color": "#f6f1e8",
     "icons": [
         {
             "src": "/icons/icon-192x192.png",

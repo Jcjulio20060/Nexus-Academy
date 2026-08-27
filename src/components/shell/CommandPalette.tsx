@@ -132,8 +132,8 @@ export default function CommandPalette() {
                         position: 'fixed',
                         inset: 0,
                         zIndex: 100,
-                        background: 'rgba(0, 0, 0, 0.6)',
-                        backdropFilter: 'blur(6px)',
+                        background: 'rgba(36, 28, 20, 0.45)',
+                        backdropFilter: 'blur(3px)',
                         display: 'flex',
                         alignItems: 'flex-start',
                         justifyContent: 'center',
@@ -148,7 +148,7 @@ export default function CommandPalette() {
                             maxWidth: '520px',
                             maxHeight: '60vh',
                             overflowY: 'auto',
-                            background: 'var(--background)'
+                            background: 'var(--surface)'
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--surface-border)' }}>

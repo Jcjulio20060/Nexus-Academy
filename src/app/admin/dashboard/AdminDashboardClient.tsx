@@ -201,8 +201,8 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                         flex: '1 1 auto',
                         display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-1)',
                         padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--rounded-md, 10px)', border: 'none',
-                        background: activeTab === tab.id ? 'var(--primary)' : 'transparent',
-                        color: activeTab === tab.id ? 'white' : 'var(--foreground-muted)',
+                        background: activeTab === tab.id ? 'var(--accent-strong)' : 'transparent',
+                        color: activeTab === tab.id ? 'var(--on-accent)' : 'var(--foreground-muted)',
                         fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
                         whiteSpace: 'nowrap', fontSize: 'var(--text-base)'
                     }}
@@ -225,18 +225,18 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
     );
 
     return (
-        <main className="container" style={{ padding: 'var(--space-6) var(--space-4)' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-8)', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+        <main className="container" style={{ padding: 'var(--space-6) var(--space-4)', position: 'relative' }}>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-6)', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                 <div>
-                    <p className="label-mono" style={{ margin: '0 0 var(--space-1)' }}>{'// painel de controle'}</p>
+                    <p className="label-mono" style={{ margin: '0 0 var(--space-1)' }}>{'// mesa de atendimento'}</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-                        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: 'var(--foreground)' }}>Admin</h1>
+                        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 600, letterSpacing: '-0.02em', margin: 0, color: 'var(--foreground)' }}>Mesa</h1>
                         <Badge tone={sessionUser.role === 'admin' ? 'amber' : 'teal'}>
-                            {sessionUser.role === 'admin' ? 'principal' : sessionUser.name}
+                            {sessionUser.role === 'admin' ? 'principal' : 'representante'}
                         </Badge>
                     </div>
                     <p className="mono" style={{ margin: 'var(--space-1) 0 0', fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)' }}>
-                        acessando como <span style={{ color: 'var(--primary)' }}>{sessionUser.name}</span>
+                        em serviço: <span style={{ color: 'var(--primary)' }}>{sessionUser.name}</span>
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
@@ -252,6 +252,36 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                     </Button>
                 </div>
             </header>
+
+            {/* Status do guichê — o resumo do que está pendente na mesa */}
+            <section className="glass-panel" style={{ padding: 'var(--space-5) var(--space-6)', marginBottom: 'var(--space-6)' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'var(--space-5)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                        <span className="live-dot" />
+                        <span className="mono" style={{ fontSize: 'var(--text-xs)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--secondary)' }}>
+                            na mesa
+                        </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+                        {initialTickets.filter(t => t.status === 'OPEN').length > 0 && (
+                            <span className="stamp stamp-warning stamp--rotate">
+                                {initialTickets.filter(t => t.status === 'OPEN').length} ticket{initialTickets.filter(t => t.status === 'OPEN').length !== 1 ? 's' : ''} abertos
+                            </span>
+                        )}
+                        {initialAbsences.filter(a => a.status === 'PENDING').length > 0 && (
+                            <span className="stamp stamp-warning">
+                                {initialAbsences.filter(a => a.status === 'PENDING').length} justificativa{initialAbsences.filter(a => a.status === 'PENDING').length !== 1 ? 's' : ''} pendente{initialAbsences.filter(a => a.status === 'PENDING').length !== 1 ? 's' : ''}
+                            </span>
+                        )}
+                        {initialTickets.filter(t => t.status === 'OPEN').length === 0 && initialAbsences.filter(a => a.status === 'PENDING').length === 0 && (
+                            <span className="stamp stamp-success">nada pendente</span>
+                        )}
+                        <span className="stamp stamp-neutral">
+                            {initialData.classes.filter(c => c.day === new Date().toLocaleDateString('en-US', { weekday: 'long' })).length} aula{initialData.classes.filter(c => c.day === new Date().toLocaleDateString('en-US', { weekday: 'long' })).length !== 1 ? 's' : ''} hoje
+                        </span>
+                    </div>
+                </div>
+            </section>
 
             {renderTabs()}
 
@@ -335,7 +365,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-6)' }}>
                         <section className="glass-panel" style={{ padding: 'var(--space-6)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
-                                {sectionTitle('materiais', '#60a5fa')}
+                                {sectionTitle('materiais', 'var(--secondary)')}
                                 <Button size="sm" icon="plus" onClick={() => setIsResourceModalOpen(true)}>Novo</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', maxHeight: '400px', overflowY: 'auto' }}>
@@ -361,7 +391,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
 
                         <section className="glass-panel" style={{ padding: 'var(--space-6)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
-                                {sectionTitle('faq', 'var(--warning)')}
+                                {sectionTitle('faq', 'var(--warning-ink)')}
                                 <Button size="sm" icon="plus" onClick={() => setIsFaqModalOpen(true)}>Novo</Button>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', maxHeight: '400px', overflowY: 'auto' }}>
@@ -450,7 +480,12 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
             {activeTab === 'tickets' && (
                 <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
                     <section className="glass-panel" style={{ padding: 'var(--space-6)' }}>
-                        <div style={{ marginBottom: 'var(--space-6)' }}>{sectionTitle('tickets dos alunos', 'var(--primary)')}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                            {sectionTitle('protocolos', 'var(--primary)')}
+                            <span className="mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)' }}>
+                                {initialTickets.length} no total
+                            </span>
+                        </div>
                         <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
                             {initialTickets.map(ticket => (
                                 <div key={ticket.id} style={{
@@ -460,12 +495,15 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-4)', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
                                         <div style={{ minWidth: 0 }}>
                                             <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center', marginBottom: 'var(--space-1)', flexWrap: 'wrap' }}>
+                                                <span className="mono" style={{ fontSize: 'var(--text-xs)', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--foreground-muted)' }}>
+                                                    Nº {String(ticket.id).padStart(4, '0')}
+                                                </span>
                                                 <Badge tone="amber">
                                                     {CATEGORY_LABEL[ticket.category] || ticket.category}
                                                 </Badge>
-                                                <Badge tone={ticket.status === 'OPEN' ? 'warning' : 'success'}>
+                                                <span className={ticket.status === 'OPEN' ? 'stamp stamp-warning stamp--rotate' : 'stamp stamp-neutral'}>
                                                     {ticket.status === 'OPEN' ? 'aberto' : 'encerrado'}
-                                                </Badge>
+                                                </span>
                                             </div>
                                             <p style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {ticket.subject}
@@ -476,28 +514,20 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                                         </div>
                                         <div style={{ display: 'flex', gap: 'var(--space-1)', flexShrink: 0, alignItems: 'center' }}>
                                             {ticket.status === 'OPEN' && (
-                                                <>
-                                                    <button
-                                                        onClick={() => { setSelectedTicket(ticket); setIsTicketReplyModalOpen(true); }}
-                                                        style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--success)', color: 'white', border: 'none', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}
-                                                    >
-                                                        Responder
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleTicketClose(ticket.id)}
-                                                        style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--secondary)', color: 'white', border: 'none', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}
-                                                    >
-                                                        Encerrar
-                                                    </button>
-                                                </>
+                                                <Button size="sm" icon="reply" onClick={() => { setSelectedTicket(ticket); setIsTicketReplyModalOpen(true); }}>
+                                                    Responder
+                                                </Button>
                                             )}
+                                            <Button size="sm" variant="ghost" onClick={() => handleTicketClose(ticket.id)} disabled={ticket.status !== 'OPEN'}>
+                                                {ticket.status === 'OPEN' ? 'Encerrar' : 'Encerrado'}
+                                            </Button>
                                             <button onClick={() => setExpandedTicketId(expandedTicketId === ticket.id ? null : ticket.id)} style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--surface)', border: '1px solid var(--surface-border)', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)' }}>
                                                 {expandedTicketId === ticket.id ? 'Recolher' : `Conversa (${ticket.replies.length})`}
                                             </button>
                                             <form onSubmit={(e) => handleDelete(e, '/api/admin/tickets/delete')}>
                                                 <input type="hidden" name="id" value={ticket.id} />
-                                                <button type="submit" style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--error)', color: 'white', border: 'none', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-                                                    Excluir
+                                                <button type="submit" title="Remover" aria-label="Remover protocolo" style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--error-glow)', color: 'var(--error)', border: '1px solid color-mix(in srgb, var(--error) 45%, transparent)', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
+                                                    Remover
                                                 </button>
                                             </form>
                                         </div>
@@ -537,7 +567,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
             {activeTab === 'absences' && (
                 <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
                     <section className="glass-panel" style={{ padding: 'var(--space-6)' }}>
-                        <div style={{ marginBottom: 'var(--space-6)' }}>{sectionTitle('justificativas de falta', 'var(--primary)')}</div>
+                        <div style={{ marginBottom: 'var(--space-6)' }}>{sectionTitle('justificativas', 'var(--primary)')}</div>
                         <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
                             {initialAbsences.map(item => {
                                 const status = STATUS_LABEL[item.status] || STATUS_LABEL.PENDING;
@@ -556,21 +586,23 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                                                 </p>
                                             </div>
                                             <div style={{ display: 'flex', gap: 'var(--space-1)', flexShrink: 0, alignItems: 'center' }}>
-                                                <Badge tone={item.status === 'APPROVED' ? 'success' : item.status === 'REJECTED' ? 'error' : 'warning'}>
+                                                <span className={item.status === 'PENDING' ? 'stamp stamp-warning' : item.status === 'APPROVED' ? 'stamp stamp-success' : 'stamp stamp-error'}>
                                                     {status.label}
-                                                </Badge>
+                                                </span>
                                                 {item.status === 'PENDING' && (
-                                                    <button
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        icon="clipboard"
                                                         onClick={() => { setSelectedAbsence(item); setIsAbsenceReviewModalOpen(true); }}
-                                                        style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--success)', color: 'white', border: 'none', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}
                                                     >
                                                         Revisar
-                                                    </button>
+                                                    </Button>
                                                 )}
                                                 <form onSubmit={(e) => handleDelete(e, '/api/admin/absences/delete')}>
                                                     <input type="hidden" name="id" value={item.id} />
-                                                    <button type="submit" style={{ padding: 'var(--space-1) var(--space-2)', background: 'var(--error)', color: 'white', border: 'none', borderRadius: 'var(--rounded-sm, 8px)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-                                                        Excluir
+                                                    <button type="submit" title="Remover" aria-label="Remover justificativa" style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface)', color: 'var(--error)', border: '1px solid var(--surface-border)', borderRadius: 'var(--rounded-md)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
+                                                        Remover
                                                     </button>
                                                 </form>
                                             </div>
@@ -611,7 +643,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                         </div>
                         <input type="hidden" name="ticketId" value={selectedTicket.id} />
                         <textarea name="message" required placeholder="Sua resposta..." style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '120px', fontSize: 'var(--text-md)' }} />
-                        <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--success)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
+                        <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--success)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-success)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
                             Enviar Resposta
                         </button>
                     </form>
@@ -640,10 +672,10 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                             <textarea name="adminNote" placeholder="Observação (opcional)" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '80px', fontSize: 'var(--text-md)' }} />
                         </form>
                         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                            <button onClick={() => handleAbsenceReview('APPROVED')} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-1)', padding: 'var(--space-3)', background: 'var(--success)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
+                            <button onClick={() => handleAbsenceReview('APPROVED')} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-1)', padding: 'var(--space-3)', background: 'var(--success)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-success)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
                                 <Icon name="check" size={16} /> Aprovar
                             </button>
-                            <button onClick={() => handleAbsenceReview('REJECTED')} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-1)', padding: 'var(--space-3)', background: 'var(--error)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
+                            <button onClick={() => handleAbsenceReview('REJECTED')} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-1)', padding: 'var(--space-3)', background: 'var(--error)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-error)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
                                 <Icon name="x" size={16} /> Reprovar
                             </button>
                         </div>
@@ -654,7 +686,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
             <Modal isOpen={isNoticeModalOpen} onClose={() => setIsNoticeModalOpen(false)} title="Novo Aviso">
                 <form onSubmit={(e) => handleSubmit(e, '/api/admin/notices/create', 'Aviso criado!', setIsNoticeModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                     <input name="message" required placeholder="Mensagem do aviso" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -668,7 +700,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                         <option value="project">Projeto</option>
                         <option value="other">Outro</option>
                     </select>
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -690,7 +722,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                         {initialData.professors.map(prof => <option key={prof.id} value={prof.id}>{prof.name}</option>)}
                     </select>
                     <input name="room" required placeholder="Sala" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -709,7 +741,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                         <option value="">Matéria...</option>
                         {initialData.subjects.map(sub => <option key={sub.id} value={sub.id}>{sub.name}{sub.period ? ` · ${sub.period}` : ''}</option>)}
                     </select>
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -718,7 +750,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                     <input name="name" required placeholder="Nome" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
                     <input name="code" placeholder="Código" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
                     <input name="period" placeholder="Semestre (ex.: 2026/2)" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -726,7 +758,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                 <form onSubmit={(e) => handleSubmit(e, '/api/admin/professors/create', 'Professor salvo!', setIsProfessorModalOpen)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                     <input name="name" required placeholder="Nome" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
                     <input name="email" type="email" placeholder="Email" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -744,7 +776,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                         <input name="password" type="password" placeholder="Senha (opcional)" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
                     </div>
                     <input name="photoUrl" placeholder="Link da Foto" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
 
@@ -753,7 +785,7 @@ export default function AdminDashboardClient({ sessionUser, initialData, initial
                     <input name="question" required placeholder="Pergunta" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
                     <textarea name="answer" required placeholder="Resposta" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', minHeight: '100px', fontSize: 'var(--text-md)' }} />
                     <input name="order" type="number" defaultValue="0" style={{ padding: 'var(--space-3)',     borderRadius: 'var(--rounded-sm, 8px)', border: '1px solid var(--surface-border)', background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)' }} />
-                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'white', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
+                    <button type="submit" style={{ padding: 'var(--space-3)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 600, cursor: 'pointer', fontSize: 'var(--text-md)' }}>Salvar</button>
                 </form>
             </Modal>
         </main>

@@ -35,9 +35,9 @@ export default async function GradePage() {
                 {grouped.map(({ day, label, classes }) => {
                     const isToday = day === today;
                     return (
-                        <section key={day} className="glass-panel" style={{ padding: '1.5rem', opacity: classes.length ? 1 : 0.75 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                                <h2 className="mono" style={{ margin: 0, fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: isToday ? 'var(--primary)' : 'var(--foreground-muted)' }}>
+                        <section key={day} className="glass-panel" style={{ padding: 'var(--space-2) var(--space-5)', opacity: classes.length ? 1 : 0.75 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: 'var(--space-4) 0' }}>
+                                <h2 className="mono" style={{ margin: 0, fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: isToday ? 'var(--primary)' : 'var(--foreground-muted)' }}>
                                     {label}
                                 </h2>
                                 {isToday && (
@@ -52,13 +52,13 @@ export default async function GradePage() {
                             </div>
 
                             {classes.length === 0 ? (
-                                <p className="mono" style={{ fontSize: '0.78rem', color: 'var(--foreground-muted)', fontStyle: 'italic', margin: 0 }}>
+                                <p className="mono" style={{ fontSize: '0.78rem', color: 'var(--foreground-muted)', fontStyle: 'italic', margin: 0, paddingBottom: 'var(--space-4)' }}>
                                     sem aulas
                                 </p>
                             ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     {classes.map(cls => (
-                                        <div key={cls.id} style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                                        <div key={cls.id} className="hairline-row" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: 'var(--space-4) 0' }}>
                                             <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 700, minWidth: '4.2rem', color: 'var(--primary)' }}>
                                                 {cls.start}
                                             </span>
@@ -74,7 +74,7 @@ export default async function GradePage() {
                                                     {cls.professor.name}
                                                 </p>
                                             </div>
-                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.6rem', borderRadius: '8px', background: 'var(--surface-card)', color: 'var(--foreground-muted)', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
+                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.6rem', borderRadius: 'var(--rounded-sm)', background: 'var(--surface-card)', border: '1px solid var(--surface-border)', color: 'var(--foreground-muted)', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
                                                 <Icon name="building" size={13} />
                                                 <span className="mono">{cls.room}</span>
                                             </span>

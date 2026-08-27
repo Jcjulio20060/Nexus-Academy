@@ -48,8 +48,8 @@ Reusable across classes and departments — any school or cohort can deploy thei
 ## Brand Commitments
 
 - **Name**: "Coffee & Code" is the brand; "Nexus Academy" is codename.
-- **Aesthetic**: Coffee/caramel/terminal — amber primary, teal secondary, espresso dark, glassmorphism. Binding.
-- **Typography**: Inter (body), Space Grotesk (display), JetBrains Mono (mono). Binding.
+- **Aesthetic**: Café + code on paper — light paper palette (caramel/teal, warm neutrals), flat surfaces with hairlines, the "comanda" card as the signature. Binding.
+- **Typography**: Instrument Sans (body), Fraunces (display), JetBrains Mono (mono). Binding.
 - **Voice**: Warm, casual, peer-to-peer. pt-BR.
 - **Personality**: Premium but approachable. Console metaphor (terminal, status bar, rail) is part of identity.
 

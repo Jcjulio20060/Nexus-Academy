@@ -24,9 +24,10 @@ interface ButtonProps {
 
 const variantStyle: Record<Variant, React.CSSProperties> = {
     primary: {
-        background: 'var(--primary)',
-        color: '#1a130d',
-        border: '1px solid transparent'
+        background: 'var(--accent-strong)',
+        color: 'var(--on-accent)',
+        border: '1px solid transparent',
+        boxShadow: '0 1px 2px rgba(36, 28, 20, 0.12)'
     },
     ghost: {
         background: 'var(--surface)',
@@ -34,7 +35,7 @@ const variantStyle: Record<Variant, React.CSSProperties> = {
         border: '1px solid var(--surface-border)'
     },
     danger: {
-        background: 'rgba(248, 113, 113, 0.12)',
+        background: 'var(--error-glow)',
         color: 'var(--error)',
         border: '1px solid color-mix(in srgb, var(--error) 45%, transparent)'
     }
@@ -61,7 +62,7 @@ export default function Button({
         gap: '0.5rem',
         fontFamily: 'var(--font-sans)',
         fontWeight: 700,
-        borderRadius: '10px',
+        borderRadius: 'var(--rounded-md)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
         transition: 'transform 0.15s ease, opacity 0.15s ease, background 0.15s ease',

@@ -169,7 +169,7 @@ export default function TicketsClient() {
                                             key={reply.id}
                                             style={{
                                                 padding: '0.85rem 1rem', borderRadius: '12px', maxWidth: '85%',
-                                                background: reply.isAdmin ? 'var(--surface-card)' : 'var(--surface)',
+                                                background: reply.isAdmin ? 'var(--surface-card)' : 'var(--surface-hover)',
                                                 border: reply.isAdmin ? '1px solid color-mix(in srgb, var(--primary) 45%, transparent)' : '1px solid var(--surface-border)',
                                                 alignSelf: reply.isAdmin ? 'flex-start' : 'flex-end',
                                                 justifySelf: reply.isAdmin ? 'flex-start' : 'flex-end'

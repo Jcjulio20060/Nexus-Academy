@@ -76,12 +76,12 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
 
     return (
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-            <section style={{ marginBottom: 'var(--space-8)' }}>
+            <section style={{ marginBottom: 'var(--space-10)' }}>
                 <p className="label-mono" style={{ margin: '0 0 var(--space-2)' }}>{`// ${dateLabel}`}</p>
-                <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.15, margin: 0 }}>
+                <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-greeting)', fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1.04, margin: 0 }}>
                     {greeting(now, student?.name.split(' ')[0])}
                 </h1>
-                <p style={{ color: 'var(--foreground-muted)', margin: 'var(--space-2) 0 0', fontSize: 'var(--text-md)' }}>
+                <p style={{ color: 'var(--foreground-muted)', margin: 'var(--space-3) 0 0', fontSize: 'var(--text-lg)' }}>
                     Console do aluno · {classesToday.length > 0 ? `${classesToday.length} aula${classesToday.length > 1 ? 's' : ''} hoje` : 'sem aulas hoje'}
                 </p>
             </section>

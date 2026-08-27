@@ -5,9 +5,9 @@ export type BadgeTone = 'amber' | 'teal' | 'success' | 'warning' | 'error' | 'ne
 const tones: Record<BadgeTone, { color: string; background: string }> = {
     amber: { color: 'var(--primary)', background: 'var(--primary-glow)' },
     teal: { color: 'var(--secondary)', background: 'var(--secondary-glow)' },
-    success: { color: 'var(--success)', background: 'rgba(52, 211, 153, 0.14)' },
-    warning: { color: '#8a5a00', background: 'var(--warning)' },
-    error: { color: 'var(--error)', background: 'rgba(248, 113, 113, 0.14)' },
+    success: { color: 'var(--success)', background: 'var(--success-glow)' },
+    warning: { color: 'var(--warning-ink)', background: 'var(--warning-glow)' },
+    error: { color: 'var(--error)', background: 'var(--error-glow)' },
     neutral: { color: 'var(--foreground-muted)', background: 'var(--surface)' }
 };
 
@@ -25,8 +25,8 @@ export default function Badge({ tone = 'neutral', children, className }: BadgePr
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.3rem',
-                padding: '0.18rem 0.6rem',
-                borderRadius: '999px',
+                padding: '0.2rem 0.65rem',
+                borderRadius: 'var(--rounded-full)',
                 fontFamily: 'var(--font-mono)',
                 fontSize: 'var(--text-xs)',
                 fontWeight: 600,

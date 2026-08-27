@@ -37,9 +37,9 @@ export default function ImportantDates({ events, notices }: ImportantDatesProps)
     return (
         <>
             {events.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {events.map((ev, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: '0.6rem 0.2rem' }}>
+                        <div key={i} className="hairline-row" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: '0.75rem 0.2rem' }}>
                             <span className="mono" style={{ minWidth: '4rem', fontSize: 'var(--text-sm)', color: 'var(--primary)', fontWeight: 700 }}>
                                 {formatDate(ev.date)}
                             </span>
@@ -60,8 +60,8 @@ export default function ImportantDates({ events, notices }: ImportantDatesProps)
             {notices.length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                     {notices.map((notice, i) => (
-                        <div key={i} className="glass-panel" style={{ display: 'flex', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', alignItems: 'flex-start' }}>
-                            <span style={{ color: 'var(--warning)', marginTop: '0.1rem', flexShrink: 0 }}>
+                        <div key={i} className="glass-panel" style={{ display: 'flex', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', alignItems: 'flex-start', background: 'var(--warning-glow)', borderColor: 'transparent' }}>
+                            <span style={{ color: 'var(--warning-ink)', marginTop: '0.1rem', flexShrink: 0 }}>
                                 <UiIcon name="alert" size={16} />
                             </span>
                             <div style={{ flex: 1 }}>

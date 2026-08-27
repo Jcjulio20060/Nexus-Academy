@@ -15,7 +15,7 @@ const chipStyle: React.CSSProperties = {
     color: 'var(--foreground-muted)',
     padding: '0.45rem 0.8rem',
     border: '1px solid var(--surface-border)',
-    borderRadius: '10px',
+    borderRadius: 'var(--rounded-md)',
     background: 'var(--surface)',
     fontWeight: 600,
     cursor: 'pointer',

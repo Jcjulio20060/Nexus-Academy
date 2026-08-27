@@ -60,7 +60,7 @@ export default function StudentIdentifyForm({ onSuccess }: StudentIdentifyFormPr
                 <label style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--foreground-muted)' }}>E-mail (opcional)</label>
                 <input name="email" type="email" placeholder="voce@email.com" style={inputStyle} />
             </div>
-            <button type="submit" style={{ padding: 'var(--space-4)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'var(--background)', fontWeight: 700, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
+            <button type="submit" style={{ padding: 'var(--space-4)', background: 'var(--accent-strong)', border: 'none', borderRadius: 'var(--rounded-md)', color: 'var(--on-accent)', fontWeight: 700, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
                 Salvar
             </button>
         </form>

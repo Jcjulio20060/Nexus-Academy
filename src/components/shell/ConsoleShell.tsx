@@ -55,7 +55,6 @@ export default function ConsoleShell({ children }: { children: ReactNode }) {
         <WeatherProvider>
             <div className="console-shell">
                 <WeatherAmbience />
-                <div className="console-grid" />
 
             <header className="console-statusbar">
                 <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', color: 'var(--foreground)' }}>

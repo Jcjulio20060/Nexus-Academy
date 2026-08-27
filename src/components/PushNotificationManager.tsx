@@ -136,7 +136,7 @@ export default function PushNotificationManager() {
                 width: '34px',
                 height: '34px',
                 border: '1px solid var(--surface-border)',
-                borderRadius: '10px',
+                borderRadius: 'var(--rounded-md)',
                 background: isSubscribed ? 'var(--primary-glow)' : 'var(--surface)',
                 color: isSubscribed ? 'var(--primary)' : 'var(--foreground-muted)',
                 cursor: 'pointer'

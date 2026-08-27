@@ -26,65 +26,95 @@ export default function Login() {
         if (res.ok) {
             router.push('/admin/dashboard');
         } else {
-            setError('Credenciais inválidas');
+            setError('Matrícula ou senha incorretos. Verifique e tente de novo.');
         }
     };
 
     const inputBase: React.CSSProperties = {
         width: '100%',
-        padding: '0.9rem 1rem',
-        borderRadius: '10px',
+        padding: '0.85rem 1rem',
+        borderRadius: 'var(--rounded-md)',
         background: 'var(--surface)',
         border: '1px solid var(--surface-border)',
         color: 'var(--foreground)',
         fontSize: '0.95rem',
+        fontFamily: 'var(--font-sans)',
         outline: 'none',
         transition: 'border-color 0.15s ease'
     };
 
     return (
-        <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)', padding: '1rem' }}>
-            <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', backgroundImage: 'radial-gradient(circle, var(--surface-border) 1px, transparent 1px)', backgroundSize: '26px 26px', opacity: 0.4 }} />
-            <div className="glass-panel" style={{ position: 'relative', padding: '3rem', width: '100%', maxWidth: '400px' }}>
-                <Link href="/" style={{ position: 'absolute', top: '1.25rem', left: '1.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--foreground-muted)', textDecoration: 'none', fontSize: '0.78rem', fontFamily: 'var(--font-mono)' }}>
-                    <Icon name="arrow-left" size={13} />
-                    console
+        <main style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'stretch', flexWrap: 'wrap', background: 'var(--background)', overflow: 'hidden' }}>
+            <div className="guiche-checkers guiche-checkers--tl" aria-hidden />
+            <div className="guiche-checkers guiche-checkers--br" aria-hidden />
+
+            {/* Toalha/painel esquerdo — a identidade do guichê */}
+            <div style={{
+                flex: '1 1 380px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                padding: '3rem clamp(1.5rem, 5vw, 4.5rem)'
+            }}>
+                <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', color: 'var(--foreground)', textDecoration: 'none', marginBottom: '2.5rem' }}>
+                    <BrandLogo size={44} />
+                    <span style={{ display: 'flex', flexDirection: 'column' }}>
+                        <strong style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.15rem', lineHeight: 1.1 }}>Coffee &amp; Code</strong>
+                        <span className="mono" style={{ fontSize: '0.68rem', color: 'var(--foreground-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>console do aluno</span>
+                    </span>
                 </Link>
 
-                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <p className="label-mono" style={{ marginBottom: '1.25rem' }}>{'// acesso restrito'}</p>
-                    <BrandLogo size={56} className="brand-logo-glow" />
-                    <h1 style={{ marginTop: '1rem', fontSize: '1.4rem', fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>Admin Access</h1>
-                    <p className="mono" style={{ color: 'var(--foreground-muted)', fontSize: '0.78rem', marginTop: '0.25rem' }}>Coffee &amp; Code</p>
-                </div>
+                <p className="label-mono" style={{ color: 'var(--secondary)', margin: '0 0 var(--space-3)' }}>{'// painel de atendimento'}</p>
+                <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', lineHeight: 1.06, letterSpacing: '-0.02em', margin: 0, maxWidth: '16ch' }}>
+                    Quem está <em style={{ fontStyle: 'normal', color: 'var(--primary)' }}>de serviço</em>?
+                </h1>
+                <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-lg)', marginTop: 'var(--space-3)', maxWidth: '34ch' }}>
+                    Representantes e vices entram com o e-mail cadastrado no painel.
+                </p>
 
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <input
-                        type="text"
-                        placeholder="Usuário ou e-mail"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        style={inputBase}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Senha"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={inputBase}
-                    />
-                    <p className="mono" style={{ fontSize: '0.72rem', color: 'var(--foreground-muted)', margin: 0, lineHeight: 1.5 }}>
-                        Representantes e vice entram com o e-mail cadastrado no painel.
-                    </p>
-                    {error && (
-                        <p style={{ color: 'var(--error)', textAlign: 'center', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-                            <Icon name="alert" size={13} /> {error}
-                        </p>
-                    )}
-                    <Button type="submit" fullWidth icon="command" style={{ marginTop: '0.5rem' }}>
-                        Entrar
-                    </Button>
-                </form>
+                <Link href="/" style={{ marginTop: '2.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--foreground-muted)', textDecoration: 'none', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em' }}>
+                    <Icon name="arrow-left" size={13} />
+                    voltar ao console
+                </Link>
+            </div>
+
+            {/* Cartão de login */}
+            <div style={{ flex: '1 1 420px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem clamp(1.5rem, 5vw, 4.5rem) 5rem' }}>
+                <div className="glass-panel" style={{ width: '100%', maxWidth: '400px', padding: 'var(--space-8)' }}>
+                    <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+                        <div>
+                            <label className="console-label" htmlFor="login-user">Matrícula ou e-mail</label>
+                            <input
+                                id="login-user"
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                style={inputBase}
+                            />
+                        </div>
+                        <div>
+                            <label className="console-label" htmlFor="login-pass">Senha</label>
+                            <input
+                                id="login-pass"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={inputBase}
+                            />
+                        </div>
+
+                        {error && (
+                            <p style={{ color: 'var(--error)', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                                <Icon name="alert" size={15} />
+                                {error}
+                            </p>
+                        )}
+
+                        <Button type="submit" fullWidth icon="command" style={{ padding: '0.85rem 1.4rem', fontSize: 'var(--text-md)' }}>
+                            Entrar no atendimento
+                        </Button>
+                    </form>
+                </div>
             </div>
         </main>
     );
