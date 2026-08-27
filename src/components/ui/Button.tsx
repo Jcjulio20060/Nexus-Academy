@@ -67,7 +67,7 @@ export default function Button({
         transition: 'transform 0.15s ease, opacity 0.15s ease, background 0.15s ease',
         textDecoration: 'none',
         ...variantStyle[variant],
-        ...(size === 'sm' ? { padding: '0.45rem 0.85rem', fontSize: '0.8rem' } : { padding: '0.75rem 1.4rem', fontSize: '0.9rem' }),
+        ...(size === 'sm' ? { padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--text-sm)' } : { padding: 'var(--space-3) var(--space-5)', fontSize: 'var(--text-md)' }),
         ...(fullWidth ? { width: '100%' } : {}),
         ...style
     };

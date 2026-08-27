@@ -60,7 +60,7 @@ export default function ConsoleShell({ children }: { children: ReactNode }) {
             <header className="console-statusbar">
                 <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', color: 'var(--foreground)' }}>
                     <BrandLogo size={30} />
-                    <span className="console-brand-name" style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>
+                    <span className="console-brand-name" style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-lg)', letterSpacing: '-0.02em' }}>
                         Coffee &amp; Code
                     </span>
                 </Link>

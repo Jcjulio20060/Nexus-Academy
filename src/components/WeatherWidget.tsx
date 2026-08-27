@@ -7,8 +7,8 @@ export default function WeatherWidget() {
     const { weather, loading } = useWeather();
 
     if (loading) return (
-        <div className="glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: '150px', height: '40px' }}>
-            <div className="shimmer" style={{ width: '100%', height: '20px', borderRadius: '4px' }}></div>
+        <div className="glass-panel" style={{ padding: 'var(--space-2) var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-2)', minWidth: '150px', height: '40px' }}>
+            <div className="shimmer" style={{ width: '100%', height: '20px', borderRadius: 'var(--rounded-sm, 8px)' }}></div>
         </div>
     );
 
@@ -16,12 +16,12 @@ export default function WeatherWidget() {
 
     return (
         <div className="glass-panel" style={{ 
-            padding: '0.4rem 1rem', 
+            padding: 'var(--space-1) var(--space-4)', 
             display: 'flex', 
             alignItems: 'center', 
-            gap: '0.75rem',
+            gap: 'var(--space-3)',
             background: 'var(--surface-hover)',
-            borderRadius: '12px'
+            borderRadius: 'var(--rounded-lg, 12px)'
         }}>
             <Image 
                 src={`https://openweathermap.org/img/wn/${weather.icon}.png`} 
@@ -32,8 +32,8 @@ export default function WeatherWidget() {
                 style={{ width: '32px', height: '32px' }}
             />
             <div>
-                <p style={{ fontSize: '0.9rem', fontWeight: 700, lineHeight: 1 }}>{weather.temp}°C</p>
-                <p style={{ fontSize: '0.65rem', color: 'var(--foreground-muted)', textTransform: 'capitalize' }}>{weather.condition}</p>
+                <p style={{ fontSize: 'var(--text-md)', fontWeight: 700, lineHeight: 1 }}>{weather.temp}°C</p>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)', textTransform: 'capitalize' }}>{weather.condition}</p>
             </div>
         </div>
     );

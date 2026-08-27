@@ -30,7 +30,7 @@ export default function ThemeToggle() {
                 height: '34px',
                 color: 'var(--foreground-muted)',
                 border: '1px solid var(--surface-border)',
-                borderRadius: '10px',
+                borderRadius: 'var(--rounded-md, 10px)',
                 background: 'var(--surface)',
                 cursor: 'pointer'
             }}

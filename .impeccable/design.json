@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-26T19:35:00.000Z",
+  "title": "Design System: Coffee & Code",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Caramel Amber",
+        "canonical": "#f2a63b",
+        "tonalRamp": ["#3d1f06", "#6b370f", "#9a5218", "#c86e21", "#f2a63b", "#f5bb6a", "#f8d099", "#fce5c8"]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Amber Hover",
+        "canonical": "#ffbe5c"
+      },
+      "primary-glow": {
+        "role": "primary",
+        "displayName": "Amber Glow",
+        "canonical": "rgba(242, 166, 59, 0.18)"
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Terminal Teal",
+        "canonical": "#2dd4bf",
+        "tonalRamp": ["#0a3d36", "#126b60", "#1a998b", "#22c7b6", "#2dd4bf", "#5ce0ce", "#8beadf", "#baF5ef"]
+      },
+      "secondary-glow": {
+        "role": "secondary",
+        "displayName": "Teal Glow",
+        "canonical": "rgba(45, 212, 191, 0.15)"
+      },
+      "accent": {
+        "role": "tertiary",
+        "displayName": "Cream Caramel",
+        "canonical": "#e8c396"
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Espresso Black",
+        "canonical": "#171109",
+        "tonalRamp": ["#0d0a05", "#171109", "#2b2118", "#3d3025", "#524035", "#6b5545", "#8a7060", "#b09888"]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Warm Cream",
+        "canonical": "#f6efe3"
+      },
+      "foreground-muted": {
+        "role": "neutral",
+        "displayName": "Muted Tan",
+        "canonical": "#a89a86"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Glass Surface",
+        "canonical": "rgba(43, 34, 22, 0.55)"
+      },
+      "surface-card": {
+        "role": "neutral",
+        "displayName": "Deep Espresso",
+        "canonical": "rgba(26, 19, 12, 0.6)"
+      },
+      "surface-border": {
+        "role": "neutral",
+        "displayName": "Glass Border",
+        "canonical": "rgba(255, 255, 255, 0.08)"
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Success Green",
+        "canonical": "#34d399"
+      },
+      "warning": {
+        "role": "semantic",
+        "displayName": "Warning Amber",
+        "canonical": "#fbbf24"
+      },
+      "error": {
+        "role": "semantic",
+        "displayName": "Error Rose",
+        "canonical": "#f87171"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Space Grotesk",
+        "purpose": "Page titles, greeting headlines, brand name. Geometric confidence with warmth."
+      },
+      "body": {
+        "displayName": "Inter",
+        "purpose": "All running text, descriptions, paragraph content. Invisible workhorse."
+      },
+      "mono": {
+        "displayName": "JetBrains Mono",
+        "purpose": "Section headers (// LABEL), timestamps, badges, countdowns, code-adjacent data. Console signature."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel-resting",
+        "value": "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)",
+        "purpose": "Default shadow on all glass panels. Subtle ambient lift."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 10px 28px -10px rgba(242, 166, 59, 0.18)",
+        "purpose": "Amber-tinted glow on hovered cards. Signals interactivity."
+      },
+      {
+        "name": "modal-overlay",
+        "value": "0 0 0 100vmax rgba(0, 0, 0, 0.7)",
+        "purpose": "Full-screen dark overlay with blur for modals."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for state transitions (hover, focus, theme toggle)."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Used for fade-in entrance animations. Decelerates from off-screen."
+      },
+      {
+        "name": "duration-fast",
+        "value": "0.15s",
+        "purpose": "Hover/focus state transitions on buttons, links, interactive elements."
+      },
+      {
+        "name": "duration-normal",
+        "value": "0.5s",
+        "purpose": "Section fade-in entrance animation."
+      },
+      {
+        "name": "duration-slow",
+        "value": "1.2s",
+        "purpose": "Weather ambience background transitions."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "767px" },
+      { "name": "desktop", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action button. Amber background, dark text, bold weight.",
+      "html": "<button class=\"ds-btn-primary\">Ação</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.4rem; background: var(--primary); color: #1a130d; border: 1px solid transparent; border-radius: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease; } .ds-btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action button. Glass surface background with border.",
+      "html": "<button class=\"ds-btn-ghost\">Cancelar</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.4rem; background: var(--surface); color: var(--foreground); border: 1px solid var(--surface-border); border-radius: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease; } .ds-btn-ghost:hover { background: var(--surface-hover); transform: translateY(-1px); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive action button. Translucent rose background with rose text and border.",
+      "html": "<button class=\"ds-btn-danger\">Excluir</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.4rem; background: rgba(248, 113, 113, 0.12); color: var(--error); border: 1px solid color-mix(in srgb, var(--error) 45%, transparent); border-radius: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease; } .ds-btn-danger:hover { background: rgba(248, 113, 113, 0.22); transform: translateY(-1px); } .ds-btn-danger:focus-visible { outline: 2px solid var(--error); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "console-input",
+      "description": "Standard text input field. Glass surface background, amber focus border.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Digite...\" />",
+      "css": ".ds-input { width: 100%; padding: 0.7rem 0.85rem; border-radius: 10px; border: 1px solid var(--surface-border); background: var(--surface); color: var(--foreground); font-family: var(--font-sans); font-size: 0.9rem; outline: none; transition: border-color 0.15s ease, background 0.15s ease; } .ds-input:focus { border-color: var(--primary); background: var(--surface-hover); } .ds-input::placeholder { color: var(--foreground-muted); }"
+    },
+    {
+      "name": "Amber Badge",
+      "kind": "chip",
+      "refersTo": "badge-amber",
+      "description": "Amber-toned status badge. Pill shape, monospace uppercase text.",
+      "html": "<span class=\"ds-badge-amber\">ABERTO</span>",
+      "css": ".ds-badge-amber { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.18rem 0.6rem; border-radius: 999px; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: var(--primary); background: var(--primary-glow); }"
+    },
+    {
+      "name": "Teal Badge",
+      "kind": "chip",
+      "refersTo": "badge-teal",
+      "description": "Teal-toned status badge. Same shape as amber badge with teal colors.",
+      "html": "<span class=\"ds-badge-teal\">2026/1</span>",
+      "css": ".ds-badge-teal { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.18rem 0.6rem; border-radius: 999px; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: var(--secondary); background: var(--secondary-glow); }"
+    },
+    {
+      "name": "Glass Card",
+      "kind": "card",
+      "refersTo": "glass-panel",
+      "description": "Standard glassmorphic container. Semi-transparent with backdrop blur and resting shadow.",
+      "html": "<div class=\"ds-glass-card\"><p> Conteúdo do card </p></div>",
+      "css": ".ds-glass-card { background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--surface-border); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; } .ds-glass-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -10px rgba(242, 166, 59, 0.18); border-color: color-mix(in srgb, var(--primary) 45%, transparent); }"
+    },
+    {
+      "name": "Section Header",
+      "kind": "custom",
+      "refersTo": "SectionHeader",
+      "description": "Monospace section header with // prefix in amber. Signature visual element.",
+      "html": "<div class=\"ds-section-header\"><h2><span>//</span> AGORA</h2></div>",
+      "css": ".ds-section-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2.4rem; margin-bottom: 0.9rem; } .ds-section-header h2 { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--foreground-muted); margin: 0; } .ds-section-header h2 span { color: var(--primary); }"
+    },
+    {
+      "name": "Progress Bar",
+      "kind": "custom",
+      "refersTo": "progress-bar",
+      "description": "Gradient progress track. Teal-to-amber gradient fills a rounded muted track.",
+      "html": "<div class=\"ds-progress-track\"><div class=\"ds-progress-bar\" style=\"width: 60%\"></div></div>",
+      "css": ".ds-progress-track { height: 6px; border-radius: 999px; background: var(--surface-hover); overflow: hidden; } .ds-progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--secondary), var(--primary)); transition: width 0.6s ease; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Code Café",
+    "overview": "Coffee & Code is a student console that feels like opening your laptop at a premium indie café: warm amber light filtering through glass, the quiet hum of a terminal in the background, and every surface within arm's reach. The design marries coffee-culture warmth (caramel, espresso, cream) with developer-tool precision (monospace labels, terminal-green accents, a console-like shell). Glassmorphism provides depth through translucent layers that let the ambient background glow through, while subtle shadows ground interactive elements and signal hover states.\n\nThe system is deliberately dual-natured: a dark espresso mode that feels like a late-night coding session, and a light cream mode that feels like a sunlit study afternoon. Both share the same amber-teal accent pair and glass material, differing only in their neutral ramp. The console metaphor — status bar, side rail, tab bar, monospace section headers with // prefixes — is not decoration; it is the product's identity.",
+    "keyCharacteristics": [
+      "Coffee-caramel-amber primary with terminal-teal secondary — a warm/cool accent pair that never competes",
+      "Glassmorphic surfaces with backdrop-filter blur as the primary depth language, grounded by subtle shadows on interactive elements",
+      "Console shell metaphor: status bar, side rail (desktop), tab bar (mobile), monospace // section headers",
+      "Tactile, confident interactions — clear hover states, visible focus rings, responsive press feedback",
+      "Dual-theme: dark espresso default with light cream fallback, both sharing the same accent vocabulary"
+    ],
+    "rules": [
+      {
+        "name": "The Warmth Rule",
+        "body": "No neutral in the system is achromatic. Backgrounds carry brown, text carries cream, borders carry warm white. Pure black, pure white, and pure gray appear nowhere in the palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Accent Ceiling",
+        "body": "Amber and teal are the only accent hues. Status colors (success, warning, error) are functional, not decorative — they appear only in their semantic context and never as a third accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Comment Prefix Rule",
+        "body": "Every section header uses the // label monospace pattern with // in amber. This is not decoration — it is the visual signature that makes the console feel like a codebase. Never drop the //, never change its color from amber, never use it on non-section-header text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Numerals Rule",
+        "body": "All time displays, countdowns, and numeric data use font-variant-numeric: tabular-nums via the .mono utility. Numbers in columns must align.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glass-First Rule",
+        "body": "Surfaces are glass by default. Shadows appear only as a response to state (hover, elevation, focus) or as the resting panel shadow. Glass is the material; shadow is the signal.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use the // comment prefix on every section header — it is the signature visual element.",
+      "Do keep the amber-teal accent pair exclusive. Status colors are functional, never decorative.",
+      "Do use glassmorphism for surfaces that float over the ambient background gradient.",
+      "Do add the resting panel shadow to all glass panels — depth without shadows reads as flat.",
+      "Do use font-variant-numeric: tabular-nums on all time and number displays.",
+      "Do maintain the warm neutral ramp — no achromatic blacks, whites, or grays.",
+      "Do use the 10px radius for interactive elements, 16px for containers, 999px for pills."
+    ],
+    "donts": [
+      "Don't use pure black (#000) or pure white (#fff) anywhere — the palette is always warm.",
+      "Don't use gray for secondary text — tint it toward the warm neutral (muted tan in dark, muted brown in light).",
+      "Don't drop the // prefix from section headers or change its color.",
+      "Don't add a third accent color — amber and teal are the complete accent vocabulary.",
+      "Don't use glassmorphism as pure decoration on elements that don't float over a background gradient.",
+      "Don't use border-left above 1px on cards or list items (the 3px accent border on CurrentClass is a featured-panel exception).",
+      "Don't mix font families — Space Grotesk is display-only, Inter is body-only, JetBrains Mono is data/label-only.",
+      "Don't use modals for tasks that don't need interruption or protected focus."
+    ]
+  }
+}

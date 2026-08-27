@@ -15,9 +15,9 @@ export default function SectionHeader({ label, action, className, style }: Secti
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '1rem',
-                marginBottom: '0.9rem',
-                marginTop: '2.4rem',
+                gap: 'var(--space-4)',
+                marginBottom: 'var(--space-3)',
+                marginTop: 'var(--space-8)',
                 ...style
             }}
         >

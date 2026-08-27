@@ -17,7 +17,7 @@ export function escapeHtml(value: string): string {
 
 export function emailTemplate(title: string, body: string, footer?: string): string {
     return `
-        <div style="background:#171109;padding:32px 16px;font-family:ui-monospace,Menlo,Consolas,monospace;color:#f5efdf">
+        <div style="background:#171109;padding:32px 16px;font-family:ui-monospace,'JetBrains Mono',Consolas,monospace;color:#f5efdf">
             <div style="max-width:520px;margin:0 auto;background:#1d1710;border:1px solid #3a3120;border-radius:12px;overflow:hidden">
                 <div style="padding:14px 24px;border-bottom:1px solid #3a3120;font-size:13px;letter-spacing:1px;color:#f2a63b">// Coffee &amp; Code</div>
                 <div style="padding:24px">

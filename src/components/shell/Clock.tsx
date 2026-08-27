@@ -18,7 +18,7 @@ export default function Clock() {
     if (!time) return null;
 
     return (
-        <span className="mono" style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)', letterSpacing: '0.04em' }}>
+        <span className="mono" style={{ fontSize: 'var(--text-base)', color: 'var(--foreground-muted)', letterSpacing: '0.04em' }}>
             {time}
         </span>
     );

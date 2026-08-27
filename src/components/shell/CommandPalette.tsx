@@ -107,16 +107,16 @@ export default function CommandPalette() {
 
     return (
         <>
-            <button
+                    <button
                 onClick={() => setOpen(true)}
                 title="Buscar (Ctrl+K ou /)"
                 style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.4rem',
-                    padding: '0.4rem 0.7rem',
+                    gap: 'var(--space-1)',
+                    padding: 'var(--space-1) var(--space-3)',
                     border: '1px solid var(--surface-border)',
-                    borderRadius: '10px',
+                    borderRadius: 'var(--rounded-md, 10px)',
                     background: 'var(--surface)',
                     color: 'var(--foreground-muted)',
                     cursor: 'pointer'
@@ -151,7 +151,7 @@ export default function CommandPalette() {
                             background: 'var(--background)'
                         }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.9rem 1.1rem', borderBottom: '1px solid var(--surface-border)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--surface-border)' }}>
                             <Icon name="search" size={16} />
                             <input
                                 ref={inputRef}
@@ -165,22 +165,22 @@ export default function CommandPalette() {
                                     border: 'none',
                                     outline: 'none',
                                     color: 'var(--foreground)',
-                                    fontSize: '0.95rem',
+                                    fontSize: 'var(--text-md)',
                                     fontFamily: 'var(--font-sans)'
                                 }}
                             />
-                            <kbd className="mono" style={{ fontSize: '0.66rem', color: 'var(--foreground-muted)', border: '1px solid var(--surface-border)', borderRadius: '5px', padding: '0.1rem 0.35rem' }}>esc</kbd>
+                            <kbd className="mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)', border: '1px solid var(--surface-border)', borderRadius: 'var(--rounded-sm, 8px)', padding: '0.1rem 0.35rem' }}>esc</kbd>
                         </div>
 
-                        <div style={{ padding: '0.5rem' }}>
+                        <div style={{ padding: 'var(--space-2)' }}>
                             {groups.length === 0 && (
-                                <p style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--foreground-muted)', fontSize: '0.85rem' }}>
+                                <p style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--foreground-muted)', fontSize: 'var(--text-base)' }}>
                                     Nada encontrado para &ldquo;{query}&rdquo;
                                 </p>
                             )}
                             {groups.map(g => (
-                                <div key={g.group} style={{ marginBottom: '0.25rem' }}>
-                                    <p className="label-mono" style={{ padding: '0.4rem 0.75rem 0.25rem' }}>{g.group}</p>
+                                <div key={g.group} style={{ marginBottom: 'var(--space-1)' }}>
+                                    <p className="label-mono" style={{ padding: 'var(--space-1) var(--space-3) 0.25rem' }}>{g.group}</p>
                                     {g.items.map(item => {
                                         const isActive = filtered.indexOf(item) === index;
                                         return (
@@ -191,22 +191,22 @@ export default function CommandPalette() {
                                                 style={{
                                                     display: 'flex',
                                                     alignItems: 'center',
-                                                    gap: '0.7rem',
+                                                    gap: 'var(--space-3)',
                                                     width: '100%',
-                                                    padding: '0.6rem 0.75rem',
+                                                    padding: 'var(--space-2) var(--space-3)',
                                                     border: 'none',
-                                                    borderRadius: '8px',
+                                                    borderRadius: 'var(--rounded-sm, 8px)',
                                                     background: isActive ? 'var(--primary-glow)' : 'transparent',
                                                     color: isActive ? 'var(--primary)' : 'var(--foreground)',
                                                     cursor: 'pointer',
                                                     textAlign: 'left',
-                                                    fontSize: '0.9rem',
+                                                    fontSize: 'var(--text-md)',
                                                     fontFamily: 'var(--font-sans)'
                                                 }}
                                             >
                                                 <Icon name={item.icon} size={16} />
                                                 <span style={{ flex: 1 }}>{item.label}</span>
-                                                {item.hint && <span className="mono" style={{ fontSize: '0.7rem', color: 'var(--foreground-muted)' }}>{item.hint}</span>}
+                                                {item.hint && <span className="mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)' }}>{item.hint}</span>}
                                             </button>
                                         );
                                     })}
@@ -214,7 +214,7 @@ export default function CommandPalette() {
                             ))}
                         </div>
 
-                        <div style={{ padding: '0.6rem 1rem', borderTop: '1px solid var(--surface-border)', display: 'flex', gap: '1rem', fontSize: '0.68rem', color: 'var(--foreground-muted)' }}>
+                        <div style={{ padding: 'var(--space-2) var(--space-4)', borderTop: '1px solid var(--surface-border)', display: 'flex', gap: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--foreground-muted)' }}>
                             <span>↑↓ navegar</span>
                             <span>↵ abrir</span>
                             <span>esc fechar</span>

@@ -115,7 +115,7 @@ export default function JustificativasClient({ subjects }: JustificativasClientP
                     {absences.map(item => {
                         const status = STATUS_META[item.status] || STATUS_META.PENDING;
                         return (
-                            <Card key={item.id} accent={item.status === 'APPROVED' ? 'var(--success)' : item.status === 'REJECTED' ? 'var(--error)' : 'var(--warning)'}>
+                            <Card key={item.id}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                                     <div>
                                         <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>

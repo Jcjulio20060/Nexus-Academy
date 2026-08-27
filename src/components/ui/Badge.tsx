@@ -28,7 +28,7 @@ export default function Badge({ tone = 'neutral', children, className }: BadgePr
                 padding: '0.18rem 0.6rem',
                 borderRadius: '999px',
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.66rem',
+                fontSize: 'var(--text-xs)',
                 fontWeight: 600,
                 letterSpacing: '0.06em',
                 textTransform: 'uppercase',

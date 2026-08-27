@@ -76,82 +76,82 @@ export default function HomeClient({ classesToday, db }: HomeClientProps) {
 
     return (
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-            <section style={{ marginBottom: '2.5rem' }}>
-                <p className="label-mono" style={{ margin: '0 0 0.5rem' }}>{`// ${dateLabel}`}</p>
-                <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.6rem', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.15, margin: 0 }}>
+            <section style={{ marginBottom: 'var(--space-8)' }}>
+                <p className="label-mono" style={{ margin: '0 0 var(--space-2)' }}>{`// ${dateLabel}`}</p>
+                <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.15, margin: 0 }}>
                     {greeting(now, student?.name.split(' ')[0])}
                 </h1>
-                <p style={{ color: 'var(--foreground-muted)', margin: '0.5rem 0 0', fontSize: '0.95rem' }}>
+                <p style={{ color: 'var(--foreground-muted)', margin: 'var(--space-2) 0 0', fontSize: 'var(--text-md)' }}>
                     Console do aluno · {classesToday.length > 0 ? `${classesToday.length} aula${classesToday.length > 1 ? 's' : ''} hoje` : 'sem aulas hoje'}
                 </p>
             </section>
 
-            <SectionHeader label="agora" style={{ marginBottom: '0.9rem' }} />
-            <div style={{ marginBottom: '2.5rem' }}>
+            <SectionHeader label="agora" style={{ marginBottom: 'var(--space-3)' }} />
+            <div style={{ marginBottom: 'var(--space-8)' }}>
                 <CurrentClass currentClass={current?.cls ?? null} progress={current?.progress ?? 0} />
             </div>
 
-            <SectionHeader label="a seguir" style={{ marginBottom: '0.9rem' }} />
-            <div style={{ marginBottom: '2.5rem' }}>
+            <SectionHeader label="a seguir" style={{ marginBottom: 'var(--space-3)' }} />
+            <div style={{ marginBottom: 'var(--space-8)' }}>
                 <UpcomingList classes={upcoming} now={now} />
             </div>
 
             <SectionHeader
                 label="prazos"
-                style={{ marginBottom: '0.9rem' }}
+                style={{ marginBottom: 'var(--space-3)' }}
                 action={
-                    <Link href="/prazos" className="mono" style={{ fontSize: '0.72rem', color: 'var(--primary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Link href="/prazos" className="mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--primary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                         ver todos
                         <Icon name="arrow-right" size={13} />
                     </Link>
                 }
             />
-            <div style={{ marginBottom: '2.5rem' }}>
+            <div style={{ marginBottom: 'var(--space-8)' }}>
                 {upcomingEvents.length > 0 ? (
                     <ImportantDates events={upcomingEvents} notices={[]} />
                 ) : (
-                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Nenhum prazo próximo.</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-md)' }}>Nenhum prazo próximo.</p>
                 )}
             </div>
 
-            <SectionHeader label="avisos" style={{ marginBottom: '0.9rem' }} />
-            <div style={{ marginBottom: '2.5rem' }}>
+            <SectionHeader label="avisos" style={{ marginBottom: 'var(--space-3)' }} />
+            <div style={{ marginBottom: 'var(--space-8)' }}>
                 {db.notices.length > 0 ? (
                     <ImportantDates events={[]} notices={db.notices.slice(0, 3)} />
                 ) : (
-                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Sem avisos no momento.</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-md)' }}>Sem avisos no momento.</p>
                 )}
             </div>
 
-            <SectionHeader label="ações" style={{ marginBottom: '0.9rem' }} />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.9rem' }}>
-                <Link href="/tickets" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <span style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--primary-glow)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <SectionHeader label="ações" style={{ marginBottom: 'var(--space-3)' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-3)' }}>
+                <Link href="/tickets" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                    <span style={{ width: '40px', height: '40px', borderRadius: 'var(--rounded-lg, 12px)', background: 'var(--primary-glow)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="ticket" size={20} />
                     </span>
-                    <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Meus tickets</p>
-                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Abrir ou acompanhar uma solicitação de suporte.</p>
+                    <p style={{ fontWeight: 700, fontSize: 'var(--text-lg)', margin: 0 }}>Meus tickets</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-base)', margin: 0 }}>Abrir ou acompanhar uma solicitação de suporte.</p>
                 </Link>
-                <Link href="/justificativas" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <span style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--secondary-glow)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Link href="/justificativas" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                    <span style={{ width: '40px', height: '40px', borderRadius: 'var(--rounded-lg, 12px)', background: 'var(--secondary-glow)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="clipboard" size={20} />
                     </span>
-                    <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Justificar falta</p>
-                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Enviar uma justificativa de ausência.</p>
+                    <p style={{ fontWeight: 700, fontSize: 'var(--text-lg)', margin: 0 }}>Justificar falta</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-base)', margin: 0 }}>Enviar uma justificativa de ausência.</p>
                 </Link>
-                <Link href="/grade" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <span style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--primary-glow)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Link href="/grade" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                    <span style={{ width: '40px', height: '40px', borderRadius: 'var(--rounded-lg, 12px)', background: 'var(--primary-glow)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="calendar" size={20} />
                     </span>
-                    <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Grade da semana</p>
-                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Aulas, horários, salas e professores.</p>
+                    <p style={{ fontWeight: 700, fontSize: 'var(--text-lg)', margin: 0 }}>Grade da semana</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-base)', margin: 0 }}>Aulas, horários, salas e professores.</p>
                 </Link>
-                <Link href="/materiais" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <span style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--secondary-glow)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Link href="/materiais" className="glass-panel glass-card" style={{ textDecoration: 'none', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                    <span style={{ width: '40px', height: '40px', borderRadius: 'var(--rounded-lg, 12px)', background: 'var(--secondary-glow)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="book" size={20} />
                     </span>
-                    <p style={{ fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Materiais de estudo</p>
-                    <p style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem', margin: 0 }}>Links e arquivos por matéria.</p>
+                    <p style={{ fontWeight: 700, fontSize: 'var(--text-lg)', margin: 0 }}>Materiais de estudo</p>
+                    <p style={{ color: 'var(--foreground-muted)', fontSize: 'var(--text-base)', margin: 0 }}>Links e arquivos por matéria.</p>
                 </Link>
             </div>
         </div>

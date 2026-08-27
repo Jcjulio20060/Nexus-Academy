@@ -50,7 +50,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '1rem'
+                padding: 'var(--space-4)'
             }}
         >
             <div
@@ -66,7 +66,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                 }}
             >
                 <div style={{
-                    padding: '1.25rem 1.5rem',
+                    padding: 'var(--space-5) var(--space-6)',
                     borderBottom: '1px solid var(--surface-border)',
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -86,7 +86,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                             height: '30px',
                             background: 'var(--surface)',
                             border: '1px solid var(--surface-border)',
-                            borderRadius: '8px',
+                            borderRadius: 'var(--rounded-sm, 8px)',
                             color: 'var(--foreground-muted)',
                             cursor: 'pointer',
                             transition: 'color 0.15s ease'
@@ -95,7 +95,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                         <Icon name="x" size={15} />
                     </button>
                 </div>
-                <div style={{ padding: '1.5rem' }}>
+                <div style={{ padding: 'var(--space-6)' }}>
                     {children}
                 </div>
             </div>

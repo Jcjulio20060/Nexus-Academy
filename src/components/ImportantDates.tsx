@@ -39,17 +39,17 @@ export default function ImportantDates({ events, notices }: ImportantDatesProps)
             {events.length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                     {events.map((ev, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.6rem 0.2rem' }}>
-                            <span className="mono" style={{ minWidth: '4rem', fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700 }}>
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: '0.6rem 0.2rem' }}>
+                            <span className="mono" style={{ minWidth: '4rem', fontSize: 'var(--text-sm)', color: 'var(--primary)', fontWeight: 700 }}>
                                 {formatDate(ev.date)}
                             </span>
                             <div style={{ flex: 1 }}>
-                                <p style={{ margin: 0, fontWeight: 600, fontSize: '0.95rem' }}>{ev.title}</p>
-                                <p style={{ margin: '0.1rem 0 0', color: 'var(--foreground-muted)', fontSize: '0.82rem' }}>
+                                <p style={{ margin: 0, fontWeight: 600, fontSize: 'var(--text-md)' }}>{ev.title}</p>
+                                <p style={{ margin: '0.1rem 0 0', color: 'var(--foreground-muted)', fontSize: 'var(--text-sm)' }}>
                                     <span className="mono">{ev.type}</span>
                                 </p>
                             </div>
-                            <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--foreground-muted)', whiteSpace: 'nowrap' }}>
+                            <span className="mono" style={{ fontSize: 'var(--text-sm)', color: 'var(--foreground-muted)', whiteSpace: 'nowrap' }}>
                                 {dateLabel(ev.date, today)}
                             </span>
                         </div>
@@ -60,14 +60,14 @@ export default function ImportantDates({ events, notices }: ImportantDatesProps)
             {notices.length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                     {notices.map((notice, i) => (
-                        <div key={i} className="glass-panel" style={{ display: 'flex', gap: '0.85rem', padding: '0.9rem 1rem', alignItems: 'flex-start' }}>
+                        <div key={i} className="glass-panel" style={{ display: 'flex', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', alignItems: 'flex-start' }}>
                             <span style={{ color: 'var(--warning)', marginTop: '0.1rem', flexShrink: 0 }}>
                                 <UiIcon name="alert" size={16} />
                             </span>
                             <div style={{ flex: 1 }}>
-                                <p style={{ margin: 0, fontWeight: 600, fontSize: '0.92rem' }}>{notice.message}</p>
+                                <p style={{ margin: 0, fontWeight: 600, fontSize: 'var(--text-md)' }}>{notice.message}</p>
                             </div>
-                            <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--foreground-muted)', whiteSpace: 'nowrap' }}>
+                            <span className="mono" style={{ fontSize: 'var(--text-sm)', color: 'var(--foreground-muted)', whiteSpace: 'nowrap' }}>
                                 {formatDate(notice.createdAt.toISOString().slice(0, 10))}
                             </span>
                         </div>

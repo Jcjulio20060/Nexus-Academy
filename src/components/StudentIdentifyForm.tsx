@@ -4,8 +4,8 @@ import { toast } from 'sonner';
 import { setStudentSession, StudentSession } from '@/lib/studentSession';
 
 const inputStyle = {
-    padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--surface-border)',
-    background: 'var(--surface)', color: 'var(--foreground)'
+    padding: '0.75rem', borderRadius: 'var(--rounded-md, 10px)', border: '1px solid var(--surface-border)',
+    background: 'var(--surface)', color: 'var(--foreground)', fontSize: 'var(--text-md)'
 } as const;
 
 interface StudentIdentifyFormProps {
@@ -44,23 +44,23 @@ export default function StudentIdentifyForm({ onSuccess }: StudentIdentifyFormPr
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <p style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)', lineHeight: 1.5 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            <p style={{ fontSize: 'var(--text-base)', color: 'var(--foreground-muted)', lineHeight: 1.5 }}>
                 Identifique-se com nome e matrícula para acessar este recurso.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Nome completo</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                <label style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--foreground-muted)' }}>Nome completo</label>
                 <input name="name" required placeholder="Ex: João da Silva" style={inputStyle} />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>Matrícula</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                <label style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--foreground-muted)' }}>Matrícula</label>
                 <input name="registration" required placeholder="Ex: 2023001234" style={inputStyle} />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)' }}>E-mail (opcional)</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                <label style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--foreground-muted)' }}>E-mail (opcional)</label>
                 <input name="email" type="email" placeholder="voce@email.com" style={inputStyle} />
             </div>
-            <button type="submit" style={{ padding: '1rem', background: 'var(--primary)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, cursor: 'pointer' }}>
+            <button type="submit" style={{ padding: 'var(--space-4)', background: 'var(--primary)', border: 'none', borderRadius: 'var(--rounded-md, 10px)', color: 'var(--background)', fontWeight: 700, cursor: 'pointer', fontSize: 'var(--text-md)' }}>
                 Salvar
             </button>
         </form>
